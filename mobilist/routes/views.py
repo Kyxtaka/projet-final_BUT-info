@@ -6,17 +6,18 @@ from flask import (
     render_template, url_for, 
     render_template_string
     )
-from .app import app
-from .secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
+from mobilist.app import app
+from mobilist.secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
+from mobilist.models import *
+from mobilist.exception import *
+from mobilist.commands import create_user
+
 from wtforms import PasswordField
-from .models import User
 from hashlib import sha256
 from flask_login import login_user , current_user, AnonymousUserMixin
 from flask import request
 from flask_login import login_required
-from .commands import create_user
-from .models import *
-from .exception import *
+from mobilist.exception import *
 from flask_wtf import FlaskForm
 from wtforms import * #import de tous les champs
 from wtforms.validators import DataRequired
