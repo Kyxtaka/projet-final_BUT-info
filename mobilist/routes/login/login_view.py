@@ -52,6 +52,13 @@ def set_password_page():
 def send_change_pwd_email(mail, token) -> bool:
     """
     Fonction qui envoie un email de réinitialisation du mot de passe
+
+    Args : 
+        mail (str) : l'adresse mail
+        token (str) : le token pour valider la demande de réinitialisation
+
+    Returns : 
+        bool : True si l'email a été envoyé avec succès, False si non
     """
     sent_status = False
     email = GOOGLE_SMTP_USER
@@ -79,7 +86,7 @@ def send_change_pwd_email(mail, token) -> bool:
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
 
-        # Envoie l'email
+        # Envoie de l'email
         server.sendmail(email, mail, msg.as_string())
         print("Email envoyé avec succès !")
         sent_status = True
@@ -88,7 +95,8 @@ def send_change_pwd_email(mail, token) -> bool:
         sent_status = False
     finally:
         server.quit()
-        return sent_statusResetPasswordForm
+        return sent_status
+
 
 @bp.route("/forgotPassword/", methods=["POST", "GET"])
 def page_oublie():
