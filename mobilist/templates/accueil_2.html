@@ -18,8 +18,8 @@
   <section class="ajout">
     <article class="box-ajout">
       <div>
-        <a href="{{ url_for('ajout_bien') }}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
-        <a class="ajout-elem" href="{{ url_for('ajout_bien') }}">Ajouter un bien</a>
+        <a href="{{ url_for('upload.ajout_bien') }}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
+        <a class="ajout-elem" href="{{ url_for('upload.ajout_bien') }}">Ajouter un bien</a>
       </div>
       <div>
         <a href="{{ url_for('ajout_logement')}}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
@@ -54,7 +54,7 @@
         </td>
         {% elif not (elem.isdigit()) %}
         <td> 
-          <a href="{{ url_for('modifier_bien', id=bien[3])}}"> 
+          <a href="{{ url_for('upload.modifier_bien', id=bien[3])}}"> 
             {{ elem }} 
           </a> 
         </td>
