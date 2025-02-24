@@ -92,7 +92,7 @@ class LoginForm(FlaskForm):
         passwd = m.hexdigest()
         return user if passwd == user.password else None
 
-class IncrisptionForm(FlaskForm):
+class InscriptionForm(FlaskForm):
     """
     Formulaire d'inscription pour un utilisateur
 
@@ -130,6 +130,13 @@ class IncrisptionForm(FlaskForm):
         return user if passwd == user.password else None
 
 class ResetPasswordFrom(FlaskForm):
+    """
+    Formulaire de réinitialisation du mot de passe
+
+    Attributes :
+        mdp (PasswordField) : Champ pour le nouveau mot de passe
+        valider (PasswordField) : Champ de confirmation pour le nouveau mot de passe
+    """
     mdp = PasswordField("Mot de passe")
     valider = PasswordField("Confirmer mot de passe")
 
@@ -404,7 +411,7 @@ def logout():
 
 @app.route("/inscription/", methods=("GET", "POST",))
 def inscription():
-    f = IncrisptionForm()
+    f = InscriptionForm()
     if not f.is_submitted():
         f.next.data = request.args.get("next")
     elif f.validate_on_submit():
