@@ -1,7 +1,7 @@
 from mobilist.app import app, db
 from .views import *
-from flask import Blueprint
 from .login import *
+from .login import login_view
 from .uploadfile import upload
 from .logements import logements
 from .biens import biens
