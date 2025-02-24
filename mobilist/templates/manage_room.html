@@ -1,0 +1,120 @@
+{% extends "index2.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='_reboot.scss') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='manage_room.css') }}">
+{{ super()}}
+{% endblock %}
+{% block scripts %}
+{{ super()}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.5/rxjs.umd.min.js"></script>
+<!-- <script src="{{ url_for('static', filename='js/ajout_logement.js') }}"></script> -->
+{% endblock %}
+{{ super()}}
+{% block content %}
+<div id="manage-romm-container">
+    <div class="img-logement">
+        <img id="img-log" src="{{ url_for('static',filename='img/logement.png') }}" alt="page affichage logements"/> 
+    </div>
+    <h1>Gerer les pieces</h1>
+    <div>
+        <!-- <p>List piece à ajouté</p> -->
+        <!-- <h2>Pièces à ajouter</h2> -->
+        <table>
+            <thead>
+                <tr id="first-row" style="text-align: center;">
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="room-list">
+                {% for room in rooms %}
+                <tr>
+                    <td>{{ room.get_nom_piece() }}</td>
+                    <td>{{ room.get_desc_piece() }}</td>
+                    <td>
+                        <button class="btn btn-primary" id="edit-room-btn" onclick="editRoom({{ room.get_id_piece() }})">Editer</button>
+                        <button class="btn btn-danger" id="delete-room-btn" onclick="deleteRoom({{ room.get_id_piece() }})">Supprimer</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div>
+            <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-piece-popup-form')">Ajouter pièce</button>
+        </div>
+    </div>
+        <form class="overlay-container" id="add-piece-popup-form" action="" method="post">
+            <div class="popup-box">
+                <div>
+                    <label class="form-label" for="name">Nom de la pièce :</label>
+                    <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="edit-room-name-input" name="roomName" required>
+                </div>
+                <div>
+                    <label class="form-label" for="description">Description de la pièce :</label>
+                    <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="edit-room-description-input" name="roomDesc">
+                </div>
+                <div class="form-btn-container">
+                    <button type="button" class="btn-close-popup" onclick="toggleFormPopup('add-piece-popup-form')">Annuler</button>
+                    <button type="submit" class="btn-submit" id="add-room-btn" onclick="">Confirmer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<form class="overlay-container" id="add-piece-edit-popup-form" action="" method="PUT">
+    <div class="popup-box">
+        <div>
+            <label class="form-label" for="roomId">Id Room</label>
+            <input class="form-input" type="text"  id="edit-room-id-input" name="roomId" required disabled>
+        </div>
+        <div>
+            <label class="form-label" for="name">Nom de la pièce :</label>
+            <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="edit-room-name-input" name="roomName" required>
+        </div>
+        <div>
+            <label class="form-label" for="description">Description de la pièce :</label>
+            <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="edit-room-description-input" name="roomDesc">
+        </div>
+        <div class="form-btn-container">
+            <button type="button" class="btn-close-popup" onclick="toggleFormPopup('add-piece-edit-popup-form')">Annuler</button>
+            <button type="submit" class="btn-submit" id="add-room-btn" onclick="">Confirmer</button>
+        </div>
+    </div>
+</form>
+</div>
+</div>
+<script>
+    function deleteRoom(id) {
+        console.log("Edit room with id: " + id);
+        fetch("{{ url_for('logements.manage_room', id=logement.get_id_logement()) }}" + "?roomId=" + id + "&logementId=" + {{logement.get_id_logement()}}, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Erreur lors de la suppression");
+        }
+        console.log("Pièce supprimée avec succès !");
+        window.location.reload();
+    })
+    .catch(error => console.error("Erreur:", error));
+    }
+    function editRoom(id) {
+        toggleFormPopup("add-piece-edit-popup-form")
+        document.getElementById("edit-room-id-input").value = id;
+    }
+
+    function toggleFormPopup(overlay_id) {
+        console.log("overlay_id form", overlay_id);
+        const overlay = document.getElementById(overlay_id);
+        console.log("overlay", overlay);
+        overlay.classList.toggle('show');
+        for (i = 0; i < document.getElementsByClassName('action-btn').length; i++) {
+            document.getElementsByClassName('action-btn')[i].style.display =  document.getElementsByClassName('action-btn')[i].style.display === 'none' ? 'block' : 'none';
+        }
+    }
+</script>
+{% endblock %} 
