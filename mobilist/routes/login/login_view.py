@@ -8,7 +8,9 @@ from .classes.InscriptionForm import InscriptionForm
 from .classes.ModificationForm import ModificationForm
 from .classes.ResetForm import ResetForm
 from .classes.ResetPasswordForm import ResetPasswordForm
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from hashlib import sha256
 from flask_login import login_user , current_user, AnonymousUserMixin
 from flask import request

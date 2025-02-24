@@ -39,6 +39,7 @@ from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from .login.classes.ModificationForm import ModificationForm
 
 
 # pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
