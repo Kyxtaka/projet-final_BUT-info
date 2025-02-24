@@ -24,4 +24,4 @@ app.config['UPLOAD_FOLDER'] = mkpath('./static/upload')
 Bootstrap = Bootstrap5(app)
 
 login_manager = LoginManager(app)
-login_manager.login_view = "login"
+login_manager.login_view = "login.login"

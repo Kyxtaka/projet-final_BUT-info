@@ -50,19 +50,19 @@
                   <li class="nav-img" >
                     <div class="Biens">
                         <img src="{{ url_for('static',filename='img/mes-biens.png') }}" alt="icône mes biens"/>
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('mesBiens')}}">Mes biens</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('biens.mesBiens')}}">Mes biens</a>
                     </div>
                   </li>
                     <li class="nav-img" >
                         <div class="BLogements">
                             <img src="{{ url_for('static',filename='img/mes-logements.png') }}" alt="icône mes logements"/>
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('affiche_logements') }}">Mes logements</a>
+                            <a class="nav-link active" aria-current="page" href="{{ url_for('logements.affiche_logements') }}">Mes logements</a>
                         </div>
                     </li>
                   <li class="nav-img" >
                     <div class="BSinistres">
                         <img src="{{ url_for('static',filename='img/simuler-sinistre.png') }}" alt="icône simuler un sinistre"/>
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('simulation')}}">Simuler un sinistre</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('biens.simulation')}}">Simuler un sinistre</a>
                     </div>
                   </li>
                   <li id="connexion">
