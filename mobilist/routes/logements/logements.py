@@ -1,15 +1,14 @@
 from mobilist.models import *
 from flask import Blueprint
 from flask import (
-    flash, jsonify, 
+    jsonify, 
     render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
+    redirect, 
+    render_template, url_for
     )
 from flask import request
 from flask_login import login_required
-from flask_login import login_user, current_user
+from flask_login import current_user
 import json
 
 
@@ -18,6 +17,13 @@ logements_bp = Blueprint('logements', __name__)
 @logements_bp.route("/afficheLogements/", methods=("GET", "POST",))
 @login_required
 def affiche_logements():
+    """
+    Fonction qui permet à un utilisateur de voir ses logements, de les supprimer ou de les modifier
+
+    Returns :
+        - Si la méthode est GET : la page avec la liste des logements du propriétaire est affichée
+        - Si la méthode est POST : après la suppression ou la modification d'un logement, la page avec la mise à jour de la liste des logements est affichée
+    """
     session = db.session
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = proprio.logements
@@ -27,7 +33,7 @@ def affiche_logements():
     else:
         contenu = True
     type_logement = [type for type in LogementType]
-    if request.method == "POST": #utilisation de request car pas envie d'utiliser les méthodes de flask, car j utilise JS
+    if request.method == "POST":
         print("recerption de la requete")
         form_type = request.form.get("type-form")
         print("form_type",form_type)
@@ -67,7 +73,6 @@ def affiche_logements():
                     session.rollback()
                     print("Erreur lors de la modification du logement")
                     print(e)
-                # return render_template("updateLogement.html", logement=logement)
         proprio = Proprietaire.query.get(current_user.id_user)
         logements = proprio.logements
         return render_template("afficheLogements.html", logements=logements, type_logement=type_logement, contenu=contenu)
