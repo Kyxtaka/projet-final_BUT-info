@@ -1,29 +1,20 @@
-from datetime import datetime
+# Importations de modules
 from flask import (
-    flash, jsonify, 
+    flash,
     render_template, 
-    send_file, redirect, 
+    redirect, 
     render_template, url_for, 
     render_template_string
     )
 from mobilist.app import app
 from mobilist.models import *
 from mobilist.exception import *
-from mobilist.commands import create_user
-from .login import login_view
 
-from flask_login import login_user , current_user
+from flask_login import current_user
 from flask import request
 from flask_login import login_required
 from mobilist.exception import *
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import MultiDict
-import json
-
 import spacy
-from PyPDF2 import PdfReader
-import ast
-import webbrowser
 nlp = spacy.load("fr_core_news_md")
 
 from .PDF.generatePDF import *
@@ -34,19 +25,31 @@ from .login.classes.ModificationForm import ModificationForm
 
 @app.route("/")
 def home():
+    """
+    Renvoie la page d'accueil du site
+    """
     return render_template('accueil.html')
 
 @app.route("/accueil")
 def accueil():
+    """
+    Renvoie la page d'accueil du site
+    """
     return render_template('accueil.html')
 
 @app.route("/avis")
 def avis():
+    """
+    Renvoie la page 'avis' du site
+    """
     return render_template("avis.html")
 
 @app.route("/accueil-connexion/", methods =("GET","POST" ,))
 @login_required   
 def accueil_connexion():
+    """
+    Renvoie la page d'accueil une fois connecté, et/ou génère un inventaire
+    """
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = []
     infos, a_justifier = biens()
@@ -59,15 +62,24 @@ def accueil_connexion():
     
 @app.route("/information")
 def information():
+    """
+    Renvoie la page 'information' du site
+    """
     return render_template("information.html")
 
 @app.route("/services")
 def services():
+    """
+    Renvoie la page 'services' du site
+    """
     return render_template("services.html")
 
 
 @app.route("/mon-compte/", methods =("POST" ,"GET",))
 def mon_compte():
+    """
+    Permet à l'utilisateur de modifier son profil
+    """
     form = ModificationForm()
     if current_user.is_authenticated and current_user.proprio:
         form.nom.data = current_user.proprio.nom
@@ -84,6 +96,15 @@ def test():
     return render_template_string(str(Logement.next_id()))
 
 def extraire_informations(texte):
+    """
+    Fonction qui permet d'extraire le prix et la date d'achat d'un texte
+
+    Args :
+        texte (str) : le texte à analyser
+
+    Return :
+        un dictionnaire avec les clés "prix" et "date_achat", contenant les informations extraites
+    """
     doc = nlp(texte)
     donnees = {"prix": "", "date_achat": ""}
     for ent in doc.ents:
@@ -98,5 +119,4 @@ def extraire_informations(texte):
 @login_required
 def open_fic():
     url = request.args.get("url")
-    # webbrowser.open('/'+url)
     return redirect(url_for('accueil_connexion'))
