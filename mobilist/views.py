@@ -252,6 +252,31 @@ class UploadFileForm(FlaskForm):
         return texte
 
 class AjoutBienForm(FlaskForm):
+    """
+    Formulaire pour ajouter d'un bien immobilier
+
+    Attributes :
+        logement (SelectField) : Sélection du logement auquel ajouter le bien
+        nom_bien (StringField) : Nom du bien immobilier
+        type_bien (SelectField) : Sélection du type de bien
+        categorie_bien (SelectField) : Sélection de la catégorie du bien
+        piece_bien (SelectField) : Sélection du nombre de pièces du bien
+        prix_bien (FloatField) : Prix neuf du bien immobilier
+        date_bien (DateField) : Date d'achat du bien
+        description_bien (TextAreaField) : Description du bien
+        file (FileField) : Importation d'un fichier associé au bien immobilier
+        id_proprio (HiddenField) : Identifiant caché du propriétaire du bien
+        id_bien (HiddenField) : Identifiant caché du bien
+
+    Methods :
+        __init__ : Constructeur du formulaire, initialise les séléctions (le logement, type de bien, catégorie, etc) en fonction de l'utilisateur actuel
+        
+        create_justificatif_bien : Sauvegarde le fichier importé dans le répertoire spécifié
+        
+        set_id : Setter de l'identifiant du bien
+        
+        get_log_choices, get_type_bien_choices, get_cat_bien_choices : Getters pour le logement, le type et la catégorie du bien
+    """
     logement  = SelectField('Logement', validators=[DataRequired()], coerce=int)
     nom_bien = StringField('Nom du bien', validators=[DataRequired()])
     type_bien = SelectField('Type de bien', validators=[DataRequired()],coerce=int)
@@ -265,6 +290,9 @@ class AjoutBienForm(FlaskForm):
     id_bien = HiddenField("id_proprio")
 
     def __init__(self,*args, **kwargs):
+        """
+        Constructeur de la classe, initialise le formulaire
+        """
         super(AjoutBienForm, self).__init__(*args, **kwargs)
         self.id_bien = None
         self.id_proprio = current_user.id_user
