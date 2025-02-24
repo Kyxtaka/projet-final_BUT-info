@@ -1,22 +1,24 @@
 from flask import (
-    flash, jsonify, 
     render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
+    render_template
     )
 from mobilist.models import *
 from flask import Blueprint
-from flask_login import login_user , current_user, AnonymousUserMixin
+from flask_login import current_user
 from flask import request
 from flask_login import login_required
 from ..PDF.generatePDF import *
 
 
-
 biens_bp = Blueprint('biens', __name__)
 @biens_bp.route("/mesBiens/", methods =["GET"])
-def mesBiens():
+def mesBiens() -> str:
+    """
+    Affiche les biens et logements d'un propriétaire 
+
+    Returns :
+        la page 'mesBiens' est affichée
+    """
     logement_id = request.args.get("logement")
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = []
@@ -32,7 +34,13 @@ def mesBiens():
 
 
 @biens_bp.route("/simulation/", methods =("GET","POST" ,))
-def simulation():
+def simulation() -> str:
+    """
+    Permet de faire une simulation de sinistre pour un logement et de génèrer un inventaire
+
+    Return :
+        la page simulation est affichée
+    """
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = []
     for logement in proprio.logements:
@@ -56,10 +64,19 @@ def simulation():
 @biens_bp.route("/ensemblebiens/", methods=["GET"])
 @login_required
 def ensemble_biens():
+    """
+    Affiche l'ensemble des biens d'un propriétaire
+
+    Return :
+        la page 'ensemble_bien' est affichée
+    """
     info, justifie = biens()
     return render_template("ensemble_biens.html", infos=info, justifies=justifie)
 
 def biens():
+    """
+    Récupère les informations des biens de l'utilisateur connecté
+    """
     biens, justifies = User.get_biens_by_user(current_user.mail)
     infos = []
     for elem in biens:
