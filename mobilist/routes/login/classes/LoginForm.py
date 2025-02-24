@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, HiddenField
 from hashlib import sha256
-from mobilist.models import User 
+from mobilist.models.models import User 
 
 class LoginForm(FlaskForm):
 
