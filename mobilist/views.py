@@ -159,6 +159,12 @@ class ModificationForm(FlaskForm):
     different = False
 
 class ResetForm(FlaskForm):
+    """
+    Formulaire de réinitialisation du mot de passe, demande une adresse e-mail pour envoyer un lien de réinitialisation
+
+    Attributes :
+        email (StringField) : Champ pour saisir l'adresse e-mail
+    """
     email = StringField("Votre email")
 
 class UploadFileForm(FlaskForm):
