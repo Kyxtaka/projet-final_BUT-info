@@ -23,7 +23,14 @@ class InscriptionForm(FlaskForm):
     mail = StringField('Adresse e-mail')
     password = PasswordField('Mot de passe')
     next = HiddenField()
+
     def get_authenticated_user(self):
+        """
+        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail
+
+        Returns : 
+            user (User) ou None : l'utilisateur authentifié si le mot de passe est correct, sinon None
+        """
         user = User.query.get(self.mail.data)
         if user is None:
             return None
