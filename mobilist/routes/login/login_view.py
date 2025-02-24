@@ -1,4 +1,4 @@
-
+# Importations de modules 
 from mobilist.secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
 from mobilist.models import *
 from mobilist.exception import *
@@ -12,38 +12,33 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from hashlib import sha256
-from flask_login import login_user , current_user, AnonymousUserMixin
+from flask_login import login_user , current_user
 from flask import request
-from flask_login import login_required
-from mobilist.exception import * #import de tous les champs
+from mobilist.exception import * 
 
-from flask import (
-    flash, jsonify, 
-    render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
-    )
+from flask import (flash, render_template, redirect, render_template, url_for)
 
 from flask import Blueprint
 
 
+# Route pour la page de réinitialisation du mot de passe
 bp = Blueprint('login', __name__)
 @bp.route("/forgotPassword/setPassword", methods=["POST", "GET"])
 def set_password_page():
     valid_access = False
     if request.args.get("token"):
-        token = request.args.get("token")
+        token = request.args.get("token")  # Vérifie si un token est présent dans l'URL
         tokenObject = ChangePasswordToken.get_by_token(token)
-        if tokenObject is None:
+        if tokenObject is None:  # Si le token est invalide
             valid_access = False
         else:
-            valid_access = not tokenObject.is_expired()
+            valid_access = not tokenObject.is_expired() # Vérifie si le token est expiré
             print(f"token: {token}")
             print(f"is expired: {tokenObject.is_expired()}")
             print(f"valid_access: {valid_access}")
-    if not valid_access:
+    if not valid_access:  # Si le token est invalide ou expiré
         return render_template(f"unauthorized_access.html"), 401
+    # Si l'accès est valide, création du formulaire
     user = User.get_by_mail(ChangePasswordToken.get_by_token(token).get_email())
     form = ResetPasswordForm()
     if form.is_submitted():
@@ -55,6 +50,9 @@ def set_password_page():
     return render_template("reinitialiser_mdp.html", form=form, tentative=False, token_access=tokenObject.get_token())
 
 def send_change_pwd_email(mail, token) -> bool:
+    """
+    Fonction qui envoie un email de réinitialisation du mot de passe
+    """
     sent_status = False
     email = GOOGLE_SMTP_USER
     password = GOOGLE_SMTP_PWD
@@ -71,22 +69,23 @@ def send_change_pwd_email(mail, token) -> bool:
     try:
         # Configuration du serveur SMTP
         server = smtplib.SMTP(GOOGLE_SMTP)
-        # server = smtplib.SMTP("smtp.gmail.com", 587) # server smtp de google
         server.starttls() 
         server.login(email, password)
 
+        # Création de l'email
         msg = MIMEMultipart()
         msg["From"] = email
         msg["To"] = mail
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
 
+        # Envoie l'email
         server.sendmail(email, mail, msg.as_string())
         print("Email envoyé avec succès !")
         sent_status = True
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
-        sent_status = False 
+        sent_status = False
     finally:
         server.quit()
         return sent_statusResetPasswordForm
