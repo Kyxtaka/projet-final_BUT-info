@@ -56,8 +56,6 @@ def set_password_page():
 
 def send_change_pwd_email(mail, token) -> bool:
     sent_status = False
-    # email = "eexemple044@gmail.com"
-    # password = "ggzb gucf uynu djih"
     email = GOOGLE_SMTP_USER
     password = GOOGLE_SMTP_PWD
     subject = "Mobilist - réinitialiser votre mot de passe"
@@ -91,7 +89,7 @@ def send_change_pwd_email(mail, token) -> bool:
         sent_status = False 
     finally:
         server.quit()
-        return sent_status
+        return sent_statusResetPasswordForm
 
 @bp.route("/forgotPassword/", methods=["POST", "GET"])
 def page_oublie():
@@ -181,7 +179,6 @@ def inscription():
             return render_template("inscription.html", form=f, present=True)
         create_user(f.mail.data, f.password.data, "proprio")
         User.modifier(f.mail.data, f.nom.data, f.prenom.data)
-        # return render_template("accueil_2.html")
         return redirect(url_for("accueil_connexion"))
     return render_template(
     "inscription.html", form=f, present=False)

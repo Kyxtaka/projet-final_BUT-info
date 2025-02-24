@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, HiddenField
 from hashlib import sha256
-from mobilist.models import User 
+from mobilist.models import User
 
 class InscriptionForm(FlaskForm):
     """
@@ -30,7 +30,7 @@ class InscriptionForm(FlaskForm):
 
         Returns : 
             user (User) ou None : l'utilisateur authentifié si le mot de passe est correct, sinon None
-        """
+       """
         user = User.query.get(self.mail.data)
         if user is None:
             return None

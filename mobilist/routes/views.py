@@ -42,8 +42,6 @@ from reportlab.pdfbase import pdfmetrics
 from .login.classes.ModificationForm import ModificationForm
 
 
-# pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
-
 # constante : chemin d'accès au dossier de téléchargement des justificatifs
 UPLOAD_FOLDER_JUSTIFICATIF = os.path.join(
     os.path.abspath(os.path.dirname(__file__)),
