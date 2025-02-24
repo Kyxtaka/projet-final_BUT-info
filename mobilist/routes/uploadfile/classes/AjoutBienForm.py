@@ -1,7 +1,7 @@
 # Importations de modules
 from flask_wtf import FlaskForm
 from wtforms import *
-from mobilist.models import *
+from mobilist.models.models import *
 import os
 from wtforms.validators import DataRequired
 from .UploadFileForm import UPLOAD_FOLDER_JUSTIFICATIF

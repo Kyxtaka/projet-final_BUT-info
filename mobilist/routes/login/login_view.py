@@ -1,6 +1,6 @@
 # Importations de modules 
 from mobilist.secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
-from mobilist.models import *
+from mobilist.models.models import *
 from mobilist.exception import *
 from mobilist.commands import create_user
 from .classes.LoginForm import LoginForm
@@ -21,6 +21,17 @@ from flask_login import logout_user
 from flask import (flash, render_template, redirect, render_template, url_for)
 
 from flask import Blueprint
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
 
 
 bp = Blueprint('login', __name__)

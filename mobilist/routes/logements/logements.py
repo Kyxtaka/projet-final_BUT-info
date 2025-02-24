@@ -1,4 +1,16 @@
-from mobilist.models import *
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
+import json
+
 from flask import Blueprint
 from flask import (
     jsonify, 
@@ -8,8 +20,8 @@ from flask import (
     )
 from flask import request
 from flask_login import login_required
-from flask_login import current_user
-import json
+from flask_login import login_user, current_user
+from ...app import db
 
 
 logements_bp = Blueprint('logements', __name__)
@@ -33,8 +45,8 @@ def affiche_logements() -> str:
     else:
         contenu = True
     type_logement = [type for type in LogementType]
-    if request.method == "POST":
-        print("recerption de la requete")
+    if request.method == "POST": #utilisation de request car pas envie d'utiliser les méthodes de flask, car j utilise JS
+        print("réception de la requete")
         form_type = request.form.get("type-form")
         print("form_type",form_type)
         match form_type:

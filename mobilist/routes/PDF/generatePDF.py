@@ -9,7 +9,19 @@ from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
 import spacy
 nlp = spacy.load("fr_core_news_md")
-from mobilist.models import *
+from mobilist.app import app
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
+from sqlalchemy.sql.expression import func
 
 
 

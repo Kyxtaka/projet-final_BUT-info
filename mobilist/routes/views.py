@@ -7,7 +7,8 @@ from flask import (
     render_template_string
     )
 from mobilist.app import app
-from mobilist.models import *
+
+
 from mobilist.exception import *
 
 from flask_login import current_user
