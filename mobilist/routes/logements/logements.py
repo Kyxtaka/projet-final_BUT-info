@@ -10,6 +10,7 @@ from flask import (
 from flask import request
 from flask_login import login_required
 from flask_login import login_user, current_user
+import json
 
 
 logements_bp = Blueprint('logements', __name__)
