@@ -14,9 +14,9 @@
   <form class="form-horizontal" role="form" method ="POST" action =""> 
   <div class="form-control-static">
     <!-- {{form.hidden_tag() }} -->
-    {{ form.mdp.label }}
+    <p>{{ form.mdp.label }}</P>
     {{ form.mdp(size=50, class_="form-control", placeholder ="Votre mot de passe") }}
-    {{ form.valider.label }}
+    <p>{{ form.valider.label }}</p>
     {{ form.valider(size=50, class_="form-control", placeholder ="Confirmation") }}
   </div>
 

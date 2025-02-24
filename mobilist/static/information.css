@@ -1,11 +1,10 @@
-
 .apropos {
     background-color: #612bb7;
     display: block;
     width:100%;
     text-align: center;
     padding: 2%;
-    font-size: 50px;  
+    font-size: 50px;
     color: white;
 }
 .paragraphe1 {
@@ -22,20 +21,29 @@
 }
 
 main .paragraphe3 {
-    background-color: #d3d3d3;
-    position: absolute;
+
     top: 650px;
     display: block;
     text-align: right;
     padding: 2%;
 }
+
 p {
     font-size: larger;
 }
+
 h1 {
     font-size: 40px;
     margin: 2px;
 }
+
+.inscrire {
+    position: relative;
+    left: 27%;
+
+    text-align: center;
+}
+
 hr {
     color: lightgray;
 }
