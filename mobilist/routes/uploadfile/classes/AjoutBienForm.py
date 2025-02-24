@@ -8,7 +8,6 @@ from .UploadFileForm import UPLOAD_FOLDER_JUSTIFICATIF
 from flask_login import login_user , current_user, AnonymousUserMixin
 
 
-
 class AjoutBienForm(FlaskForm):
     """
     Formulaire permettant d'ajouter un bien
