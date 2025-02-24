@@ -15,16 +15,28 @@ from hashlib import sha256
 from flask_login import login_user , current_user
 from flask import request
 from mobilist.exception import * 
+from flask_login import logout_user
+
 
 from flask import (flash, render_template, redirect, render_template, url_for)
 
 from flask import Blueprint
 
 
-# Route pour la page de réinitialisation du mot de passe
 bp = Blueprint('login', __name__)
+
+
 @bp.route("/forgotPassword/setPassword", methods=["POST", "GET"])
-def set_password_page():
+def set_password_page() -> str:
+    """
+    Fonction qui permet à l'utilisateur de mettre à jour son mots de passe
+
+    Returns:
+        str:
+            - Si le token est invalide ou expiré, renvoie la page d'accès non autorisé (401)
+            - Si le token est valide et le formulaire soumis avec succès, redirige vers la page d'accueil
+            - Sinon affiche la page de réinitialisation du mot de passe
+    """
     valid_access = False
     if request.args.get("token"):
         token = request.args.get("token")  # Vérifie si un token est présent dans l'URL
@@ -99,7 +111,15 @@ def send_change_pwd_email(mail, token) -> bool:
 
 
 @bp.route("/forgotPassword/", methods=["POST", "GET"])
-def page_oublie():
+def page_oublie() -> str:
+    """
+    Fonction qui permet d'envoyer un lien de réinitialisation de mot de passe
+
+    Returns:
+        str:
+            - Si le formulaire n'a pas encore été soumis, affiche la page pour demander la réinitialisation du mot de passe
+            - Si un e-mail a été soumis, affiche une page de confirmation d'envoi du lien de réinitialisation ou une page d'erreur
+    """
     form = ResetForm()
     tentative = None
     if form.is_submitted():
@@ -124,7 +144,15 @@ def page_oublie():
         return render_template("envoi_email.html", email=form.email.data)
 
 @bp.route("/modif_mdp/", methods =("POST" ,"GET",))
-def modif_mdp():
+def modif_mdp() -> str:
+    """
+    Fonction qui permet à l'utilisateur de modifier son mot de passe
+
+    Returns:
+        str: 
+            - Si le formulaire est soumis et que le mot de passe est mis à jour, l'utilisateur est redirigé vers la page de son compte
+            - Si une erreur se produit, la page de modification est renvoyée
+    """
     form = ModificationForm()
     if request.method == "POST":
         print("submit")
@@ -143,7 +171,16 @@ def modif_mdp():
         return redirect(url_for('mon_compte'))
     return render_template("mon-compte.html", form=form)
 
-def hash_password(password):
+def hash_password(password) -> str:
+    """
+    Fonction qui prend un mot de passe en texte brut, et renvoit son hachage avec l'algorithme SHA-256
+
+    Args:
+        password (str) : le mot de passe à hacher
+
+    Returns:
+        str : le hachage du mot de passe sous forme de chaîne hexadécimale
+    """
     m = sha256()
     m.update(password.encode())
     return m.hexdigest()
@@ -151,6 +188,14 @@ def hash_password(password):
 
 @bp.route("/login/", methods =("GET","POST" ,))
 def login() -> str:
+    """
+    Fonction qui permet à un utilisateur de se connecter via un formulaire de connexion
+
+    Returns:
+        str:
+            - Si l'utilisateur est authentifié avec succès, il est redirigé vers la page demandée
+            - Si l'utilisateur échoue à s'authentifier, il reste sur la page de connexion avec un message d'erreur
+    """
     f = LoginForm()
     if not f.is_submitted():
         f.next.data = request.args.get("next")
@@ -167,15 +212,25 @@ def login() -> str:
     "connexion.html",
     form=f,mdp=True)
 
-from flask_login import logout_user
 @bp.route("/logout/")
 def logout():
+    """
+    Déconnecte l'utilisateur actuel et le redirige vers la page d'accueil
+    """
     logout_user()
     return redirect(url_for('home'))
 
 
 @bp.route("/inscription/", methods=("GET", "POST",))
 def inscription():
+    """
+    Fonction qui permet à un utilisateur de s'inscrire via le formulaire d'inscription
+   
+    Returns:
+        str: 
+            - Si le formulaire est soumis et que l'inscription réussit, l'utilisateur est redirigé vers la page d'accueil connecté
+            - Si l'utilisateur existe déjà, il reste sur la page d'inscription avec un message d'erreur
+    """
     f = InscriptionForm()
     if not f.is_submitted():
         f.next.data = request.args.get("next")
