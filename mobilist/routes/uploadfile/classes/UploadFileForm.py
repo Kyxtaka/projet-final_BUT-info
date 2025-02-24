@@ -1,4 +1,4 @@
-
+# Importations de modules
 from flask_wtf import FlaskForm
 from wtforms import *
 from PyPDF2 import PdfReader
@@ -23,6 +23,7 @@ class UploadFileForm(FlaskForm):
 
     Methods :
         __init__ : Constructeur de la classe, initialise le formulaire
+        
         validate_file_format : Validation pour vérifier que le fichier importé a un format autorisé (PDF, PNG, JPG et JPEG), 
                                et que la longueur du nom est moins de 50 caractères
 
