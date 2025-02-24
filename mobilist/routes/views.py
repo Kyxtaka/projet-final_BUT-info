@@ -27,6 +27,7 @@ import webbrowser
 nlp = spacy.load("fr_core_news_md")
 
 from .PDF.generatePDF import *
+from .biens.biens import *
 from .logements.logements import *
 from .login.classes.ModificationForm import ModificationForm
 
@@ -56,21 +57,6 @@ def accueil_connexion():
             return generate_pdf_tous_logements(proprio,logements)
     return render_template("accueil_2.html", infos=infos[:4], justifies=a_justifier[:4])
     
-def biens():
-    biens, justifies = User.get_biens_by_user(current_user.mail)
-    infos = []
-    for elem in biens:
-        for j in range(len(elem)):
-            bien = elem[j]
-            justif = bien.get_justif(bien.id_bien)
-            if justif == None:
-                justif= "Aucun"
-            infos.append([bien.nom_bien, bien.get_nom_logement_by_bien(bien.id_bien).nom_logement, bien.get_nom_piece_by_bien(bien.id_bien).nom_piece, str(bien.id_bien),justif])
-    a_justifier = []
-    for justifie in justifies:
-        a_justifier.append([justifie.nom_bien, justifie.get_nom_logement_by_bien(justifie.id_bien).nom_logement, justifie.get_nom_piece_by_bien(justifie.id_bien).nom_piece, str(justifie.id_bien)])
-    return infos, a_justifier
-
 @app.route("/information")
 def information():
     return render_template("information.html")
@@ -79,45 +65,6 @@ def information():
 def services():
     return render_template("services.html")
 
-# Endpoint pour la page d'ajout de logement
-# utilise la methode POST pour l'envoi de formulaire
-# utilisation du json pour la reponse (standard pour les API)
-# Permet de recuperer les pieces d'un logement
-@app.route("/get_pieces/<int:logement_id>")
-@login_required
-def get_pieces(logement_id):
-    pieces = Piece.query.filter_by(id_logement=logement_id).all()
-    pieces_data = [{"id": piece.get_id_piece(), "name": piece.get_nom_piece()} for piece in pieces]
-    return jsonify({"pieces": pieces_data})
-
-
-@app.route("/ensemblebiens/", methods=["GET"])
-@login_required
-def ensemble_biens():
-    info, justifie = biens()
-    return render_template("ensemble_biens.html", infos=info, justifies=justifie)
-    
-
-@app.route("/simulation/", methods =("GET","POST" ,))
-def simulation():
-    proprio = Proprietaire.query.get(current_user.id_user)
-    logements = []
-    for logement in proprio.logements:
-        logements.append(logement)
-    logement_id = request.form.get('logement_id')
-    sinistre_annee = request.form.get('sinistre_annee')
-    sinistre_type = request.form.get('sinistre_type')
-
-    # Message d'erreur si tous les champs ne sont pas sélectionnés
-    if request.method == "POST":
-        if not logement_id or not sinistre_annee or not sinistre_type:
-            message = "Veuillez sélectionner tous les champs."
-            return render_template("simulation.html", logements=logements,
-                                   message=message, logement_id=logement_id,
-                                   sinistre_annee=sinistre_annee,
-                                   sinistre_type=sinistre_type)
-        return generate_pdf(proprio,logement_id,sinistre_annee,sinistre_type)
-    return render_template("simulation.html",logements=logements)
 
 @app.route("/mon-compte/", methods =("POST" ,"GET",))
 def mon_compte():
@@ -130,22 +77,6 @@ def mon_compte():
         flash("Vos informations ont été mises à jour avec succès.", "success")
         return redirect(url_for('mon_compte'))
     return render_template("mon-compte.html", form=form)
-
-
-@app.route("/mesBiens/", methods =["GET"])
-def mesBiens():
-    logement_id = request.args.get("logement")
-    proprio = Proprietaire.query.get(current_user.id_user)
-    logements = []
-    for logement in proprio.logements:
-        logements.append(logement)
-    if logement_id:
-        logement_actuel = int(logement_id)
-        pieces = Piece.query.filter_by(id_logement=logement_actuel).all()
-    else:
-        logement_actuel = None
-        pieces = []
-    return render_template("mesBiens.html",logements=logements,logement_id=logement_id,pieces=pieces,logement_actuel=logement_actuel)
 
 
 @app.route("/test/")

@@ -1,17 +1,17 @@
 {% extends "accueil_2.html" %}
 {% block styles %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='mesBiens.css')}}">
-<!-- Bootstrap CSS -->
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='mesBiens.css')}}">
+{{ super() }}
+<!-- Bootstrap CSS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="mesBiens">
     <div class="bandeau">
         <h2>Vos biens répertoriés par pièces</h2>
-        <form method="GET" action="{{ url_for('mesBiens') }}">
+        <form method="GET" action="{{ url_for('biens.mesBiens') }}">
             <div class="choix_logement">
                 <select name="logement" id="logement-select" onchange="this.form.submit()">
                     <option value=""> Choisissez un logement </option>

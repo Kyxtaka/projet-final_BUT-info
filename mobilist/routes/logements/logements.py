@@ -167,3 +167,11 @@ def link_logement_owner(logement: Logement, proprio: Proprietaire):
         print("Erreur lors de la liaison du logement au propriétaire")
         print(e)
     return success
+
+
+@logements_bp.route("/get_pieces/<int:logement_id>")
+@login_required
+def get_pieces(logement_id):
+    pieces = Piece.query.filter_by(id_logement=logement_id).all()
+    pieces_data = [{"id": piece.get_id_piece(), "name": piece.get_nom_piece()} for piece in pieces]
+    return jsonify({"pieces": pieces_data})
