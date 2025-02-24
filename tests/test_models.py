@@ -1,16 +1,16 @@
 import unittest
 
-from .mobilist.models.classes.User import User
-from .mobilist.models.classes.TypeBien import TypeBien
-from .mobilist.models.classes.Proprietaire import Proprietaire
-from .mobilist.models.classes.Logement import Piece
-from .mobilist.models.classes.Logement import LogementType
-from .mobilist.models.classes.Logement import Logement
-from .mobilist.models.classes.Justificatif import Justificatif
-from .mobilist.models.classes.Categorie import Categorie
-from .mobilist.models.classes.Logement import Bien
-from .mobilist.models.classes.Logement import AVOIR
-from .mobilist.models.classes.Avis import Avis
+from mobilist.models.classes.User import User
+from mobilist.models.classes.TypeBien import TypeBien
+from mobilist.models.classes.Proprietaire import Proprietaire
+from mobilist.models.classes.Logement import Piece
+from mobilist.models.classes.Logement import LogementType
+from mobilist.models.classes.Logement import Logement
+from mobilist.models.classes.Justificatif import Justificatif
+from mobilist.models.classes.Categorie import Categorie
+from mobilist.models.classes.Logement import Bien
+from mobilist.models.classes.Logement import AVOIR
+from mobilist.models.classes.Avis import Avis
 
 from flask import Flask
 from flask_sqlalchemy  import SQLAlchemy
@@ -18,6 +18,7 @@ from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 import datetime
 from flask import session
+from mobilist.models.models import set_base
 import pytest
 # from .secure_constante import *
 import os
