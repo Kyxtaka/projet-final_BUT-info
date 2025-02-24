@@ -8,7 +8,9 @@
     left: 0px;
     top: 0px;
 }
-
+.nav-link{
+    padding:0;
+}
 .mesBiens .bandeau {
     padding-top: 1em;
     background-color: #e2e6eb;

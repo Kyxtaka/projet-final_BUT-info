@@ -18,12 +18,12 @@
   <section class="ajout">
     <article class="box-ajout">
       <div>
-        <a href="{{ url_for('ajout_bien') }}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
-        <a class="ajout-elem" href="{{ url_for('ajout_bien') }}">Ajouter un bien</a>
+        <a href="{{ url_for('upload.ajout_bien') }}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
+        <a class="ajout-elem" href="{{ url_for('upload.ajout_bien') }}">Ajouter un bien</a>
       </div>
       <div>
-        <a href="{{ url_for('ajout_logement')}}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
-        <a class="ajout-elem" href="{{ url_for('ajout_logement')}}">Ajouter un logement</a>
+        <a href="{{ url_for('logements.ajout_logement')}}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
+        <a class="ajout-elem" href="{{ url_for('logements.ajout_logement')}}">Ajouter un logement</a>
       </div>
     </article>
   </section>
@@ -54,7 +54,7 @@
         </td>
         {% elif not (elem.isdigit()) %}
         <td> 
-          <a href="{{ url_for('modifier_bien', id=bien[3])}}"> 
+          <a href="{{ url_for('upload.modifier_bien', id=bien[3])}}"> 
             {{ elem }} 
           </a> 
         </td>
@@ -64,7 +64,7 @@
       {% endfor %}
     </tbody>
     </table>
-    <a href="{{ url_for('ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
+    <a href="{{ url_for('biens.ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
   </section>
   <section class="a_justifier">
     <h3>À justifier </h3>
@@ -80,35 +80,22 @@
     <tbody>
       {% for bien in justifies %}
       <tr>
-        {% if bien[4] == elem %}
-        <td> 
-          <a href="{{ url_for('open_fic', url=elem.URL) }}"> 
-            {% if elem == 'Aucun' %}
-              {{ elem }} 
-            {% else %}
-              {{ elem.nom_justif}}
-            {% endif %}
-          </a> 
-        </td>
-        {% elif not (elem.isdigit()) %}
-        <td> 
-          <a href="{{ url_for('modifier_bien', id=bien[3])}}"> 
-            {{ elem }} 
-          </a> 
-        </td>
+        {% for elem in bien %}
+        {% if not (elem.isdigit()) %}
+        <td> {{ elem }}</td>
         {% endif%}
+        {% endfor %}
       </tr>
       {% endfor %}
     </tbody>
     </table>
-    <a href="{{ url_for('ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
+    <a href="{{ url_for('biens.ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
   </section>
   <section class="telecharger">
     <form method="POST" action="/accueil-connexion/">
       <p>Votre inventaire ici</p>
       <button type="submit" name="bouton_telecharger" class="download-btn">TÉLÉCHARGER</button>
     </form>
-    <a href="{{ url_for('ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
   </section>
 {% endblock %}
 

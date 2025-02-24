@@ -1,5 +1,16 @@
 from .app import app, db
-from .models import *
+
+from .models.classes.User import User
+from .models.classes.TypeBien import TypeBien
+from .models.classes.Proprietaire import Proprietaire
+from .models.classes.Logement import Piece
+from .models.classes.Logement import LogementType
+from .models.classes.Logement import Logement
+from .models.classes.Justificatif import Justificatif
+from .models.classes.Categorie import Categorie
+from .models.classes.Logement import Bien
+from .models.classes.Logement import AVOIR
+from .models.classes.Avis import Avis
 from datetime import *
 import yaml
 import click
@@ -23,6 +34,7 @@ def loaddb(filename):
             case 'PROPRIETAIRE':
                 new_proprietaire = Proprietaire(
                     id_proprio = entity['ID_PROPRIETAIRE'], 
+                    mail = entity['MAIL'],
                     nom_proprio = entity['NOM'],
                     prenom_proprio = entity['PRENOM']
                 )
@@ -105,20 +117,23 @@ def newuser(mail, password, role):
     create_user(mail, password, role)
     
 def create_user(mail, password, role):
-    from.models import User
+    from .models.classes.User import User
     from hashlib import sha256
     m = sha256()
     m.update(password.encode())
-    id = None
+    id_p = None
     if role != "admin":
         proprio = Proprietaire.get_by_mail(mail)
         if proprio is None:
-            id = int(Proprietaire.max_id())+1
-            proprio = Proprietaire(id_proprio=id, mail = mail, nom_proprio = "temp", prenom_proprio = "temp")
+            max_p = Proprietaire.max_id()
+            if max_p == None:
+                max_p = 0
+            id_p = int(max_p)+1
+            proprio = Proprietaire(id_proprio=id_p, mail = mail, nom_proprio = "temp", prenom_proprio = "temp")
             db.session.add(proprio)
         else: 
-            id = proprio.get_id_proprio()
-    u = User(mail = mail, password = m.hexdigest(), role = role, id_user = id)
+            id_p = proprio.get_id_proprio()
+    u = User(mail = mail, password = m.hexdigest(), role = role, id_user = id_p)
     db.session.add(u)
     db.session.commit()
      
@@ -126,7 +141,7 @@ def create_user(mail, password, role):
 @click.argument('mail')
 @click.argument('password')
 def passwd(mail, password):
-    from.models import User
+    from .models.classes.User import User
     from hashlib import sha256
     m = sha256()
     m.update(password.encode())
