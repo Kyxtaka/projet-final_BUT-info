@@ -327,7 +327,10 @@ def biens():
     for elem in biens:
         for j in range(len(elem)):
             bien = elem[j]
-            infos.append([bien.nom_bien, bien.get_nom_logement_by_bien(bien.id_bien).nom_logement, bien.get_nom_piece_by_bien(bien.id_bien).nom_piece, str(bien.id_bien)])
+            justif = bien.get_justif(bien.id_bien)
+            if justif == None:
+                justif= "Aucun"
+            infos.append([bien.nom_bien, bien.get_nom_logement_by_bien(bien.id_bien).nom_logement, bien.get_nom_piece_by_bien(bien.id_bien).nom_piece, str(bien.id_bien),justif])
     a_justifier = []
     for justifie in justifies:
         a_justifier.append([justifie.nom_bien, justifie.get_nom_logement_by_bien(justifie.id_bien).nom_logement, justifie.get_nom_piece_by_bien(justifie.id_bien).nom_piece, str(justifie.id_bien)])
@@ -370,7 +373,8 @@ def inscription():
             return render_template("inscription.html", form=f, present=True)
         create_user(f.mail.data, f.password.data, "proprio")
         User.modifier(f.mail.data, f.nom.data, f.prenom.data)
-        return render_template("accueil_2.html")
+        # return render_template("accueil_2.html")
+        return redirect(url_for("accueil_connexion"))
     return render_template(
     "inscription.html", form=f, present=False)
 
