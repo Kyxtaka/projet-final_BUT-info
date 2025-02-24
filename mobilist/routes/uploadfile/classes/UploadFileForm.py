@@ -15,18 +15,36 @@ UPLOAD_FOLDER_JUSTIFICATIF = os.path.join(
 )
 
 class UploadFileForm(FlaskForm):
+    """
+    Formulaire permettant à un utilisateur d'importer un fichier
+
+    Attributes :
+        file (FileField) : Champ pour importer un fichier
+
+    Methods :
+        __init__ : Constructeur de la classe, initialise le formulaire
+        validate_file_format : Validation pour vérifier que le fichier importé a un format autorisé (PDF, PNG, JPG et JPEG), 
+                               et que la longueur du nom est moins de 50 caractères
+
+        validate_file_size : Validation pour vérifier que la taille du fichier importé ne dépasse pas 1 Mo
+
+        create_justificatif_bien : Sécurise le nom du fichier importé, et le sauvegarde dans le dossier indiqué
+
+        lire_pdf : Lit un fichier PDF et extrait son texte
+    """
     file = FileField('File', validators=[DataRequired()])
 
     def __init__(self,*args, **kwargs):
+        """
+        Constructeur de la classe, initialise le formulaire
+        """
         super(UploadFileForm, self).__init__(*args, **kwargs)
-        #########################################################
-        # print(f"**********************************\n {self.file.validators} \n**********************************")
-        # if self.validate_file_format not in self.file.validators:
-        #     self.file.validators = (self.validate_file_format,) +  tuple(self.file.validators)
-        # print(f"**********************************\n {self.file.validators} \n**********************************")
-        #########################################################
+
 
     def validate_file_format(self, form, field):
+        """
+        Vérifie que le fichier importé a un format autorisé (PDF, PNG, JPG et JPEG), et que la longueur de son nom ne dépasse pas 50 caractères
+        """
         filename = field.data
         print("form:", form)
         print("field:", field)
@@ -41,7 +59,10 @@ class UploadFileForm(FlaskForm):
         else:
             raise ValidationError("Le fichier est vide")
 
-    def validate_file_size(self, form, field):
+    def validate_file_size(self, field):
+        """
+        Vérifie si la taille du fichier importé ne dépasse pas 1 Mo
+        """
         file = field.data
         if file:
             if len(file.read()) > 1000000:
@@ -50,6 +71,9 @@ class UploadFileForm(FlaskForm):
             raise ValidationError("Le fichier est vide")
 
     def create_justificatif_bien(self):
+        """
+        Sécurise le nom du fichier importé, puis le sauvegarde dans le répertoire spécifié par 'UPLOAD_FOLDER_JUSTIFICATIF'
+        """
         try:
             file = self.file.data
             file.save(os.path.join(UPLOAD_FOLDER_JUSTIFICATIF, secure_filename(file.filename)))
@@ -59,6 +83,15 @@ class UploadFileForm(FlaskForm):
 
 
     def lire_pdf(self,fichier):
+        """
+        Lit un fichier PDF et extrait son texte
+
+        Attributes : 
+            fichier (str) : le chemin du fichier PDF
+
+        Returns : 
+            texte (str) : le texte extrait
+        """
         reader = PdfReader(fichier)
         texte = ""
         for page in reader.pages:
