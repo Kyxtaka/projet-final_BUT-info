@@ -18,7 +18,7 @@ from .commands import create_user
 from .models import *
 from .exception import *
 from flask_wtf import FlaskForm
-from wtforms import * #import de tous les champs
+from wtforms import *
 from wtforms.validators import DataRequired
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import MultiDict
@@ -31,15 +31,14 @@ from PyPDF2 import PdfReader
 import ast
 import webbrowser
 nlp = spacy.load("fr_core_news_md")
-from reportlab.pdfgen import canvas #pip install reportlab
+from reportlab.pdfgen import canvas
 from datetime import datetime, date
 from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-# pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
 
-#constante : chemin d'acces au dossier de telechargement des justificatifs
+# constante : chemin d'accès au dossier de téléchargement des justificatifs
 UPLOAD_FOLDER_JUSTIFICATIF = os.path.join(
     os.path.abspath(os.path.dirname(__file__)),
     app.config['UPLOAD_FOLDER'],
@@ -69,7 +68,7 @@ class LoginForm(FlaskForm):
         id (HiddenField) : Champ caché pour l'identifiant de l'utilisateur 
 
     Methods :
-        get_authenticated_user() : Vérifie l'authenticité de l'utilisateur
+        get_authenticated_user() : Vérifie si l'utilisateur existe dans la base de données
 
         Renvoie l'utilisateur authentifié si les informations sont valides, sinon None
     """
@@ -77,9 +76,10 @@ class LoginForm(FlaskForm):
     password = PasswordField('Mot de passe')
     next = HiddenField()
     id = HiddenField()
+
     def get_authenticated_user(self):
         """
-        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail, et hache le mots de passe
+        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail
 
         Returns : 
             user (User) ou None: l'utilisateur authentifié si le mot de passe est correct, sinon None
@@ -93,13 +93,34 @@ class LoginForm(FlaskForm):
         return user if passwd == user.password else None
 
 class IncrisptionForm(FlaskForm):
-    """"""
+    """
+    Formulaire d'inscription pour un utilisateur
+
+    Attributes :
+        nom (StringField) : Champ pour le nom
+        prenom (StringField) : Champ pour le prénom
+        mail (StringField) : Champ pour l'adresse e-mail
+        password (PasswordField) : Champ pour le mot de passe
+        next (HiddenField) : Champ caché pour la page vers laquelle rediriger après l'inscription
+
+    Methods :
+        get_authenticated_user() : Vérifie si l'utilisateur existe déjà dans la base de données
+
+        Renvoie l'utilisateur s'il existe, sinon None
+    """
     nom = StringField('Nom')
     prenom = StringField('Prénom')
     mail = StringField('Adresse e-mail')
     password = PasswordField('Mot de passe')
     next = HiddenField()
+
     def get_authenticated_user(self):
+        """
+        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail
+
+        Returns : 
+            user (User) ou None: l'utilisateur authentifié si le mot de passe est correct, sinon None
+        """
         user = User.query.get(self.mail.data)
         if user is None:
             return None
