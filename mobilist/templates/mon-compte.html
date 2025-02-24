@@ -93,7 +93,7 @@
 
 <div id="menu-mdp">
   <h2> Modification du mot de passe </h2>
-  <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('modif_mdp') }}">
+  <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('login.modif_mdp') }}">
     {{ form.hidden_tag() }}
     <div class="form-control-static">
       <p class="content" >{{ form.mdp_actuel.label }}</p>

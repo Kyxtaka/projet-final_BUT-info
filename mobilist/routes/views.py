@@ -6,17 +6,19 @@ from flask import (
     render_template, url_for, 
     render_template_string
     )
-from .app import app
-from .secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
+from mobilist.app import app
+from mobilist.secure_constante import GOOGLE_SMTP, GOOGLE_SMTP_PWD, GOOGLE_SMTP_USER
+from mobilist.models import *
+from mobilist.exception import *
+from mobilist.commands import create_user
+from .login import login_view
+
 from wtforms import PasswordField
-from .models import User
 from hashlib import sha256
 from flask_login import login_user , current_user, AnonymousUserMixin
 from flask import request
 from flask_login import login_required
-from .commands import create_user
-from .models import *
-from .exception import *
+from mobilist.exception import *
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired
@@ -37,6 +39,10 @@ from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from .login.classes.ModificationForm import ModificationForm
+
+
+# pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
 
 # constante : chemin d'accès au dossier de téléchargement des justificatifs
 UPLOAD_FOLDER_JUSTIFICATIF = os.path.join(
@@ -57,115 +63,6 @@ def accueil():
 def avis():
     return render_template("avis.html")
 
-class LoginForm(FlaskForm):
-    """
-    Formulaire de connexion pour un utilisateur 
-
-    Attributes :
-        mail (StringField) : Champ pour l'adresse e-mail 
-        password (PasswordField) : Champ pour le mot de passe
-        next (HiddenField) : Champ caché pour la page vers laquelle rediriger après la connexion
-        id (HiddenField) : Champ caché pour l'identifiant de l'utilisateur 
-
-    Methods :
-        get_authenticated_user() : Vérifie si l'utilisateur existe dans la base de données
-
-        Renvoie l'utilisateur authentifié si les informations sont valides, sinon None
-    """
-    mail = StringField('Adresse e-mail')
-    password = PasswordField('Mot de passe')
-    next = HiddenField()
-    id = HiddenField()
-
-    def get_authenticated_user(self):
-        """
-        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail
-
-        Returns : 
-            user (User) ou None: l'utilisateur authentifié si le mot de passe est correct, sinon None
-        """
-        user = User.query.get(self.mail.data)
-        if user is None:
-            return None
-        m = sha256()
-        m.update(self.password.data.encode())
-        passwd = m.hexdigest()
-        return user if passwd == user.password else None
-
-class InscriptionForm(FlaskForm):
-    """
-    Formulaire d'inscription pour un utilisateur
-
-    Attributes :
-        nom (StringField) : Champ pour le nom
-        prenom (StringField) : Champ pour le prénom
-        mail (StringField) : Champ pour l'adresse e-mail
-        password (PasswordField) : Champ pour le mot de passe
-        next (HiddenField) : Champ caché pour la page vers laquelle rediriger après l'inscription
-
-    Methods :
-        get_authenticated_user() : Vérifie si l'utilisateur existe déjà dans la base de données
-
-        Renvoie l'utilisateur s'il existe, sinon None
-    """
-    nom = StringField('Nom')
-    prenom = StringField('Prénom')
-    mail = StringField('Adresse e-mail')
-    password = PasswordField('Mot de passe')
-    next = HiddenField()
-
-    def get_authenticated_user(self):
-        """
-        Recherche l'utilisateur dans la base de données à partir de son adresse e-mail
-
-        Returns : 
-            user (User) ou None: l'utilisateur authentifié si le mot de passe est correct, sinon None
-        """
-        user = User.query.get(self.mail.data)
-        if user is None:
-            return None
-        m = sha256()
-        m.update(self.password.data.encode())
-        passwd = m.hexdigest()
-        return user if passwd == user.password else None
-
-class ResetPasswordFrom(FlaskForm):
-    """
-    Formulaire de réinitialisation du mot de passe
-
-    Attributes :
-        mdp (PasswordField) : Champ pour le nouveau mot de passe
-        valider (PasswordField) : Champ de confirmation pour le nouveau mot de passe
-    """
-    mdp = PasswordField("Mot de passe")
-    valider = PasswordField("Confirmer mot de passe")
-
-class ModificationForm(FlaskForm):
-    """
-    Formulaire de modification du mot de passe
-
-    Attributes :
-        nom (StringField) : Champ pour le nom de l'utilisateur
-        prenom (StringField) : Champ pour le prénom de l'utilisateur
-        mdp_actuel (PasswordField) : Champ pour le mot de passe actuel de l'utilisateur
-        mdp (PasswordField) : Champ pour le nouveau mot de passe
-        mdp_confirm (PasswordField) : Champ de confirmation pour le nouveau mot de passe
-    """
-    nom = StringField('Votre Nom', validators=[DataRequired()])
-    prenom = StringField('Votre Prénom', validators=[DataRequired()])
-    mdp_actuel = PasswordField('Mot de passe actuel', validators=[DataRequired()])
-    mdp = PasswordField('Nouveau mot de passe', validators=[DataRequired()])
-    mdp_confirm = PasswordField('Confirmer le mot de passe', validators=[DataRequired()])
-    different = False
-
-class ResetForm(FlaskForm):
-    """
-    Formulaire de réinitialisation du mot de passe, demande une adresse e-mail pour envoyer un lien de réinitialisation
-
-    Attributes :
-        email (StringField) : Champ pour saisir l'adresse e-mail
-    """
-    email = StringField("Votre email")
 
 
 class UploadFileForm(FlaskForm):
@@ -459,48 +356,6 @@ def biens():
     for justifie in justifies:
         a_justifier.append([justifie.nom_bien, justifie.get_nom_logement_by_bien(justifie.id_bien).nom_logement, justifie.get_nom_piece_by_bien(justifie.id_bien).nom_piece, str(justifie.id_bien)])
     return infos, a_justifier
-
-@app.route("/login/", methods =("GET","POST" ,))
-def login() -> str:
-    f = LoginForm()
-    if not f.is_submitted():
-        f.next.data = request.args.get("next")
-    elif f.validate_on_submit():
-        user = f.get_authenticated_user()
-        if user:
-            login_user(user)
-            next = f.next.data or url_for("accueil_connexion")
-            return redirect(next)
-        return render_template(
-        "connexion.html",
-        form=f,mdp=False)
-    return render_template(
-    "connexion.html",
-    form=f,mdp=True)
-
-from flask_login import logout_user
-@app.route("/logout/")
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-
-@app.route("/inscription/", methods=("GET", "POST",))
-def inscription():
-    f = InscriptionForm()
-    if not f.is_submitted():
-        f.next.data = request.args.get("next")
-    elif f.validate_on_submit():
-        user = f.get_authenticated_user()
-        if user:
-            login_user(user)
-            return render_template("inscription.html", form=f, present=True)
-        create_user(f.mail.data, f.password.data, "proprio")
-        User.modifier(f.mail.data, f.nom.data, f.prenom.data)
-        # return render_template("accueil_2.html")
-        return redirect(url_for("accueil_connexion"))
-    return render_template(
-    "inscription.html", form=f, present=False)
 
 @app.route("/information")
 def information():
@@ -806,30 +661,6 @@ def mon_compte():
         return redirect(url_for('mon_compte'))
     return render_template("mon-compte.html", form=form)
 
-@app.route("/modif_mdp/", methods =("POST" ,"GET",))
-def modif_mdp():
-    form = ModificationForm()
-    if request.method == "POST":
-        print("submit")
-        user = User.get_by_mail(current_user.mail)
-        if hash_password(request.form.get('mdp_actuel')) == user.get_password():
-            print("check passed")
-            test = request.form.get('mdp')
-            confirmation = request.form.get('mdp_confirm')
-            if test == confirmation :
-                print("same")
-                user.set_password(test)
-                db.session.commit()
-                flash("Votre mot de passe a été mis à jour avec succès.", "success")
-            else :
-                form.different = True
-        return redirect(url_for('mon_compte'))
-    return render_template("mon-compte.html", form=form)
-
-def hash_password(password):
-    m = sha256()
-    m.update(password.encode())
-    return m.hexdigest()
 
 @app.route("/mesBiens/", methods =["GET"])
 def mesBiens():
@@ -846,94 +677,7 @@ def mesBiens():
         pieces = []
     return render_template("mesBiens.html",logements=logements,logement_id=logement_id,pieces=pieces,logement_actuel=logement_actuel)
 
-@app.route("/forgotPassword/", methods=["POST", "GET"])
-def page_oublie():
-    form = ResetForm()
-    tentative = None
-    if form.is_submitted():
-        tentative = False
-        user = User.get_by_mail(form.email.data)
-        if user != None:
-            genrated_token = ChangePasswordToken(user.get_id()) # generation du token avec validite de 10min par default
-            try: 
-                db.session.add(genrated_token)
-                db.session.commit()
-                tentative = True
-                status = send_change_pwd_email(form.email.data, genrated_token.get_token())
-            except Exception as e:
-                print("Erreur lors de la sauvegarde du token")
-                print(e)
-                tentative = True
-    if tentative is None:
-        return render_template("mdp_oublie.html", tentative=False, form=form)
-    elif not tentative:
-        return render_template("mdp_oublie.html", tentative=True, form=form)
-    else:
-        return render_template("envoi_email.html", email=form.email.data)
 
-@app.route("/forgotPassword/setPassword", methods=["POST", "GET"])
-def set_password_page():
-    valid_access = False
-    if request.args.get("token"):
-        token = request.args.get("token")
-        tokenObject = ChangePasswordToken.get_by_token(token)
-        if tokenObject is None:
-            valid_access = False
-        else:
-            valid_access = not tokenObject.is_expired()
-            print(f"token: {token}")
-            print(f"is expired: {tokenObject.is_expired()}")
-            print(f"valid_access: {valid_access}")
-    if not valid_access:
-        return render_template(f"unauthorized_access.html"), 401
-    user = User.get_by_mail(ChangePasswordToken.get_by_token(token).get_email())
-    form = ResetPasswordFrom()
-    if form.is_submitted():
-        if form.mdp.data == form.valider.data:
-            user.set_password(form.mdp.data)
-            tokenObject.set_used()
-            db.session.commit()
-            return redirect(url_for('home'))
-    return render_template("reinitialiser_mdp.html", form=form, tentative=False, token_access=tokenObject.get_token())
-
-def send_change_pwd_email(mail, token) -> bool:
-    sent_status = False
-    # email = "eexemple044@gmail.com"
-    # password = "ggzb gucf uynu djih"
-    email = GOOGLE_SMTP_USER
-    password = GOOGLE_SMTP_PWD
-    subject = "Mobilist - réinitialiser votre mot de passe"
-    protocol = "http"
-    domain = "127.0.0.1"
-    port = "5000"
-    generated_change_password_link = f"{protocol}://{domain}:{port}/forgotPassword/setPassword?token={token}"
-    body = f"""
-    Pour réinitialiser votre mot de passe Mobilist,
-    veuillez accéder à la page suivante : {generated_change_password_link}
-    Ce lien est à usage unique et expirera dans 10 minutes.
-    """
-    try:
-        # Configuration du serveur SMTP
-        server = smtplib.SMTP(GOOGLE_SMTP)
-        # server = smtplib.SMTP("smtp.gmail.com", 587) # server smtp de google
-        server.starttls() 
-        server.login(email, password)
-
-        msg = MIMEMultipart()
-        msg["From"] = email
-        msg["To"] = mail
-        msg["Subject"] = subject
-        msg.attach(MIMEText(body, "plain"))
-
-        server.sendmail(email, mail, msg.as_string())
-        print("Email envoyé avec succès !")
-        sent_status = True
-    except Exception as e:
-        print(f"Une erreur est survenue : {e}")
-        sent_status = False 
-    finally:
-        server.quit()
-        return sent_status
        
 @app.route("/logement/ajout", methods =["GET","POST"])
 def ajout_logement():
