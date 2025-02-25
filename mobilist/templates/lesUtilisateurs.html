@@ -42,5 +42,33 @@
     </div>
     {% endif %}
 
+    <div id="first-collumn" style="text-align: center"; >
+        <div>
+            <input type="hidden" id="type-form" name="type-form" value="ADD_UTILISATEUR" required>
+            <input type="hidden" id="utilisateurs-array" name="utilisateurs-array" value="" >
+        </div>
+        <div>
+            <label class="form-label" for="name">Nom :</label>
+            <input class="form-input" type="text" placeholder="Entrez le nom du utilisateur"  id="edit-name-input" name="nom" required>
+        </div>
+        <div>
+            <label class="form-label" for="type">Prénom:</label>
+            <input class="form-input" type="text" placeholder="Entrez le prénom du utilisateur"  id="edit-name-input" name="prenom" required>
+        </div>
+        <div>
+            <label class="form-label" for="address">Mail utilisateur:</label>
+            <input class="form-input" type="text" placeholder="Mail du utilisateur" id="edit-adress-input" name="mail" required>
+        </div>
+        <div>
+            <label class="form-label" for="description">Mots de passe utilisateur:</label>
+            <input class="form-input form-textarea" type="text" placeholder="Mots de passe du utilisateur" id="edit-description-input" name="motsdepasse" default="">
+        </div>
+        <div>
+            <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-piece-popup-form')">Ajouter utilisateur</button>
+        </div>
+    </div>
+    <div>
+
+
 </main>
 {% endblock %}
