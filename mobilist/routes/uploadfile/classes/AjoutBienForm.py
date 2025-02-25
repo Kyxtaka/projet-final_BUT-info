@@ -1,11 +1,17 @@
 # Importations de modules
 from flask_wtf import FlaskForm
 from wtforms import *
+from mobilist.models.classes.TypeBien import TypeBien
+from mobilist.models.classes.Categorie import Categorie
+from mobilist.models.classes.Logement import Piece
+from mobilist.models.classes.Proprietaire import Proprietaire
+
 from mobilist.models.models import *
 import os
 from wtforms.validators import DataRequired
 from .UploadFileForm import UPLOAD_FOLDER_JUSTIFICATIF
 from flask_login import login_user , current_user, AnonymousUserMixin
+
 
 
 class AjoutBienForm(FlaskForm):
