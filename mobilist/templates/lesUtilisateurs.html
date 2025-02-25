@@ -31,6 +31,10 @@
         {% endfor %}
     </div>
     {% else %}
+        <p>Aucun utilisateur trouvé pour ce nom.</p>
+    {% endif %}
+
+    {% if not res_recherche %}
     <div class="proprios">
         {% for personne in proprios %}
         <li> {{ personne.nom }} {{ personne.prenom }} </li>
