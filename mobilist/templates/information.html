@@ -4,6 +4,14 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='information.css')}}">
 {% endblock %}
 {% block content %}
+<script>
+    function showCard(yearID, buttonID) {
+        document.querySelectorAll('.card').forEach(div => {
+            div.classList.remove('visible');
+        });
+        document.getElementById(yearID).classList.add('visible');
+    }
+</script>
 <section class="about-mobilist">
     <div class="content-mobilist">
         <p> A propos de Mobilist </p>
@@ -16,7 +24,7 @@
             <button>Créez votre compte</button>
         </a>
     </div>
-    <img src="{{ url_for('static', filename='img/worker.jpg') }}" alt="illustration-worker">
+    <img src="{{ url_for('static', filename='img/content-mobilist.jpg') }}" alt="illustration-worker">
 </section>
 <section class="chiffres-clés">
     <div class="content-numbers">
@@ -44,34 +52,34 @@
     <div class="content-company">
         <p>Chez Inventis Tech</p>
         <h2> Notre histoire en quelques mots </h2>
-        <p id="paragraphe1">Fondée en 2020, Inventis Tech est une startup française spécialisée dans le développement d’applications innovantes pour la gestion et la protection du patrimoine personnel. 
+        <p class="paragraphe 1">Fondée en 2020, Inventis Tech est une startup française spécialisée dans le développement d’applications innovantes pour la gestion et la protection du patrimoine personnel. 
             Sa mission est de simplifier la digitalisation des inventaires pour garantir aux utilisateurs une tranquillité d’esprit en cas de vol, sinistre ou besoin administratif.
         </p>
-        <p id="paragraphe2">Avec une équipe de 30 experts en tech et assurance, Inventis Tech collabore avec des partenaires majeurs du secteur pour proposer une solution fiable et intuitive. 
+        <p class="paragraphe 2">Avec une équipe de 30 experts en tech et assurance, Inventis Tech collabore avec des partenaires majeurs du secteur pour proposer une solution fiable et intuitive. 
             Son engagement envers l’expérience utilisateur et la sécurité des données fait de Mobilist un acteur de référence dans la gestion numérique des biens.
         </p>
     </div>
 </section>
 <section class="chronologie">
     <p>Une expansion au fil des années...</p>
-    <h2>Notre parcours dans le temps</h2>
+    <h2>Un parcours dans le temps</h2>
     <div class="buttons-years">
         <ul>
-            <li><a><button>2020</button></a></li>
-            <li><a><button>2021</button></a></li>
-            <li><a><button>2022</button></a></li>
-            <li><a><button>2023</button></a></li>
-            <li><a><button>2024</button></a></li>
+            <li><a><button id="2020" class="btn 2020" onclick="showCard('year-2020', '2020')">2020</button></a></li>
+            <li><a><button id="2021" class="btn 2021" onclick="showCard('year-2021', '2021')">2021</button></a></li>
+            <li><a><button id="2022" class="btn 2022" onclick="showCard('year-2022', '2022')">2022</button></a></li>
+            <li><a><button id="2023" class="btn 2023" onclick="showCard('year-2023', '2023')">2023</button></a></li>
+            <li><a><button id="2024" class="btn 2024" onclick="showCard('year-2024', '2024')">2024</button></a></li>
         </ul>
     </div>
-    <div class="card year-2020">
+    <div class="card year-2020" id="year-2020">
         <h3>Création de l’Entreprise & Développement de Mobilist</h3>
         <ul>
             <li>🚀 Fondation d’Inventis Tech avec pour mission de digitaliser la gestion des biens personnels.</li>
             <li>📱 Développement de l’application Mobilist, avec une première version en phase bêta test auprès de 1 000 utilisateurs.</li>
         </ul>
     </div>
-    <div class="card year-2021">
+    <div class="card year-2021" id="year-2021">
         <h3>Lancement Officiel & Premiers Partenariats</h3>
         <ul>
             <li>📌 Lancement officiel de Mobilist sur iOS et Android.</li>
@@ -79,7 +87,7 @@
             <li>🔍 Ajout d’une fonctionnalité de reconnaissance automatique des objets via intelligence artificielle.</li>
         </ul>
     </div>
-    <div class="card year-2022">
+    <div class="card year-2022" id="year-2022">
         <h3>Expansion et Améliorations Majeures</h3>
         <ul>
             <li>🌍 Disponibilité de Mobilist dans 5 nouveaux pays européens (Belgique, Suisse, Espagne, Allemagne, Italie).</li>
@@ -87,7 +95,7 @@
             <li>🔄 Mise en place de l’option "Valeur avec vétusté" pour des estimations plus précises des biens.</li>
         </ul>
     </div>
-    <div class="card year-2023">
+    <div class="card year-2023" id="year-2023">
         <h3>Intelligence Artificielle et Partenariats Bancaires</h3>
         <ul>
             <li>🤖 Déploiement d’un assistant IA capable d’estimer la valeur d’un objet en scannant une simple photo.</li>
@@ -95,7 +103,7 @@
             <li>📊 Ajout d’un tableau de bord statistique pour suivre l’évolution de la valeur des biens en temps réel.</li>
         </ul>
     </div>
-    <div class="card year-2024">
+    <div class="card year-2024" id="year-2024">
         <h3>Sécurité et Automatisation Avancée</h3>
         <ul>
             <li>🔐 Authentification biométrique et chiffrement avancé des données pour une meilleure protection des utilisateurs.</li>
