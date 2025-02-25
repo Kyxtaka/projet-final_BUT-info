@@ -106,6 +106,14 @@ class Proprietaire(Base):
         max_id =  db.session.query(func.max(Proprietaire.id_proprio)).scalar()
         return max_id
 
+    @staticmethod
+    def get_all():
+        """Getter de tous les propriétaires
+
+        Returns:
+            list<Proprietaire>: tous les propriétaires
+        """
+        return Proprietaire.query.all()
 
     @staticmethod
     def get_by_mail(mail):
@@ -118,6 +126,18 @@ class Proprietaire(Base):
             Proprietaire: le propriétaire
         """
         return Proprietaire.query.filter_by(mail=mail).first()
+    
+    @staticmethod
+    def get_by_nom(nom):
+        """Getter des propriétaire par leur nom
+
+        Args:
+            nom (str): le nom
+
+        Returns:
+            List<Proprietaire>: la liste des propriétaires avec ce nom
+        """
+        return Proprietaire.query.filter_by(nom=nom).all()
     
     def delete(self):
         """Supprime un propriétaire et ses logements associés

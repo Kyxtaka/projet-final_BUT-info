@@ -10,11 +10,33 @@
 {% block content %}
 <div class="accueil-admin"> 
 <main>
-    <h2>Les utilisateurs de l'application</h2>
-
-    <
-    <div>
-
+    <h2>Gestion des utilisateurs de l'application</h2>
+    
+    <div class="recherche">
+        <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
+            {{ form.hidden_tag() }} 
+        <div class="form-control-static">
+            {{ form.champ(size=50, class_="form-control", placeholder="Rechercher un utilisateur par son nom") }}
+        </div>
+        <div class="form-control-static">
+            {{ form.recherche(class_="submit-button") }}
+        </div>
+        </form>
     </div>
+
+    {% if res_recherche %}
+    <div class="resultat">
+        {% for personne in res_recherche %}
+        <li> {{ personne.nom }} {{ personne.prenom }} </li>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="proprios">
+        {% for personne in proprios %}
+        <li> {{ personne.nom }} {{ personne.prenom }} </li>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 </main>
 {% endblock %}

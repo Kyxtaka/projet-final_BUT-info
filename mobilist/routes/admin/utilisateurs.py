@@ -9,6 +9,7 @@ from ...models.classes.Categorie import Categorie
 from ...models.classes.Logement import Bien
 from ...models.classes.Logement import AVOIR
 from ...models.classes.Avis import Avis
+from .classes.recherche import RechercheForm
 import json
 
 from flask import Blueprint
@@ -26,7 +27,7 @@ from ...app import db
 utilisateur_bp = Blueprint('utilisateurs', __name__)
 
 
-@utilisateur_bp.route("/lesUtilisateurs/")
+@utilisateur_bp.route("/lesUtilisateurs/", methods=("GET", "POST",))
 def lesUtilisateurs() -> str:
     """
     Affiche les utilisateurs
@@ -34,6 +35,10 @@ def lesUtilisateurs() -> str:
     Returns :
         la page 'lesUtilisateurs' est affichée
     """
-    return render_template("lesUtilisateurs.html")
-
-
+    form = RechercheForm()
+    if form.is_submitted() and form.validate_on_submit():
+        proprio = form.champ.data
+        res_recherche = Proprietaire.get_by_nom(proprio)
+        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche)
+    proprios = Proprietaire.get_all()
+    return render_template("lesUtilisateurs.html", form = form, proprios = proprios)
