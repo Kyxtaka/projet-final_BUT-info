@@ -27,7 +27,7 @@ class User(Base, UserMixin):
         self.id_user = id_user
                 
     def get_id(self):
-        """getter du mail
+        """getter du mail (id)
 
         Returns:
             str:  mail du user
@@ -35,6 +35,11 @@ class User(Base, UserMixin):
         return self.mail
     
     def set_id(self, mail):
+        """setter du mail
+
+        Args:
+            mail (str): nouveau mail du user
+        """
         self.mail = mail
 
 
@@ -85,10 +90,22 @@ class User(Base, UserMixin):
 
 
     def set_id_user(self, id_user):
+        """setter de l'id de user
+
+        Args:
+            id_user (int): id de user
+        """
         self.id_user = id_user
 
     @staticmethod
     def modifier(email, nom, prenom):
+        """Modifie les informations du propriétaire associé à un user
+
+        Args:
+            email (str): l'email de l'utilisateur
+            nom (str): le nouveau nom
+            prenom (str): le nouveau prénom
+        """
         proprio = db.session.get(User, email)
         try:
             proprio.proprio.set_nom(nom)
@@ -99,22 +116,53 @@ class User(Base, UserMixin):
 
     @staticmethod
     def get_user(mail):
+        """Retourne un utilisateur par son email
+
+        Args:
+            mail (str): l'email de l'utilisateur
+
+        Returns:
+            User: le user correspondant à l'email fourni
+        """
         return User.query.get_or_404(mail)
     
     @staticmethod
     def get_by_mail(mail):
+        """Retourne un utilisateur par son email
+
+        Args:
+            mail (str): l'email de l'utilisateur
+
+        Returns:
+            User: le user correspondant à l'email, ou 'None'
+        """
         return User.query.filter_by(mail=mail).first()
     
     
     @staticmethod
     def put_user(user):
+        """Ajoute un nouvel utilisateur à la base de données
+
+        Args:
+            user (User): le user à ajouter
+        """
         db.session.add(user)
         db.session.commit()
     
     @staticmethod
     def get_all():
+        """Retourne tous les utilisateurs
+
+        Returns:
+            list: la liste des users correspondant à tous les utilisateurs
+        """
         return User.query.all()
     
     def set_proprio(self, proprio):
+        """Associe un propriétaire à un utilisateur
+
+        Args:
+            proprio (Proprietaire): le propriétaire à associer à l'utilisateur
+        """
         self.proprio = proprio
 

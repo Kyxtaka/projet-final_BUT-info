@@ -15,7 +15,7 @@ class Avis(Base):
     
 
     def __init__(self, id_avis, desc_avis, id_proprio):
-        """Init d'un Avis
+        """Initialise un objet Avis
 
         Args:
             id_avis (int): ID unique de l'avis
@@ -46,11 +46,16 @@ class Avis(Base):
 
 
     def set_id_avis(self, id_avis):
+        """Setter de l'ID de l'avis
+
+        Args : 
+            id_avis (int) : nouvel id
+        """
         self.id_avis = id_avis
 
 
     def get_desc_avis(self):
-        """Getter de du contenu de l'avis
+        """Getter du contenu de l'avis
 
         Returns:
             str: Contenu de l'avis
@@ -59,7 +64,7 @@ class Avis(Base):
 
 
     def set_desc_avis(self, desc_avis):
-        """Changer le contenu de l'avis
+        """Setter du contenu de l'avis
 
         Args:
             desc_avis (str): Nouveau contenu pour l'avis
@@ -77,12 +82,24 @@ class Avis(Base):
 
 
     def set_id_proprio(self, id_proprio):
+        """Setter de l'ID d'un propriétaire
+
+        Args:
+            id_proprio (int) : le nouvel ID
+        """
         self.id_proprio = id_proprio
 
 
     def get_sample():
+        """Retourne tous les avis
+
+        Returns:
+            list: liste de tous les avis dans la base de données
+        """
         return Avis.query.all()
     
     def delete(self):
+        """Supprime l'avis de la session, dans la base de données
+        """
         db.session.delete(self)
         db.session.commit()

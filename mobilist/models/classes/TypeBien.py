@@ -17,7 +17,7 @@ class TypeBien(Base):
 
 
     def __init__(self, id_type, nom_type):
-        """Init d'un type de bien
+        """Initialisation d'un type de bien
 
         Args:
             id_type (int): id du type de bien
@@ -68,9 +68,16 @@ class TypeBien(Base):
         
     @staticmethod
     def put_type(type):
+        """Ajoute un nouveau type de bien à la base de données
+
+        Args:
+            type (TypeBien): le type à ajouter
+        """
         db.session.add(type)
         db.session.commit()
 
     def delete(self):
+        """Supprime un type de bien de la base de données
+        """
         db.session.delete(self)
         db.session.commit()
