@@ -9,7 +9,7 @@ from .classes.ModificationForm import ModificationForm
 from .classes.ResetForm import ResetForm
 from .classes.ResetPasswordForm import ResetPasswordForm
 import smtplib
-from email.mime.text import MIMEText
+from email.mime.text import MIMEText, MIMEImage
 from email.mime.multipart import MIMEMultipart
 from hashlib import sha256
 from flask_login import login_user , current_user
@@ -94,12 +94,7 @@ def send_change_pwd_email(mail, token) -> bool:
     html_content = """
         <html>
         <head>
-            <style>
-            body { font-family: Arial, sans-serif; color: #333; }
-            h1 { color: #2e6da4; }
-            p { font-size: 16px; }
-            .button { background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-            </style>
+            
         </head>
         <body>
             <h1>Réinitialisez votre mot de passe</h1>
@@ -113,7 +108,7 @@ def send_change_pwd_email(mail, token) -> bool:
         """
 
     html_content = html_content.format(generated_change_password_link="https://exemple.com/reinitialiser_mot_de_passe")
-    image_path = "../../static/img/logo_mobilist.png"  
+    image_path = "mobilist/static/img/logo_mobilist.png"  
     with open(image_path, "rb") as img_file:
         img = MIMEImage(img_file.read())
         img.add_header('Content-ID', '<image1>')  
@@ -130,7 +125,7 @@ def send_change_pwd_email(mail, token) -> bool:
         msg["From"] = email
         msg["To"] = mail
         msg["Subject"] = subject
-        msg.attach(MIMEText(htmlcontent, "html"))
+        msg.attach(MIMEText(html_content, "html"))
 
         # Envoie de l'email
         server.sendmail(email, mail, msg.as_string())
