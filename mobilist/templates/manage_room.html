@@ -33,80 +33,69 @@
                     <td>{{ room.get_nom_piece() }}</td>
                     <td>{{ room.get_desc_piece() }}</td>
                     <td>
-                        <button class="btn btn-primary" id="edit-room-btn" onclick="editRoom({{ room.get_id_piece() }})">Editer</button>
-                        <button class="btn btn-danger" id="delete-room-btn" onclick="deleteRoom({{ room.get_id_piece() }})">Supprimer</button>
+                        <button class="btn btn-primary" id="edit-room-btn" onclick="toggleEditFormPopup('{{ room.get_id_piece() }}')">Editer</button>
+                        <button class="btn btn-danger" id="delete-room-btn" onclick="deleteRoom('{{ room.get_id_piece() }}')">Supprimer</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <div>
-            <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-piece-popup-form')">Ajouter pièce</button>
+            <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-room-popup-form')">Ajouter pièce</button>
         </div>
     </div>
-        <form class="overlay-container" id="add-piece-popup-form" action="" method="post">
-            <div class="popup-box">
-                <div>
-                    <label class="form-label" for="name">Nom de la pièce :</label>
-                    <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="edit-room-name-input" name="roomName" required>
-                </div>
-                <div>
-                    <label class="form-label" for="description">Description de la pièce :</label>
-                    <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="edit-room-description-input" name="roomDesc">
-                </div>
-                <div class="form-btn-container">
-                    <button type="button" class="btn-close-popup" onclick="toggleFormPopup('add-piece-popup-form')">Annuler</button>
-                    <button type="submit" class="btn-submit" id="add-room-btn" onclick="">Confirmer</button>
-                </div>
+    <form class="overlay-container" id="add-room-popup-form" action="" method="post">
+        <div class="popup-box">
+            <div>
+                <label class="form-label" for="name">Nom de la pièce :</label>
+                <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="add-room-name-input" name="roomName" required>
             </div>
-        </form>
-    </div>
+            <div>
+                <label class="form-label" for="description">Description de la pièce :</label>
+                <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="add-room-description-input" name="roomDesc">
+            </div>
+            <div class="form-btn-container">
+                <button type="button" class="btn-close-popup" onclick="toggleFormPopup('add-room-popup-form')">Annuler</button>
+                <button type="submit" class="btn-submit" id="add-room-btn" onclick="">Confirmer</button>
+            </div>
+        </div>
+    </form>
 </div>
-<form class="overlay-container" id="add-piece-edit-popup-form" action="" method="PUT">
-    <div class="popup-box">
-        <div>
-            <label class="form-label" for="roomId">Id Room</label>
-            <input class="form-input" type="text"  id="edit-room-id-input" name="roomId" required disabled>
+<div>
+    <form class="overlay-container" id="edit-room-popup-form" action="" method="">
+        <div class="popup-box">
+            <div>
+                <label class="form-label" for="roomId">Id Room</label>
+                <input class="form-input" type="text"  id="edit-room-id-input" name="roomId" required disabled>
+            </div>
+            <div>
+                <label class="form-label" for="name">Nom de la pièce :</label>
+                <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="edit-room-name-input" name="roomName" required>
+            </div>
+            <div>
+                <label class="form-label" for="description">Description de la pièce :</label>
+                <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="edit-room-description-input" name="roomDesc">
+            </div>
+            <div class="form-btn-container">
+                <button type="button" class="btn-close-popup" onclick="toggleFormPopup('edit-room-popup-form')">Annuler</button>
+                <button type="button" class="btn-submit" id="add-room-btn" onclick="editRoom()">Confirmer</button>
+            </div>
         </div>
-        <div>
-            <label class="form-label" for="name">Nom de la pièce :</label>
-            <input class="form-input" type="text" placeholder="Entrez le nom de la pièce"  id="edit-room-name-input" name="roomName" required>
-        </div>
-        <div>
-            <label class="form-label" for="description">Description de la pièce :</label>
-            <input class="form-input form-textarea" type="text" placeholder="Description de la pièce" id="edit-room-description-input" name="roomDesc">
-        </div>
-        <div class="form-btn-container">
-            <button type="button" class="btn-close-popup" onclick="toggleFormPopup('add-piece-edit-popup-form')">Annuler</button>
-            <button type="submit" class="btn-submit" id="add-room-btn" onclick="">Confirmer</button>
-        </div>
-    </div>
-</form>
-</div>
+    </form>
 </div>
 <script>
-    function deleteRoom(id) {
-        console.log("Edit room with id: " + id);
-        fetch("{{ url_for('logements.manage_room', id=logement.get_id_logement()) }}" + "?roomId=" + id + "&logementId=" + {{logement.get_id_logement()}}, {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Erreur lors de la suppression");
-        }
-        console.log("Pièce supprimée avec succès !");
-        window.location.reload();
-    })
-    .catch(error => console.error("Erreur:", error));
-    }
-    function editRoom(id) {
-        toggleFormPopup("add-piece-edit-popup-form")
-        document.getElementById("edit-room-id-input").value = id;
-    }
 
+    function toggleEditFormPopup(room_id) {
+            console.log("room_id", room_id);
+            const overlay = document.getElementById('edit-room-popup-form');
+            console.log("overlay", overlay);
+            overlay.classList.toggle('show');
+            for (i = 0; i < document.getElementsByClassName('action-btn').length; i++) {
+                document.getElementsByClassName('action-btn')[i].style.display =  document.getElementsByClassName('action-btn')[i].style.display === 'none' ? 'block' : 'none';
+            }
+            document.getElementById("edit-room-id-input").value = room_id;
+        } 
+    
     function toggleFormPopup(overlay_id) {
         console.log("overlay_id form", overlay_id);
         const overlay = document.getElementById(overlay_id);
@@ -115,6 +104,57 @@
         for (i = 0; i < document.getElementsByClassName('action-btn').length; i++) {
             document.getElementsByClassName('action-btn')[i].style.display =  document.getElementsByClassName('action-btn')[i].style.display === 'none' ? 'block' : 'none';
         }
+    }
+
+    function deleteConfirm() {
+        if (confirm("Voulez-vous vraiment supprimer cette pièce ?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function deleteRoom(id) {
+        console.log("delete room with id: " + id);
+        if (!deleteConfirm()) {
+            return;
+        }
+        fetch("{{ url_for('logements.manage_room', id=logement.get_id_logement()) }}" + "?roomId=" + id + "&logementId=" + "{{logement.get_id_logement()}}", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur lors de la suppression");
+            }
+            console.log("Pièce supprimée avec succès !");
+            window.location.reload("force");
+        }).catch(error => console.error("Erreur:", error));
+    }
+    
+    function editRoom() {
+        console.log("edit room with id: " + document.getElementById("edit-room-id-input").value);
+        console.log("edit room with name: " + document.getElementById("edit-room-name-input").value);
+        console.log("edit room with description: " + document.getElementById("edit-room-description-input").value);
+        fetch("{{ url_for('logements.manage_room', id=logement.get_id_logement()) }}", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }, 
+            body: JSON.stringify({
+                "logementId": "{{logement.get_id_logement()}}",
+                "roomId": document.getElementById("edit-room-id-input").value,
+                "roomName": document.getElementById("edit-room-name-input").value,
+                "roomDesc": document.getElementById("edit-room-description-input").value
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur lors de la modification");
+            }
+            console.log("Pièce modifiée avec succès !");
+            window.location.reload();
+        }).catch(error => console.error("Erreur:", error));
     }
 </script>
 {% endblock %} 

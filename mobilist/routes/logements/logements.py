@@ -19,7 +19,7 @@ from flask import (
     render_template, url_for, 
     render_template_string
     )
-from flask import request
+from flask import request, jsonify
 from flask_login import login_required
 from flask_login import login_user, current_user
 from ...app import db
@@ -153,20 +153,35 @@ def handle_manage_room_request(request, id):
         
         case "PUT": 
             print("PUT")
-            print("request.form:", request.form)
-            room_id = request.form.get("roomId")
-            room_name = request.form.get("roomName")
-            room_desc = request.form.get("roomDesc")
+            # print("request.form:", request.form)
+            # print("request.args:", request.args)
+            print(request)
+            data = request.get_json()
+            print("data:", data)
+            logement_id = data.get("logementId")
+            room_id = data.get("roomId")
+            room_name = data.get("roomName")
+            room_desc = data.get("roomDesc")
+            print("logement_id:", logement_id)
             print("room_id:", room_id)
             print("room_name:", room_name)
             print("room_desc:", room_desc)
+            try: 
+                piece = Piece.query.get((room_id, logement_id))
+                piece.set_nom_piece(room_name)
+                piece.set_desc_piece(room_desc)
+                db.session.commit()
+                print("Piece modifiée")
+            except Exception as e:
+                db.session.rollback()
+                print("Erreur lors de la modification de la pièce")
+                print(e)
             return url_for("manage_room", id=id)
         
         case "DELETE": 
             deleted_item_id= request.args.get("roomId")
             try: 
                 piece = Piece.query.get((deleted_item_id, request.args.get("logementId")))
-                
                 db.session.delete(piece)
                 db.session.commit()
                 print("Piece supprimée")
