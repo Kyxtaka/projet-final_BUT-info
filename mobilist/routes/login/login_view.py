@@ -101,20 +101,17 @@ def send_change_pwd_email(mail, token) -> bool:
         <body>
             <h1>Réinitialisez votre mot de passe</h1>
             <p>Pour réinitialiser votre mot de passe <b>Mobilist</b>,</p>
-            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button">Réinitialiser le mot de passe</a></p>
+            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button" style="text-decoration:none; color:purple;>Réinitialiser le mot de passe</a></p>
             <p>Ce lien est à usage unique et expirera dans 10 minutes.</p>
             <p>Merci, <br> L'équipe Mobilist</p>
+            <img src="cid:image1" alt="Logo Mobilist" />
             
         </body>
         </html>
         """
 
     html_content = html_content.format(generated_change_password=generated_change_password_link)
-    # image_path = "mobilist/static/img/logo_mobilist.png"  
-    # with open(image_path, "rb") as img_file:
-    #     img = MIMEImage(img_file.read())
-    #     img.add_header('Content-ID', '<image1>')  
-    #     msg.attach(img)
+    image_path = "static/img/logo_mobilist.png"  
 
     try:
         # Configuration du serveur SMTP
@@ -128,6 +125,11 @@ def send_change_pwd_email(mail, token) -> bool:
         msg["To"] = mail
         msg["Subject"] = subject
         msg.attach(MIMEText(html_content, "html"))
+
+        with open(image_path, "rb") as img_file:
+            img = MIMEImage(img_file.read())
+            img.add_header('Content-ID', '<image1>')  
+            msg.attach(img)
 
         # Envoie de l'email
         server.sendmail(email, mail, msg.as_string())
