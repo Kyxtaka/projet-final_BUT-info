@@ -67,7 +67,7 @@
 <div class="ajout-logement"> 
     <h1>Modifier un bien à votre logement</h1>
     <form  class="form-group" form='form' id="form" action="{{ url_for('upload.modifier_bien', id=form.id_bien) }}" method="POST" enctype="multipart/form-data">
-        <div class="box-container" id="main-form">
+        <div class="box-container" id="main-form" data-intro="Modifiez votre bien" data-step="1">
             <div id="left-side">
                 {{ form.csrf_token }}
                 {{ form.hidden_tag() }}

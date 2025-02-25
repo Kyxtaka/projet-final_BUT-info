@@ -67,11 +67,11 @@
 <div class="ajout-logement"> 
     <h1>Ajoutez un bien à votre logement</h1>
     <form  class="form-group" form='form' id="form" action="{{ url_for('upload.ajout_bien') }}" method="POST" enctype="multipart/form-data">
-        <div class="box-container" id="main-form">
-            <div id="left-side">
+        <div class="box-container" id="main-form" data-intro="Remplissez le formulaire pour ajouter votre bien" data-step="1">
+            <div id="left-side" >
                 {{ form.csrf_token }}
                 {{ form.hidden_tag() }}
-                <label class="form-group-element" for="logement" id="form_logement">Le logement</label>
+                <label class="form-group-element" for="logement" id="form_logement" data-intro="Vous devez avoir un logement de créer" data-step="2">Le logement</label>
                 {{ form.logement(class="form-group-element", id="logement-select") }}
 
                 <label class="form-group-element" for="nom" id="form_nom">Nom du bien</label>
@@ -95,7 +95,7 @@
                 <label class="form-group-element" for="description" id="form_desc">Description</label>
                 {{ form.description_bien(class="form-group-element") }}
             </div>
-            <div id="right-side">
+            <div id="right-side" data-intro="Vous pouvez ajouter votre justificatif pour préremplir le forumulaire" data-step="3">
                 <label class="form-group-element" for="justificatif" id="form_justif">Justificatif</label>
                 {{ form.file(class="form-group-element")}}
             </div>

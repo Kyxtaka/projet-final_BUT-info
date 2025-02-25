@@ -5,17 +5,17 @@
 {% endblock %}
 {% block content %}
 <div class="simulation">
-    <form action="{{ url_for('biens.simulation') }}" method="POST">
+    <form action="{{ url_for('biens.simulation') }}" method="POST" data-intro="Ici vous pouvez simuler un sinistre pour calculer la vestuté des biens" data-step="1">
         <div class="bandeau">
             <h1>Simuler un sinistre</h1>
         </div>
-        <div class="annee">
+        <div class="annee" data-intro="L'année du sinistre impacte la vestuté des biens" data-step="2">
             <p>Année du sinistre :</p>
             <p>🛈 L'année du sinistre impacte les dégâts possibles et la valeur de vos biens remboursables.</p>
             <input type="number" class="form-control" name="sinistre_annee" data-date-end-date="0d" min="1900" max="2024" step="1" value="2024"/>
         </div>
         <hr width="20%" position="centre"/>
-        <div class="type">
+        <div class="type" data-intro="Le type du sinistre est à titre indicatif" data-step="3">
             <p>Type de sinistre :</p>
             <select name="sinistre_type" id="sinistre-select">
               <option value="">-- Choisissez un type --</option>
@@ -27,7 +27,7 @@
             </select>
             <hr width="20%" position="centre"/>
         </div>
-        <div class="logement">
+        <div class="logement" data-intro="Choisissez le logement concerné, seulement ses biens seront affectés par la vestuté" data-step="4">
             <p>Logement concerné :</p>
             <select name="logement_id" id="logement-select">
                 <option value="">-- Choisissez un logement --</option>
@@ -60,7 +60,7 @@
             </table>
             <hr width="20%" position="centre"/>
         </div>
-        <div class="telecharger">
+        <div class="telecharger" data-intro="Téléchargez le rapport détaillé" data-step="5">
             <p>Rapport détaillé</p>
                 <button type="submit" class="download-btn">TÉLÉCHARGER</button>
             {% if message %}

@@ -61,11 +61,11 @@
   </span>       
 </article>
 <ul class="gestion-profil">
-  <li class="modification">
+  <li class="modification" data-intro="Modifiez vos informations personelles" data-step="1">
     <button onclick="afficherModif()" id="modif-infos" type="button"><img id="image-crayon" src="{{ url_for('static',filename='img/modification.png') }}" alt="icône crayon">
       Modifier le profil </button>
   </li>
-  <li class="changement-mdp">
+  <li class="changement-mdp" data-intro="Modifiez votre mot de passe" data-step="2">
       <button onclick="afficherChangement()" id="changer-mdp" type="button">Changer le mot de passe</button>
   </li>
 </ul>
