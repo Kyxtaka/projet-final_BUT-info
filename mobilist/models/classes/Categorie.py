@@ -17,7 +17,7 @@ class Categorie(Base):
 
 
     def __init__(self, id_cat, nom_cat):
-        """init d'une catégorie de bien
+        """Initialisation d'une catégorie de bien
 
         Args:
             id_cat (int): id de la catégorie (unique)
@@ -40,12 +40,17 @@ class Categorie(Base):
         """getter de l'id de la catégorie
 
         Returns:
-            int: 
+            int: l'id de la catégorie
         """
         return self.id_cat
 
 
     def set_id_cat(self, id_cat):
+        """setter de l'id de la catégorie
+
+        Args:
+            id_cat (int) : le nouvel id
+        """
         self.id_cat = id_cat
 
 
@@ -53,7 +58,7 @@ class Categorie(Base):
         """getter du nom de la catégorie
 
         Returns:
-            int: 
+            str: le nom de la catégorie
         """
         return self.nom_cat
 
@@ -68,10 +73,17 @@ class Categorie(Base):
         
     @staticmethod
     def put_categorie(cat):
+        """Ajoute une catégorie dans la base de données 
+
+        Args:
+            cat (Categorie): l'objet 'Categorie' à ajouter
+        """
         db.session.add(cat)
         db.session.commit()
 
     def delete(self):
+        """Supprime la catégorie de la base de données
+        """
         db.session.delete(self)
         db.session.commit()
         
