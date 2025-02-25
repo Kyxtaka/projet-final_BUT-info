@@ -133,14 +133,15 @@ def ajout_logement() -> str:
 @logements_bp.route("/logement/manage_room/<int:id>", methods=["GET", "POST", "PUT", "DELETE"])
 @login_required
 def manage_room(id):
-    print("id:", id)
     accessID = request.args.get("ClientID")
-    print("accessID:", accessID)
-    print("accessID:", accessID)
-    print("current_user.id_user:", current_user.id_user)
-    print(check_logement_access(id))
+    print("access to manage romm page with logement ID:", id)
+    print("Client ID request param:", accessID)
+    print("Current user database ID:", current_user.id_user)
+    print("Check user access logement perm:",check_logement_access(id))
     if not check_logement_access(id):
+        print("Access denied")
         return redirect(url_for("accueil_connexion"))
+    print("Access granted")
     logement = Logement.query.get(id)
     if logement is None: return redirect(url_for("accueil_connexion"))
     try: 
@@ -152,21 +153,20 @@ def manage_room(id):
     return render_template("manage_room.html", rooms=pieces, logement=logement)
 
 def handle_manage_room_request(request, id):
-    print("handling request - params:", request, id)
+    print("handling request - params:", request, "LogementID",id)
     print("received request:", request)
     print("request.method:", request.method)
     match request.method:
         case "POST":
             room_name = request.form.get("roomName")
             room_desc = request.form.get("roomDesc")
-            print("room_name:", room_name)
-            print("room_desc:", room_desc)
+            print("request data:", request.form)
             ajout_piece_logement(Logement.query.get(id), room_name, room_desc)
             return url_for("logements.manage_room", id=id)
         
         case "PUT": 
             data = request.get_json()
-            print("data:", data)
+            print("request data:", data)
             logement_id = data.get("logementId")
             room_id = data.get("roomId")
             room_name = data.get("roomName")
