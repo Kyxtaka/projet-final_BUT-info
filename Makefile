@@ -1,8 +1,8 @@
-MODULE_TEST=tests_models.py
+MODULE_TEST=tests
 
 .PHONY: tests
 tests:
-        python -m unittest -v -b ${MODULE_TEST}
+        python -m pytest ${MODULE_TEST}
 
 .PHONY: coverage
 coverage:
