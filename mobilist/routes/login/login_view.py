@@ -101,7 +101,7 @@ def send_change_pwd_email(mail, token) -> bool:
         <body>
             <h1>Réinitialisez votre mot de passe</h1>
             <p>Pour réinitialiser votre mot de passe <b>Mobilist</b>,</p>
-            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button" style="text-decoration:none; color:purple;>Réinitialiser le mot de passe</a></p>
+            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button" style="text-decoration:none; color:purple;">Réinitialiser le mot de passe</a></p>
             <p>Ce lien est à usage unique et expirera dans 10 minutes.</p>
             <p>Merci, <br> L'équipe Mobilist</p>
             <img src="cid:image1" alt="Logo Mobilist" />
