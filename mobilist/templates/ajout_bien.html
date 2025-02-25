@@ -5,6 +5,7 @@
 {{ super()}}
 {% endblock %}
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/lecture_fichier.js') }}"></script>
 {{ super()}}
 <!-- utilisation de JS pour actualiser les choix de pieces en fonction du logement -->
 <script>
@@ -36,7 +37,7 @@
                     });
                     console.log("pieceSelect",pieceSelect); // logs de la liste des pieces
                 })
-                .catch(error => console.error("Ereur lors de l'obtention des pieces:", error));
+                .catch(error => console.error("Erreur lors de l'obtention des pieces:", error));
         }
 
         // maj de la liste des pieces en fonction du logement selectionne
@@ -57,7 +58,7 @@
                     });
                     console.log("pieceSelect",pieceSelect); // logs de la liste des pieces
                 })
-                .catch(error => console.error("Ereur lors de l'obtention des pieces:", error));
+                .catch(error => console.error("Erreur lors de l'obtention des pieces:", error));
         });
     });
 </script>
