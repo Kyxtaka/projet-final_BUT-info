@@ -12,8 +12,7 @@ main {
 
 .content-mobilist p:first-of-type,
 .content-company p:first-of-type,
-.chronologie p:first-of-type,
-.actualites h2 {
+.chronologie p:first-of-type {
     font-family: "LL Circular",sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -21,19 +20,47 @@ main {
     color: #5b627d;
 }
 
-.creer-compte button {
-    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    opacity: 1;
-    outline: 0 solid transparent;
-    border-radius: 10px;
-    background: #5E5DF0;
-    box-shadow: #5E5DF0 0 10px 20px -10px;
-    color: #FFFFFF;
-    z-index: 9999;
-    border: 0;
-    overflow: hidden;
+.about-mobilist {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 10%;
+    background-color: #ffffff;
+}
+
+.content-mobilist {
+    flex: 1;
+    max-width: 50%;
+    margin-bottom: 50px;
+}
+
+.content-mobilist h2 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #222;
+}
+
+.content-mobilist button {
+    background-color: #5A54F4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.content-mobilist button:hover {
+    background-color: #3f3cc5;
+}
+
+/* Style pour l’image */
+.about-mobilist img {
+    flex: 1;
+    max-width: 45%;
+    height: 400px;
+    box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .chiffres-clés {
@@ -67,7 +94,11 @@ main {
     padding-left: 10%;
 }
 
-.title-numbers h2 {
+.content-mobilist h2,
+.title-numbers h2,
+.content-company h2,
+.chronologie h2,
+.actualites h2 {
    font-size: 50px;
 }
 
