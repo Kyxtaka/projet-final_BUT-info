@@ -376,7 +376,7 @@ class Bien(Base):
     
     
     def __init__(self, id_bien, nom_bien, id_proprio, date_achat, prix, id_piece, id_logement,  id_type, id_cat):
-        """_summary_
+        """Initialisation d'un bien
 
         Args:
             id_bien (int): id du bien (unique)
@@ -385,8 +385,9 @@ class Bien(Base):
             date_achat (str): date de l'achat du bien
             prix (float): prix à l'achat du bien
             id_piece (int): id de la pièece où est situé le bien
-            id_type (int): 
-            id_cat (int): _description_
+            id_logement (int) : id du logement du bien
+            id_type (int): id du type du bien
+            id_cat (int): id de la catégorie du bien
         """
         self.id_bien = id_bien
         self.nom_bien = nom_bien
@@ -404,88 +405,223 @@ class Bien(Base):
 
 
     def get_id_bien(self):
+        """getter de l'id du bien
+
+        Returns:
+            str: l'id du bien
+        """
         return self.id_bien
     
     def get_nom_bien(self):
+        """getter du nom du bien
+
+        Returns:
+            str: le nom du bien
+        """
         return self.nom_bien
 
 
     def set_nom_bien(self, nom_bien):
+        """setter du nom du bien
+
+        Args:
+            nom_bien (str): le nouveau nom du bien
+        """
         self.nom_bien = nom_bien
 
 
     def get_date_achat(self):
+        """getter de la date d'achat
+
+        Returns:
+            str: la date d'achat
+        """
         return self.date_achat
 
 
     def set_date_achat(self, date_achat):
+        """setter de la date d'achat
+
+        Args:
+            date_achat (str): la nouvelle date d'achat
+        """
         self.date_achat = date_achat
 
 
     def get_prix(self):
+        """getter du prix
+
+        Returns:
+            int: le prix
+        """
         return self.prix
 
 
     def set_prix(self, prix):
+        """setter du prix
+
+        Args:
+            prix (int): le nouveau prix
+        """
         self.prix = prix
 
 
     def get_id_proprio(self):
+        """getter de l'id du propriétaire
+
+        Returns:
+            int: l'id du propriétaire
+        """
         return self.id_proprio
     
     def get_id_piece(self):
+        """getter de l'id de la pièce
+
+        Returns:
+            int: l'id de la pièce
+        """
         return self.id_piece
     
     def get_id_type(self):
+        """getter de l'id du type
+
+        Returns:
+            int: l'id du type
+        """
         return self.id_type
+    
     def get_id_cat(self):
+        """getter de l'id de la catégorie
+
+        Returns:
+            int: l'id de la catégorie
+        """
         return self.id_cat
 
     def get_id_logement(self):
+        """getter de l'id du logement
+
+        Returns:
+            int: l'id du logement
+        """
         return self.id_logement
 
     def set_id_logement(self, id_logement):
+        """setter de l'id du logement
+
+        Returns:
+            id_logement (int):  le nouvel id du logement
+        """
         self.id_logement = id_logement
 
     def delete(self):
+        """Supprime le bien et ses justificatifs associés dans la base de données
+        """
         Justificatif.query.filter_by(id_bien=self.id_bien).delete()
         db.session.delete(self)
         db.session.commit()
 
     @staticmethod
     def get_max_id():
+        """Récupère l'ID maximal des biens dans la base de données
+
+        Returns:
+            int: l'ID max, ou None
+        """
         return db.session.query(func.max(Bien.id_bien)).scalar()
     
     @staticmethod
     def next_id():
+        """Récupère l'ID suivant disponible pour un nouveau bien
+
+        Returns:
+            int: l'ID suivant
+        """
         if Bien.get_max_id() is None:
             return 1
         return Bien.get_max_id() + 1
     
     def get_nom_logement_by_bien(self, id_bien):
+        """Getter du logement associé à un bien
+
+        Args:
+            id_bien (int): l'ID du bien
+
+        Returns:
+            Logement: le ogement associé au bien
+        """
         bien = Bien.query.filter_by(id_bien=id_bien).first()
         return Logement.query.filter_by(id_logement=bien.id_logement).first()
     
     def get_nom_piece_by_bien(self, id_bien):
+        """Getter de la pièce où se trouve le bien
+
+        Args:
+            id_bien (int): l'ID du bien.
+
+        Returns:
+            Piece: la piece associé au bien
+        """
         bien = Bien.query.filter_by(id_bien=id_bien).first()
         return Piece.query.filter_by(id_piece=bien.id_piece).first()
     
     @staticmethod
     def get_data_bien(id):
+        """Getter des détails d'un bien
+
+        Args:
+            id (int): l'ID du bien
+
+        Returns:
+            Bien: le bien associé à l'ID donné, ou None
+        """
         result = Bien.query.filter_by(id_bien=id).first()
         return result
     
     def get_typelogement(self, bien):
+        """Getter du type de logement pour un bien
+
+        Args:
+            bien (Bien): le bien
+
+        Returns:
+            Logement: le logement associé au bien
+        """
         return Logement.query.filter_by(id_logement=bien.id_logement).first()
      
     def get_catbien(self, bien):
+        """Getter de la catégorie d'un bien
+
+        Args:
+            bien (Bien): le bien
+
+        Returns:
+            Categorie: la categorie associé au bien
+        """
         return Categorie.query.filter_by(id_cat=bien.id_cat).first()
     
     def get_typebien(self, bien):
+        """Getter du type d'un bien
+
+        Args:
+            bien (Bien): le bien
+
+        Returns:
+            TypeBien: le type associé au bien
+        """
         return TypeBien.query.filter_by(id_type=bien.id_type).first()
 
     @staticmethod
     def get_biens_by_user(user):
+        """Getter de la liste des biens possédés par un utilisateur
+
+        Args:
+            user (str): l'email de l'utilisateur
+
+        Returns:
+            tuple: un tuple contenant la liste des biens et la liste des biens non justifiés.
+
+        """
         result = User.query.filter_by(mail=user).first()
         id_proprio = result.proprio.get_id_proprio()
         biens = AVOIR.get_biens_by_proprio(id_proprio)
@@ -494,6 +630,17 @@ class Bien(Base):
     
     @staticmethod
     def modifier_bien(id, nom, logement, prix, date, categorie, type):
+        """Permet de modifier les détails d'un bien
+
+        Args:
+            id (int): l'ID du bien à modifier
+            nom (str): le nouveau nom du bien
+            logement (int): le nouvel ID de logement
+            prix (float): le nouveau prix du bien
+            date (str): la nouvelle date d'achat du bien
+            categorie (int): le nouvel ID de catégorie
+            type (int): le nouvel ID de type
+        """
         result = Bien.query.filter_by(id_bien=id).first()
         result.nom_bien = nom
         result.prix = prix
@@ -506,14 +653,35 @@ class Bien(Base):
         
     @staticmethod
     def put_bien(bien):
+        """Ajouter un nouveau bien dans la base de données
+
+        Args:
+            bien (Bien): le bien à ajouter
+        """
         db.session.add(bien)
         db.session.commit()
         
     def get_justif(self, id):
+        """Getter du justificatif associé à un bien
+
+        Args:
+            id (int): l'ID du bien
+
+        Returns:
+            Justificatif: le justificatif associé au bien
+        """
         return Justificatif.query.filter_by(id_bien=id).first()
     
     @staticmethod
     def get_biens_all(id_log):
+        """Getter de tous les biens associés à un logement
+
+        Args:
+            id_log (int): l'ID du logement
+
+        Returns:
+            list: la liste des biens associés au logement
+        """
         return  Bien.query.filter_by(id_logement=id_log).all()
 
 class AVOIR(Base):
@@ -523,7 +691,7 @@ class AVOIR(Base):
     id_logement = Column(Integer, ForeignKey("LOGEMENT.ID_LOGEMENT", ondelete="CASCADE"), name="ID_LOGEMENT", primary_key=True)
 
     def __init__(self, id_proprio, id_logement):
-        """init d'un lien entre logement et propriétaire
+        """Initialisation d'un lien entre logement et propriétaire
 
         Args:
             id_proprio (int): id du propriétaire 
@@ -551,6 +719,11 @@ class AVOIR(Base):
 
 
     def set_id_proprio(self, id_proprio):
+        """setter de l'ID du propriétaire
+
+        Args:
+            id_proprio (int): le nouvel id du propriétaire
+        """
         self.id_proprio = id_proprio
 
 
@@ -563,10 +736,23 @@ class AVOIR(Base):
         return self.id_logement
 
     def set_id_logement(self, id_logement):
+        """setter de l'ID du logement
+
+        Args:
+            id_logement (int): le nouvel id du logement
+        """
         self.id_logement = id_logement
     
     @staticmethod
     def get_biens_by_proprio(idproprio):
+        """Getter de la liste des biens associés à un propriétaire
+
+        Args:
+            idproprio (int): l'ID du propriétaire
+
+        Returns:
+            list: une liste contenant des listes de biens, chaque sous-liste contient des biens associés à un logement différent
+        """
         result = AVOIR.query.filter_by(id_proprio=idproprio)
         liste_biens = []
         for elem in result:
@@ -575,11 +761,21 @@ class AVOIR(Base):
         
 
     def delete(self):
+        """Supprime un bien de la base de données
+        """
         db.session.delete(self)
         db.session.commit()
 
     @staticmethod
     def get_biens_by_id(id_log):
+        """Getter des biens associés à un logement
+
+        Args:
+            id_log (int): l'ID du logement
+
+        Returns:
+            list: une liste d'objets AVOIR correspondant aux biens associés au logement
+        """
         return AVOIR.query.filter_by(id_logement=id_log).all()
 
     
