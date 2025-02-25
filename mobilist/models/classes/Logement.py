@@ -38,7 +38,7 @@ class Logement(Base):
     proprietaires = relationship("Proprietaire", secondary="AVOIR", back_populates="logements", passive_deletes=True)
     
     def __init__(self, id_logement, nom_logement, type_logement, adresse_logement, desc_logement):
-        """Init d'un logement
+        """Initialisation d'un logement
 
         Args:
             id_logement (int): ID du logement (unique)
@@ -104,13 +104,23 @@ class Logement(Base):
         return self.desc_logement
     
     def set_id_logement(self, id_logement):
+        """setter de l'ID du logement 
+
+        Args:
+            nom_logement (int): nouvelle ID du logement 
+        """
         self.id_logement = id_logement
 
     def set_nom_logement(self, nom_logement):
+        """setter du nom du logement 
+
+        Args:
+            nom_logement (str): nouvelle nom du logement 
+        """
         self.nom_logement = nom_logement
     
     def set_type_logement(self, type_logement):
-        """Changer le type du logement 
+        """setter du type du logement 
 
         Args:
             type_logement (enum(str)): "maison" ou "appartement"
@@ -119,7 +129,7 @@ class Logement(Base):
 
 
     def set_adresse_logement(self, adresse):
-        """Changer l'adresse du logement 
+        """setter de l'adresse du logement 
 
         Args:
             adresse (str): nouvelle adresse du logement 
@@ -128,7 +138,7 @@ class Logement(Base):
 
 
     def set_desc_logement(self, desc_logement):
-        """Changer la description du logement 
+        """setter de la description du logement 
 
         Args:
             desc_logement (str): nouvelle description du logement 
@@ -136,19 +146,34 @@ class Logement(Base):
         self.desc_logement = desc_logement
 
     def get_pieces_list(self) -> list:
-            return Piece.get_pieces_all(self.id_logement)
+        return Piece.get_pieces_all(self.id_logement)
     
     @staticmethod
     def get_max_id():
+        """Récupère le maximum de l'ID des logements existants
+
+        Returns:
+            int: le maximum de l'ID des logements, ou None
+        """
         return db.session.query(func.max(Logement.id_logement)).scalar()
     
     @staticmethod
     def next_id() -> int:
+        """Retourne le prochain ID disponible pour un nouveau logement
+
+        Returns:
+            int: le prochain ID disponible pour un logement
+        """
         if Logement.get_max_id() is None:
             return 1
         return Logement.get_max_id() + 1
     
     def delete(self, proprio):
+        """Supprime le logement pour un propriétaire donné et les associations liées
+
+        Args:
+            proprio (Proprietaire): le propriétaire du logement à supprimer
+        """
         list_assoc = AVOIR.get_biens_by_id(self.id_logement)
         for assoc in list_assoc:
             if assoc.get_id_proprio() == proprio.get_id_proprio():
@@ -167,8 +192,13 @@ class Logement(Base):
         
     @staticmethod
     def put_logement(logement):
-            db.session.add(logement)
-            db.session.commit()
+        """Ajoute un nouveau logement à la base de données
+
+        Args:
+            logement (Logement): le logement à ajouter
+        """
+        db.session.add(logement)
+        db.session.commit()
             
 class Piece(Base):
     __tablename__ = "PIECE"
@@ -182,7 +212,7 @@ class Piece(Base):
     id_logement = Column(Integer, ForeignKey("LOGEMENT.ID_LOGEMENT",ondelete="CASCADE"), primary_key=True, nullable=False, name="ID_LOGEMENT")
     
     def __init__(self, id_piece, nom_piece, desc_piece, id_logement):
-        """Init d'une pièce dans un logement
+        """Initialisation d'une pièce dans un logement
 
         Args:
             id_piece (int): id de la pièce
@@ -228,7 +258,7 @@ class Piece(Base):
 
 
     def set_nom_piece(self, nom_piece):
-        """changer le nom de la pièce
+        """setter du nom de la pièce
 
         Args:
             nom_piece (str): Nouveau nom de la pièce 
@@ -246,7 +276,7 @@ class Piece(Base):
 
 
     def set_desc_piece(self, desc_piece):
-        """changer la description de la pièce 
+        """setter de la description de la pièce 
 
         Args:
             desc_piece (str): nouvelle description de la pièce
@@ -264,34 +294,68 @@ class Piece(Base):
 
 
     def set_id_logement(self, id_logement):
+        """setter de l'ID du logement
+        
+        Args:
+            id_logement (int) : le nouvel id
+        """
         self.id_logement = id_logement
     
     
     def get_list_biens(self):
+        """Retourne tous les biens associés à cette pièce
+
+        Returns:
+            list: liste des biens associés à cette pièce"""
         return Bien.query.filter_by(id_logement=self.id_logement,id_piece=self.id_piece).all()
     
     @staticmethod
     def get_max_id():
+        """Récupère le maximum de l'ID des pièces existantes
+
+        Returns:
+            int: le maximum de l'ID des pièces, ou None
+        """
         return db.session.query(func.max(Piece.id_piece)).scalar()
     
     @staticmethod
     def next_id() -> int:
+        """Retourne le prochain ID disponible pour une nouvelle pièce
+
+        Returns:
+            int: Le prochain ID disponible pour une pièce
+        """
         if Piece.get_max_id() is None:
             return 1
         return Piece.get_max_id() + 1
     
     def delete(self):
+        """Supprime cette pièce et tous les biens associés dans la base de données
+        """
         Bien.query.filter_by(id_piece=self.id_piece).delete()
         db.session.delete(self)
         db.session.commit()
         
     @staticmethod
     def put_piece(piece):
+        """Ajoute une nouvelle pièce dans la base de données
+
+        Args:
+            piece (Piece): la pièce à ajouter à la base de données
+        """
         db.session.add(piece)
         db.session.commit()
     
     @staticmethod
     def get_pieces_all(id_log):
+        """Retourne toutes les pièces d'un logement
+
+        Args:
+            id_log (int): L'ID du logement
+
+        Returns:
+            list: liste pièces associés au logement
+        """
         return Piece.query.filter_by(id_logement=id_log).all()
         
 
