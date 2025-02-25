@@ -129,7 +129,7 @@
                 throw new Error("Erreur lors de la suppression");
             }
             console.log("Pièce supprimée avec succès !");
-            window.location.reload("force");
+            window.location.href = window.location.href;
         }).catch(error => console.error("Erreur:", error));
     }
     
@@ -153,7 +153,7 @@
                 throw new Error("Erreur lors de la modification");
             }
             console.log("Pièce modifiée avec succès !");
-            window.location.reload();
+            window.location.href = window.location.href;
         }).catch(error => console.error("Erreur:", error));
     }
 </script>
