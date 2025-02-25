@@ -149,3 +149,11 @@ def test_protected_mesBiens_success(mock_current_user, client):
     assert response.status_code == 200
 
 
+@patch("mobilist.routes.views.current_user")
+def test_protected_modifierBien_success(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 2
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    response = client.post("/modifierbien/", data={"id": 1, "nom_bien":"bien1", "logement":"logement1", "prix_bien":111, "date_bien": "2020-20-12", "categorie_bien": "Décoration", "type_bien": "Canapé"})
+    assert response.status_code == 200
