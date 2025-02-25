@@ -114,9 +114,23 @@ def loaddb(filename):
 @click.argument('password')
 @click.argument('role')
 def newuser(mail, password, role):
+    """Crée un nouvel utilisateur
+
+    Args:
+        mail (str): l'email
+        password (str): le mot de passe 
+        role (str): le rôle de l'utilisateur
+    """
     create_user(mail, password, role)
     
 def create_user(mail, password, role):
+    """Crée un utilisateur avec un mot de passe crypté et un rôle donné
+
+    Args:
+        mail (str): l'email
+        password (str): le mot de passe
+        role (str): le rôle de l'utilisateur
+    """
     from .models.classes.User import User
     from hashlib import sha256
     m = sha256()
@@ -141,6 +155,12 @@ def create_user(mail, password, role):
 @click.argument('mail')
 @click.argument('password')
 def passwd(mail, password):
+    """Modifie le mot de passe d'un utilisateur existant
+
+    Args:
+        mail (str): l'email de l'utilisateur
+        password (str): le nouveau mot de passe
+    """
     from .models.classes.User import User
     from hashlib import sha256
     m = sha256()

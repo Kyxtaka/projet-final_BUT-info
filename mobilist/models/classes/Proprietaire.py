@@ -45,6 +45,11 @@ class Proprietaire(Base):
 
 
     def set_id_proprio(self, id_proprio):
+        """Setter de l'id du propriétaire
+
+        Args:
+            id_proprio (int): nouvel id du propriétaire
+        """
         self.id_proprio = id_proprio
 
 
@@ -58,7 +63,7 @@ class Proprietaire(Base):
 
 
     def set_nom(self, nom):
-        """Changer le nom 
+        """Setter du nom 
 
         Args:
             nom (str): Nouveau nom
@@ -83,20 +88,40 @@ class Proprietaire(Base):
         return self.mail
 
     def set_prenom(self, prenom):
+        """Setter du prénom 
+
+        Args:
+            nom (str): Nouveau prénom
+        """
         self.prenom = prenom
 
 
     @staticmethod
     def max_id():
+        """Récupérer le maximum ID des propriétaires
+
+        Returns:
+            int: l'ID maximum
+        """
         max_id =  db.session.query(func.max(Proprietaire.id_proprio)).scalar()
         return max_id
 
 
     @staticmethod
     def get_by_mail(mail):
+        """Getter d'un propriétaire par son adresse e-mail
+
+        Args:
+            mail (str): l'adresse e-mail
+
+        Returns:
+            Proprietaire: le propriétaire
+        """
         return Proprietaire.query.filter_by(mail=mail).first()
     
     def delete(self):
+        """Supprime un propriétaire et ses logements associés
+        """
         for logement in self.logements:
             logement.delete()
         AVOIR.get_biens_by_id(self.id_logement).delete()
@@ -106,6 +131,11 @@ class Proprietaire(Base):
         
     @staticmethod
     def put_proprio(proprio):
+       """Ajoute un nouveau propriétaire à la base de données
+
+        Args:
+            proprio (Proprietaire): le propriétaire à ajouter
+        """
        db.session.add(proprio)
        db.session.commit()
    

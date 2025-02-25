@@ -18,7 +18,7 @@ class Justificatif(Base):
     id_bien = Column(Integer, ForeignKey("BIEN.ID_BIEN", ondelete="CASCADE"), primary_key=True, name="ID_BIEN")
     
     def __init__(self, id_justif, nom_justif, date_ajout, URL, id_bien):
-        """init d'un justificatif
+        """Initialisation d'un justificatif
 
         Args:
             id_justif (int): ID du justificatif (unique)
@@ -54,6 +54,11 @@ class Justificatif(Base):
 
 
     def set_id_justif(self, id_justif):
+        """setter de l'ID du justificatif
+        
+        Args:
+            id_justif (int): le nouvel ID
+        """
         self.id_justif = id_justif
 
 
@@ -85,7 +90,7 @@ class Justificatif(Base):
 
 
     def set_date_ajout(self, date_ajout):
-        """modification de la date d'ajout
+        """setter de la date d'ajout
 
         Args:
             date_ajout (str): nouvelle date d'ajout
@@ -103,7 +108,7 @@ class Justificatif(Base):
 
 
     def set_URL(self, URL):
-        """modifie l'URL vers l'ilage du justificatif
+        """setter de l'URL vers l'ilage du justificatif
 
         Args:
             URL (str): nouvel URL
@@ -121,10 +126,23 @@ class Justificatif(Base):
 
 
     def set_id_bien(self, id_bien):
+        """setter de l'ID du bien associé
+        
+        Args:
+            id_bien(int): le nouvel ID
+        """
         self.id_bien = id_bien
     
     @staticmethod
     def possede_justificatif(biens):
+        """Vérifie si des biens possèdent un justificatif associé
+
+        Args:
+            biens (list): liste des biens à vérifier
+
+        Returns:
+            list: liste des biens qui ne possèdent pas de justificatif associé
+        """
         liste_non_justifies = []
         for bien in biens:
             for j in range(len(bien)):
@@ -140,20 +158,30 @@ class Justificatif(Base):
 
     @staticmethod
     def get_max_id():
+        """Retourne l'ID maximal des justificatifs présents dans la base de données
+
+        Returns:
+            int: Le plus grand ID de justificatif, si il n'y en a pas retourne 'None'
+        """
         return db.session.query(func.max(Justificatif.id_justif)).scalar()
     
     @staticmethod
     def next_id():
+        """Retourne l'ID suivant pour un nouveau justificatif
+
+        Returns:
+            int: L'ID suivant pour un nouveau justificatif
+        """
         if Justificatif.get_max_id() is None:
             return 1
         return Justificatif.get_max_id() + 1
-
-
-    @staticmethod
-    def get_max_id():
-        return db.session.query(func.max(Justificatif.id_justif)).scalar()
     
     @staticmethod
     def put_justificatif(justif):
+        """Ajoute un justificatif dans la base de données
+
+        Args:
+            justif (Justificatif): le justificatif à ajouter dans la base de données
+        """
         db.session.add(justif)
         db.session.commit()
