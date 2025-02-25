@@ -23,26 +23,17 @@ from flask_login import login_required
 from flask_login import login_user, current_user
 from ...app import db
 
-admin_bp = Blueprint('admin', __name__)
+utilisateur_bp = Blueprint('utilisateurs', __name__)
 
 
-@admin_bp.route("/lesBiens/")
-def lesBiens() -> str:
+@utilisateur_bp.route("/lesUtilisateurs/")
+def lesUtilisateurs() -> str:
     """
-    Affiche les caractèristiques des biens
+    Affiche les utilisateurs
 
     Returns :
-        la page 'lesBiens' est affichée
+        la page 'lesUtilisateurs' est affichée
     """
-    return render_template("lesBiens.html")
+    return render_template("lesUtilisateurs.html")
 
 
-@admin_bp.route("/lesAvis/")
-def lesAvis() -> str:
-    """
-    Affiche les avis
-
-    Returns :
-        la page 'lesAvis' est affichée
-    """
-    return render_template("lesAvis-admin.html")
