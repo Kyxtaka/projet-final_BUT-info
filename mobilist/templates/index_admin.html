@@ -50,19 +50,19 @@
                   <li class="nav-img" >
                     <div class="CUtilisateurs">
                         <img src="{{ url_for('static',filename='img/utilisateur.png') }}" alt="icône utilisateurs"/>
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('')}}">Les utilisateurs</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin.lesUtilisateurs')}}">Les utilisateurs</a>
                     </div>
                   </li>
                     <li class="nav-img" >
                         <div class="CBiens">
                             <img src="{{ url_for('static',filename='img/mes-biens.png') }}" alt="icône biens"/>
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('') }}">Les biens</a>
+                            <a class="nav-link active" aria-current="page" href="{{ url_for('admin.lesBiens') }}">Les biens</a>
                         </div>
                     </li>
                   <li class="nav-img" >
                     <div class="CAvis">
                         <img src="{{ url_for('static',filename='img/avis.png') }}" alt="icône avis"/>
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('')}}">Les avis</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin.lesAvis')}}">Les avis</a>
                     </div>
                   </li>
                   <li id="connexion">

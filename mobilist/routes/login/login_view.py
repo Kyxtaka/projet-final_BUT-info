@@ -213,8 +213,13 @@ def login() -> str:
     elif f.validate_on_submit():
         user = f.get_authenticated_user()
         if user:
-            login_user(user)
-            next = f.next.data or url_for("accueil_connexion")
+            if user.get_role() != 'admin':  
+                login_user(user)
+                next = f.next.data or url_for("accueil_connexion")
+                return redirect(next)
+            # si l'utilisateur est un admin :
+            login_user(user) 
+            next = f.next.data or url_for("accueil_admin")
             return redirect(next)
         return render_template(
         "connexion.html",
