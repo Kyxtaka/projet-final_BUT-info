@@ -1,3 +1,11 @@
+/* Css inspiré de https://blog.snippetsnack.fr/soulignement-au-survol-de-gauche-a-droite pour soulignement link a*/
+
+/* Utilisation de variables réutilisables dans le fichier */
+:root {
+    --violet: hsl(261, 83%, 42%);
+    --animation-timing: 0.6s;
+}
+
 
 header {
     height: 70px;
@@ -47,6 +55,38 @@ main {
     margin-top: 9px;
     width: auto;
     height: 27px;
+}
+
+
+.index li a::after {
+    content : "";
+    display : block;
+    height: 0.1rem;
+    background: var(--violet);
+    transform: scale(0);
+    transition: transform var(--animation-timing);
+    transform-origin: right;
+    animation: fade-in var(--animation-timing);
+
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.index li a:hover::after {
+    transform: scale(1);
+    transform-origin: left;
 }
 
 .index button {
