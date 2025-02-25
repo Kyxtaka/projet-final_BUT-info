@@ -55,4 +55,4 @@ def lesAvis() -> str:
     Returns :
         la page 'lesAvis' est affichée
     """
-    return render_template("lesAvis.html")
+    return render_template("lesAvis-admin.html")

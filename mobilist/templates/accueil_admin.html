@@ -1,14 +1,15 @@
 {% extends "index_admin.html" %}
-{% block head %}
-<title>MobiList</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>  
 {% endblock %}
 {% block content %}
 <div class="accueil-admin"> 
 <main>
-    <body>
-        <h1>Bienvenue admin</h1>
-    </body>
+    <h2>Bienvenue admin</h2>
 </main>
 {% endblock %}
