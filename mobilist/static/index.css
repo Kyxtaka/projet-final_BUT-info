@@ -45,12 +45,12 @@ main {
     margin-top: 2%;
 }
 
-.index li div{
+.index .nav-img div{
     display: flex;
     flex-wrap: nowrap;
 }
 
-.index li div img{
+.index .nav-img div img{
     margin-left: -20px;
     margin-top: 9px;
     width: auto;
@@ -58,7 +58,7 @@ main {
 }
 
 
-.index li a::after {
+.index .nav-img a::after {
     content : "";
     display : block;
     height: 0.1rem;
