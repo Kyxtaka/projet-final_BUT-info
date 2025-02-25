@@ -11,7 +11,7 @@ from mobilist.models.classes.Categorie import Categorie
 from mobilist.models.classes.Logement import Bien
 from mobilist.models.classes.Logement import AVOIR
 from mobilist.models.classes.Avis import Avis
-
+from hashlib import sha256
 from flask import Flask
 from flask_sqlalchemy  import SQLAlchemy
 from flask_bootstrap import Bootstrap5
@@ -41,7 +41,7 @@ class UserTest(unittest.TestCase):
    def test_proprietaire(self):
       with app.app_context():
          proprio = Proprietaire(1,"johnkevin@email.com", "John", "Kevin")
-         user = User("johnkevin@email.com", "lol123", "proprietaire", 1)
+         user = User("johnkevin@email.com", "123", "proprietaire", 1)
          Proprietaire.put_proprio(proprio)
          User.put_user(user)
          
@@ -63,7 +63,11 @@ class UserTest(unittest.TestCase):
    def test_user(self):
       with app.app_context():
          proprio = Proprietaire(2,"trixymartin@email.com", "Martin", "Trixy")
-         user = User("trixymartin@email.com", "lol123", "proprietaire", 2)
+         mdp = "123"
+         m = sha256()
+         m.update(mdp.encode())
+         passwd = m.hexdigest()
+         user = User("trixymartin@email.com", passwd, "proprietaire", 2)
          
          Proprietaire.put_proprio(proprio)
          User.put_user(user)
@@ -124,8 +128,7 @@ class UserTest(unittest.TestCase):
          self.assertEqual(cat.get_id_cat(),2)
          self.assertEqual(cat.get_nom_cat(), "accessoire cuisine")
       
-   
-               
+       
          
 
 if __name__ == '__main__':
