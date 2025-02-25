@@ -6,6 +6,12 @@ main #formsumbmit {
     background: #5E5DF0;
     box-shadow: #5E5DF0 0 10px 20px -10px;
 }
+table{
+    margin:3%;
+}
+table button {
+    margin:1%;
+}
 
 .overlay-container {
     display: none;
