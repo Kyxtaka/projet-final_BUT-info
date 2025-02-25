@@ -18,6 +18,8 @@ from datetime import date
 from .classes.AjoutBienForm import AjoutBienForm
 from flask import request
 from flask_login import login_required
+from ...app import db
+
 
 from flask import Blueprint
 from flask import (

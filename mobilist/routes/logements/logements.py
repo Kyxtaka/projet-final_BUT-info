@@ -194,6 +194,11 @@ def handle_manage_room_request(request, id):
             deleted_item_id= request.args.get("roomId")
             try: 
                 piece = Piece.query.get((deleted_item_id, request.args.get("logementId")))
+                bien_array = piece.get_list_biens()
+                print(bien_array)
+                for bien in bien_array:
+                    db.session.delete(bien)
+                    print("un bien supprimé")
                 db.session.delete(piece)
                 db.session.commit()
                 print("Piece supprimée")
