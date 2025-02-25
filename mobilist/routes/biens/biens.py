@@ -15,11 +15,14 @@ from ..PDF.generatePDF import *
 
 
 biens_bp = Blueprint('biens', __name__)
-@biens_bp.route("/mesBiens/", methods =["GET"])
+@biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE"])
 def mesBiens():
     logement_id = request.args.get("logement")
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = []
+    if request.method == "DELETE" and request.args.get("logement") != None:
+        print("DELETE")
+        deleteBiens(request, request.args.get("logement"))
     for logement in proprio.logements:
         logements.append(logement)
     if logement_id:
@@ -29,6 +32,16 @@ def mesBiens():
         logement_actuel = None
         pieces = []
     return render_template("mesBiens.html",logements=logements,logement_id=logement_id,pieces=pieces,logement_actuel=logement_actuel)
+
+def deleteBiens(request, logement_id):
+    data_json = request.get_json()
+    print(data_json)
+    for data in data_json:
+        print(data)
+        bien = Bien.query.get(data["id"])
+        bien.delete()
+        db.session.commit()
+    return 
 
 
 @biens_bp.route("/simulation/", methods =("GET","POST" ,))
