@@ -9,7 +9,9 @@ from .classes.ModificationForm import ModificationForm
 from .classes.ResetForm import ResetForm
 from .classes.ResetPasswordForm import ResetPasswordForm
 import smtplib
-from email.mime.text import MIMEText, MIMEImage
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+
 from email.mime.multipart import MIMEMultipart
 from hashlib import sha256
 from flask_login import login_user , current_user
@@ -99,20 +101,20 @@ def send_change_pwd_email(mail, token) -> bool:
         <body>
             <h1>Réinitialisez votre mot de passe</h1>
             <p>Pour réinitialiser votre mot de passe <b>Mobilist</b>,</p>
-            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password_link}" class="button">Réinitialiser le mot de passe</a></p>
+            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button">Réinitialiser le mot de passe</a></p>
             <p>Ce lien est à usage unique et expirera dans 10 minutes.</p>
             <p>Merci, <br> L'équipe Mobilist</p>
-            <img src="cid:image1" alt="Logo Mobilist" />
+            
         </body>
         </html>
         """
 
-    html_content = html_content.format(generated_change_password_link="https://exemple.com/reinitialiser_mot_de_passe")
-    image_path = "mobilist/static/img/logo_mobilist.png"  
-    with open(image_path, "rb") as img_file:
-        img = MIMEImage(img_file.read())
-        img.add_header('Content-ID', '<image1>')  
-        msg.attach(img)
+    html_content = html_content.format(generated_change_password=generated_change_password_link)
+    # image_path = "mobilist/static/img/logo_mobilist.png"  
+    # with open(image_path, "rb") as img_file:
+    #     img = MIMEImage(img_file.read())
+    #     img.add_header('Content-ID', '<image1>')  
+    #     msg.attach(img)
 
     try:
         # Configuration du serveur SMTP
