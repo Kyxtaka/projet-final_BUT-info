@@ -60,6 +60,14 @@ def accueil_connexion():
         if 'bouton_telecharger' in request.form:
             return generate_pdf_tous_logements(proprio,logements)
     return render_template("accueil_2.html", infos=infos[:4], justifies=a_justifier[:4])
+
+@app.route("/accueil-admin/")
+@login_required   
+def accueil_admin():
+    """
+    Renvoie la page d'accueil d'un admin
+    """
+    return render_template("accueil_admin.html")
     
 @app.route("/information")
 def information():
