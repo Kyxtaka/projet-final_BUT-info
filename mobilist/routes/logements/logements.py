@@ -152,8 +152,9 @@ def manage_room(id):
     return render_template("manage_room.html", rooms=pieces, logement=logement)
 
 def handle_manage_room_request(request, id):
+    print("handling request - params:", request, id)
+    print("received request:", request)
     print("request.method:", request.method)
-    print("handling ")
     match request.method:
         case "POST":
             room_name = request.form.get("roomName")
@@ -164,20 +165,12 @@ def handle_manage_room_request(request, id):
             return url_for("logements.manage_room", id=id)
         
         case "PUT": 
-            print("PUT")
-            # print("request.form:", request.form)
-            # print("request.args:", request.args)
-            print(request)
             data = request.get_json()
             print("data:", data)
             logement_id = data.get("logementId")
             room_id = data.get("roomId")
             room_name = data.get("roomName")
             room_desc = data.get("roomDesc")
-            print("logement_id:", logement_id)
-            print("room_id:", room_id)
-            print("room_name:", room_name)
-            print("room_desc:", room_desc)
             try: 
                 piece = Piece.query.get((room_id, logement_id))
                 piece.set_nom_piece(room_name)
@@ -201,7 +194,6 @@ def handle_manage_room_request(request, id):
                 db.session.rollback()
                 print("Erreur lors de la suppression de la pièce")
                 print(e)
-
 
 def check_logement_access(id):
     result = False
