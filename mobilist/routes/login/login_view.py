@@ -125,7 +125,7 @@ def send_change_pwd_email(mail, token) -> bool:
         msg["From"] = email
         msg["To"] = mail
         msg["Subject"] = subject
-        msg.attach(MIMEText(htmlcontent, "html"))
+        msg.attach(MIMEText(html_content, "html"))
 
         # Envoie de l'email
         server.sendmail(email, mail, msg.as_string())
