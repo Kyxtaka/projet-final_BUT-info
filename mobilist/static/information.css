@@ -1,4 +1,3 @@
-
 main {
     margin-top: 50px;
 }
@@ -12,7 +11,8 @@ main {
 
 .content-mobilist p:first-of-type,
 .content-company p:first-of-type,
-.chronologie p:first-of-type {
+.chronologie p:first-of-type,
+.year-2025 p {
     font-family: "LL Circular",sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -145,8 +145,8 @@ main {
 
 .buttons-years ul {
     display: flex;
-    justify-content: center; /* Centre les boutons horizontalement */
-    gap: 15px; /* Espacement entre les boutons */
+    justify-content: center;
+    gap: 15px;
     padding: 20px 0;
 }
 
@@ -233,8 +233,58 @@ main {
     visibility: hidden;
 }
 
+.card ul {
+   margin-right: 25px;
+}
+
+
+.img-2025 img {
+    width: 100%;
+    height: 1000px;
+}
+
 .actualites {
-    margin-top: 1000px;
+    margin-top: 400px;
+    background-color: #475066;
+    height: 1050px;
+}
+
+.title-news {
+    text-align: center;
+}
+
+.title-news p {
+    font-family: "LL Circular",sans-serif;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: white;
+}
+
+.title-news h2,
+.title-news h3 {
+    color: white;
+}
+
+.year-2025 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-gap: 30px;
+    margin-top: 50px;
+    margin-left: 170px;
+    text-align: left;
+}
+
+.actualites article {
+    background-color: white;
+    max-width:70%;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.year-2025 article:not(:disabled):hover {
+    transform: scale(1.05);
+    cursor: grab;
 }
 
 

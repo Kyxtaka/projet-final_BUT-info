@@ -118,23 +118,27 @@
     </div>
 </section>
 <section class="actualites">
-    <h2> Nos projets pour 2025</h2>
-    <div class="year-2025">
+    <div class="title-news">
+        <p>News</p>
+        <h2> Nos projets pour 2025</h2>
         <h3>Mobilist Pro et Internationalisation</h3>
-        <ul>
-            <li>🌎 Expansion en Amérique du Nord et en Asie, avec une version adaptée aux marchés locaux.</li>
-            <li>🏠 Lancement de "Mobilist Pro", une version dédiée aux entreprises, agences immobilières et experts en assurance.</li>
-            <li>🔗 Intégration avec la blockchain pour certifier la propriété et la valeur des objets de collection.</li>
-        </ul>
+    </div>
+    <div class="year-2025">
+        <article class="expansion">
+            <p>May 2025</p>
+            <h2>Expansion en Amérique du Nord et en Asie, avec une version adaptée aux marchés locaux</h2>
+        </article>
+        <article class="mobilist-pro">
+            <p>June 2025</p>
+            <h2>Lancement de "Mobilist Pro", une version dédiée aux entreprises, agences immobilières et experts en assurance</h2>
+        </article>
+        <article class="blockchain">
+            <p>October 2025</p>
+            <h2>Intégration avec la blockchain pour certifier la propriété et la valeur des objets de collection</h2>
+        </article>
     </div>
 </section>
-
-
-
-
-
-
-
-
-
+<div class="img-2025">
+    <img src="{{ url_for('static', filename='img/2025.jpg') }}">
+</div>
 {% endblock %}
