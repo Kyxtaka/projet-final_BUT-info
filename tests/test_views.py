@@ -155,8 +155,10 @@ def test_protected_modifierBien_success(mock_current_user, client):
     mock_current_user.id_user = 2
     client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
 
-    response = client.post("/modifierbien/", data={"id": 1, "nom_bien":"bien1", "logement":"logement1", "prix_bien":111, "date_bien": "2020-20-12", "categorie_bien": "Décoration", "type_bien": "Canapé"})
+    response = client.post("/modifierbien/", data={"id": 2, "nom_bien":"bien1", "logement":"logement1", "prix_bien":111, "date_bien": "2020-20-12", "categorie_bien": "Décoration", "type_bien": "Canapé"})
     assert response.status_code == 200
+
+    
 
 @patch("mobilist.routes.views.current_user")
 def test_protected_simulation_success(mock_current_user, client):
@@ -216,5 +218,33 @@ def test_protected_admin_user(mock_current_user, client):
     assert response.status_code == 200
 
 
+@patch("mobilist.routes.views.current_user")
+def test_protected_manage_rooms(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 2
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    response = client.post("/logement/manage_room/2",data={'ClientID': 2,})
+    assert response.status_code == 200
+
+    response = client.post("/logement/manage_room/1",data={'ClientID': 2,})
+    assert response.status_code == 302
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_manage_rooms_put(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 2
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    response = client.put("/logement/manage_room/2",data={'ClientID': 2,'logementId':2, 'roomId':3,'roomName':'piece', 'roomDesc':'description'})
+    assert response.status_code == 200
 
 
+@patch("mobilist.routes.views.current_user")
+def test_protected_manage_rooms_delete(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 2
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    response = client.delete("/logement/manage_room/2",data={'ClientID': 2,})
+    assert response.status_code == 200

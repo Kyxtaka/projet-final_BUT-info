@@ -99,7 +99,8 @@ class UserTest(unittest.TestCase):
          Logement.put_logement(logement)
          Piece.put_piece(piece)
          Bien.put_bien(bien)
-         
+         bien2 = Bien(2,"chaise",2,datetime.date(2024, 11, 12), 19.99, 1,1,1,1)
+         Bien.put_bien(bien2)
          self.assertEqual(bien.get_date_achat(), datetime.date(2024, 11, 12))
          self.assertEqual(bien.get_id_bien(), 1)
          self.assertEqual(bien.get_prix(), 19.99)
