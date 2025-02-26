@@ -24,7 +24,7 @@
                 {% elif category == 'error' %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="submit" name="recherche_submit" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -91,12 +91,11 @@
                                 {{ form_inscription.password(size=50, class_="form-control", placeholder="motdepasse123") }}
                             </div>  
                             <span class="form-control-static">
-                                <button type="submit" class="btn btn-primary mb-3">S'inscrire</button>
+                                <button type="submit" name="inscription_submit" class="btn btn-primary mb-3">Inscrire l'utilisateur</button>
                             </span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Inscrire l'utilisateur</button>
                     </div>
                 </form>
             </div>
