@@ -32,6 +32,7 @@ utilisateur_bp = Blueprint('utilisateurs', __name__)
 
 
 @utilisateur_bp.route("/lesUtilisateurs/", methods=("GET", "POST",))
+@login_required
 def lesUtilisateurs() -> str:
     """
     Affiche les utilisateurs
@@ -41,13 +42,14 @@ def lesUtilisateurs() -> str:
     """
     form = RechercheForm()
     form_inscription = InscriptionForm()
+    res_recherche = None
 
     # barre de recherche
-    if "recherche_submit" in request.form:  
-        if form.is_submitted() and form.validate_on_submit():
-            proprio = form.champ.data
-            res_recherche = Proprietaire.get_by_nom(proprio)
-            return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche, form_inscription = form_inscription)
+    if form.is_submitted() and form.validate_on_submit():
+        proprio = form.champ.data
+        res_recherche = Proprietaire.get_by_nom(proprio)
+        print(res_recherche)
+        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche, form_inscription = form_inscription)
         
     # inscrire un utilisateur
     if "inscription_submit" in request.form:
@@ -64,3 +66,17 @@ def lesUtilisateurs() -> str:
     
     proprios = Proprietaire.get_all()
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
+
+@utilisateur_bp.route("/supprimer_utilisateur/<int:utilisateur_id>", methods=["POST"])
+@login_required
+def supprimer_utilisateur(utilisateur_id):
+    """
+    Supprime un utilisateur 
+    """
+    utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
+    user = User.query.get_or_404(utilisateur.get_mail())
+    db.session.delete(utilisateur)
+    db.session.delete(user)
+    db.session.commit()
+    flash("Utilisateur supprimé avec succès!", "success")
+    return redirect(url_for('utilisateurs.lesUtilisateurs'))

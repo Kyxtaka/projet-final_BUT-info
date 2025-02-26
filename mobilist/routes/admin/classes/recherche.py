@@ -5,4 +5,4 @@ from wtforms.validators import DataRequired
 
 class RechercheForm(FlaskForm):
     champ = StringField(validators=[DataRequired()])
-    recherche = SubmitField()
+    rechercher = SubmitField()

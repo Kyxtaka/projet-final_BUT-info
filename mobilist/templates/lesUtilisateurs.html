@@ -24,7 +24,7 @@
                 {% elif category == 'error' %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="submit" name="recherche_submit" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -39,27 +39,33 @@
             {{ form.champ(size=50, class_="form-control", placeholder="Rechercher un utilisateur par son nom") }}
         </div>
         <div class="form-control-static">
-            {{ form.recherche(class_="submit-button") }}
+            {{ form.rechercher(class_="submit-button") }}
         </div>
         </form>
     </div>
 
-    {% if res_recherche %}
-    <div class="resultat">
-        {% for personne in res_recherche %}
-        <li> {{ personne.nom }} {{ personne.prenom }} </li>
-        {% endfor %}
-    </div>
-    {% else %}
-        <p>Aucun utilisateur trouvé pour ce nom.</p>
-    {% endif %}
-
     {% if not res_recherche %}
     <div class="proprios">
         {% for personne in proprios %}
-        <li> {{ personne.nom }} {{ personne.prenom }} </li>
+        <form method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur', utilisateur_id=personne.id_proprio) }}">
+            <div>
+                <span>{{ personne.nom }} {{ personne.prenom }}</span>
+                <button type="submit" name="supprimer_submit" class="btn btn-danger">Supprimer</button>
+            </div>
+        </form>
+
         {% endfor %}
     </div>
+    {% else %}
+        {% if res_recherche != None %}
+        <div class="resultat">
+            {% for personne in res_recherche %}
+            <li> {{ personne.nom }} {{ personne.prenom }} </li>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>Aucun utilisateur trouvé pour ce nom.</p>
+        {% endif %}
     {% endif %}
 
     <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Inscrire un utilisateur</a></p>
