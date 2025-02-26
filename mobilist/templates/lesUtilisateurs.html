@@ -12,6 +12,25 @@
 <div class="accueil-admin"> 
 <main>
     <h2>Gestion des utilisateurs de l'application</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="alert alert-success alert-dismissible fade show" id="flash-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% elif category == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     
     <div class="recherche">
         <form class="form-horizontal" role="form"  method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
@@ -66,14 +85,14 @@
                             <div class="form-control-static">
                                 <p>{{ form_inscription.mail.label }}</p>
                                 {{ form_inscription.mail(size=50, class_="form-control", placeholder ="email@exemple.com") }}
-                                {% if present %}
-                                <div role="tooltip" id="infobulle">Compte déjà existant</div>
-                                {% endif %}
                             </div>
                             <div class="form-control-static">
                                 <p>{{ form_inscription.password.label }}</p>
                                 {{ form_inscription.password(size=50, class_="form-control", placeholder="motdepasse123") }}
                             </div>  
+                            <span class="form-control-static">
+                                <button type="submit" class="btn btn-primary mb-3">S'inscrire</button>
+                            </span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>

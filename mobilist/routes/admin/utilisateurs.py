@@ -1,3 +1,4 @@
+from flask import flash
 from ...models.classes.User import User
 from ...models.classes.TypeBien import TypeBien
 from ...models.classes.Proprietaire import Proprietaire
@@ -39,18 +40,20 @@ def lesUtilisateurs() -> str:
         la page 'lesUtilisateurs' est affichée
     """
     form = RechercheForm()
+    form_inscription = InscriptionForm()
     if form.is_submitted() and form.validate_on_submit():
         proprio = form.champ.data
         res_recherche = Proprietaire.get_by_nom(proprio)
-        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche)
-    form_inscription = InscriptionForm()
+        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche, form_inscription = form_inscription)
     if form_inscription.is_submitted() and form_inscription.validate_on_submit():
         user = form_inscription.get_authenticated_user()
         if user:
             login_user(user)
-            return render_template("lesUtilisateurs.html", form_inscription=form_inscription, present=True)
+            flash("Ce compte existe déjà.", "error")
+            return render_template("lesUtilisateurs.html",form = form, form_inscription = form_inscription, present=True)
         create_user(form_inscription.mail.data, form_inscription.password.data, "proprio")
         User.modifier(form_inscription.mail.data, form_inscription.nom.data, form_inscription.prenom.data)
+        flash("Utilisateur ajouté avec succès!", "success")
         return redirect(url_for('utilisateurs.lesUtilisateurs'))
     proprios = Proprietaire.get_all()
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
