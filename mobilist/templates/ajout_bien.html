@@ -5,7 +5,9 @@
 {{ super()}}
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/lecture_fichier.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/lecture_fichier.js') }}"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 {{ super()}}
 <!-- utilisation de JS pour actualiser les choix de pieces en fonction du logement -->
 <script>
@@ -60,6 +62,83 @@
                 })
                 .catch(error => console.error("Erreur lors de l'obtention des pieces:", error));
         });
+
+
+        // function messagePopup(overlay_id) {
+        //     console.log("messagePopup",overlay_id); // logs de l'overlay
+        //     const overlay = document.getElementById(overlay_id);
+        //     overlay.classList.toggle('show');
+        //     alert("Lecture du justificatif en cours");
+        // }
+
+        const fileInput = document.getElementById("justif_input");
+        console.log("fsqbfqsmnfipqsnfmlqsnfqms")
+        console.log("HTML elem",fileInput); // logs du fichier selectionne
+        fileInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            console.log(file);
+            
+            if (!file) return; 
+            console.log("file type",file.type); // logs du fichier selectionne
+            const allowedExtensions = new Array(
+                "image/jpeg", 
+                "image/png", 
+                "image/jpg", 
+                "application/pdf"
+            );
+
+            if (!allowedExtensions.find(ext => ext === file.type)) {
+                console.log("type de fichier trouvé",file.type); // logs du type de fichier
+                console.error("Type de fichier non supporté");
+                return;
+            }
+
+            const matchNames = new Array(
+                "nom",
+                "prix",
+                "date",
+            );
+
+            const overlay = document.getElementById('import-loading');
+            overlay.classList.toggle('show');
+            // console.log("overlay-container",document.querySelector(".overlay-container")); // logs de l'overlay
+            function fillForm(name, price, date) {
+                console.log("fillForm with: ", name, price, date);
+                const nomInput = document.getElementById("auto-fill-nom");
+                const prixInput = document.getElementById("auto-fill-prix");
+                const dateInput = document.getElementById("auto-fill-date");
+                (name) ? nomInput.value = name : "";
+                (price) ? prixInput.value = price : "";
+                if (date) {
+                    let formatedDate = date.replace(/(\d{2})[-\/](\d{2})[-\/](\d{4})/, "$3-$2-$1");
+                    dateInput.value = formatedDate;
+                }
+            }
+
+            if (file.type === "application/pdf") {
+                console.log("pdf file");
+                const reader = new FileReader();
+                const pdfText = reader.readAsText(file);
+                console.log("pdfText",pdfText); // logs du texte extrait du fichier
+            }else {
+                const { data: { text } } = await Tesseract.recognize(file, "eng+fra", { logger: m => console.log(m) });
+                console.log("text",text); // logs du texte extrait du fichier
+                const nameMatch = text.match(/Nom[:\s]+(\w+)/i);
+                const dateMatch = text.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})/);
+                const priceMatch = text.match(/(\d+[\.,]?\d*)\s?(€|EUR|\$|USD)/);
+                console.log("nameMatch",nameMatch); // logs du nom extrait du fichier
+                console.log("dateMatch",dateMatch); // logs de la date extrait du fichier
+                console.log("priceMatch",priceMatch); // logs du prix extrait du fichier
+                console.log("nameMatch[1]",nameMatch[1]); // logs du nom extrait du fichier
+                const nameParam = nameMatch ? nameMatch[1] : "";
+                const priceParam = priceMatch ? priceMatch[1] : "";
+                const dateParam = dateMatch ? dateMatch[1] : "";
+                fillForm(nameParam, priceParam, dateParam);
+            }
+            overlay.classList.toggle('show');
+
+        });
+            
     });
 </script>
 {% endblock %}
@@ -76,7 +155,7 @@
                 {{ form.logement(class="form-group-element", id="logement-select") }}
 
                 <label class="form-group-element" for="nom" id="form_nom">Nom du bien</label>
-                {{ form.nom_bien(class="form-group-element") }}
+                {{ form.nom_bien(class="form-group-element", id="auto-fill-nom") }}
 
                 <label class="form-group-element" for="categorie" id="form_cat">Categorie du bien</label>
                 {{ form.categorie_bien(class="form-group-element") }}
@@ -88,17 +167,17 @@
                 {{ form.piece_bien(class="form-group-element", id="piece-select") }}
 
                 <label class="form-group-element" for="prix" id="form_prix">Prix neuf</label>
-                {{ form.prix_bien(class="form-group-element") }}
+                {{ form.prix_bien(class="form-group-element", id="auto-fill-prix") }}
 
                 <label class="form-group-element" for="date" id="form_date">Date de l'achat</label>
-                {{ form.date_bien(class="form-group-element") }}
+                {{ form.date_bien(class="form-group-element", id="auto-fill-date") }}
 
                 <label class="form-group-element" for="description" id="form_desc">Description</label>
                 {{ form.description_bien(class="form-group-element") }}
             </div>
             <div id="right-side" data-intro="Vous pouvez ajouter votre justificatif pour préremplir le forumulaire" data-step="3">
                 <label class="form-group-element" for="justificatif" id="form_justif">Justificatif</label>
-                {{ form.file(class="form-group-element")}}
+                {{ form.file(class="form-group-element", id="justif_input") }}
             </div>
         </div>
         {% if error == True %}
@@ -110,5 +189,13 @@
         {% endif %}
         <button class="btn btn-primary mb-3" id="formsumbmit" type="submit">Ajouter</button> 
     </form>
+</div>
+<div class="overlay-container" id="import-loading">
+    <div class="popup-box">
+        <span class="close" onclick="document.getElementById('import-loading').classList.toggle('show')">&times;</span>
+        <h2>Importation en cours</h2>
+        <p>Lecture des données du justificatif</p>
+        <div class="loader"></div>	
+    </div>
 </div>
 {% endblock %} 
