@@ -1,31 +1,31 @@
-
+# Importations de modules
 from flask_wtf import FlaskForm
-from mobilist.models import *
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
 import os
 import spacy
-from PyPDF2 import PdfReader
-import ast
-import webbrowser
 nlp = spacy.load("fr_core_news_md")
-from reportlab.pdfgen import canvas #pip install reportlab
-from datetime import datetime, date
-from reportlab.lib.units import cm
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
-from .classes.UploadFileForm import UploadFileForm, UPLOAD_FOLDER_JUSTIFICATIF
+from datetime import date
 from .classes.AjoutBienForm import AjoutBienForm
-from flask_login import login_user , current_user, AnonymousUserMixin
 from flask import request
 from flask_login import login_required
+from ...app import db
+
 
 from flask import Blueprint
 from flask import (
-    flash, jsonify, 
     render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
+    redirect, 
+    render_template, url_for
     )
 
 
@@ -34,6 +34,13 @@ upload_bp = Blueprint('upload', __name__)
 @upload_bp.route("/bien/ajout", methods=("GET", "POST",))
 @login_required
 def ajout_bien():
+    """
+    Fonction qui permet d'ajouter un bien via un formulaire d'ajout d'un bien
+
+    Returns :
+        - Si le formulaire est soumis et valide : redirection vers la page d'accueil
+        - Si le formulaire rencontre une erreur : réaffichage du formulaire avec un message d'erreur
+    """
     form_bien = AjoutBienForm()
     if form_bien.validate_on_submit():
         try:
@@ -51,6 +58,12 @@ def ajout_bien():
                             error=False)
 
 def handle_form_bien(form_bien: AjoutBienForm):
+    """
+    Fonction qui ajoute un bien dans la base de données à partir des informations du le formulaire 'AjoutBienForm'
+
+    Args :
+        form_bien (AjoutBienForm) : le formulaire avec les informations du bien à ajouter
+    """
     try:
         session = db.session
 
@@ -89,6 +102,17 @@ def handle_form_bien(form_bien: AjoutBienForm):
         print("Exception:", e)
 
 def link_justification_bien(form: AjoutBienForm, file_path: str, id_bien: int) -> bool:
+    """
+    Relie un justificatif à un bien en l'ajoutant à la base de données
+
+    Args : 
+        form (AjoutBienForm) : le formulaire avec le fichier justificatif à ajouter
+        file_path (str) : le chemin du fichier justificatif
+        id_bien (str) : identifiant du bien auquel lié le fichier
+
+    Returns : 
+        bool : 'True' si l'ajout du justificatif à la base de données a réussi, 'False' si non
+    """
     session = db.session
     file = form.file.data
     id_justificatif = Justificatif.next_id()
@@ -114,6 +138,12 @@ def link_justification_bien(form: AjoutBienForm, file_path: str, id_bien: int) -
     return True
 
 def form_logs(form: FlaskForm):
+    """
+    Affiche les informations d'un formulaire soumis
+
+    Args :
+        form (FlaskForm) : le formulaire à analyser
+    """
     print("form sumbited:",form.is_submitted())
     print("form value valid:",form.validate_on_submit())
     if isinstance(form, AjoutBienForm):
@@ -128,6 +158,14 @@ def form_logs(form: FlaskForm):
 
 @upload_bp.route("/modifierbien/", methods=["POST", "GET"])
 def modifier_bien():
+    """
+    Fonction qui permet de modifier les informations d'un bien existant dans la base de données
+
+    Returns :
+        - Si la méthode est 'GET' : le formulaire est retourné avec les données actuelles du bien
+        - Si la méthode est 'POST' et que le formulaire est valide : les données du bien sont mises à jour et l'utilisateur est redirigé vers la page d'accueil de la connexion
+        - Si une erreur se produit : le formulaire est retourné avec un message d'erreur
+    """
     id = request.values.get("id")
     bien = Bien.get_data_bien(id)
     form_bien = AjoutBienForm()

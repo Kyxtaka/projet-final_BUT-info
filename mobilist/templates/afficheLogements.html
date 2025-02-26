@@ -14,7 +14,7 @@
     <img id="img-log" src="{{ url_for('static',filename='img/logement.png') }}" alt="page affichage logements"/>
 </div> 
 
-<div class="list-logements">
+<div class="list-logements" data-intro="Retrouvez ici tous vos logements" data-step="1">
     <h1> Mes logements </h1>
     <div class="log">
       {% if contenu %}
@@ -51,11 +51,26 @@
         <p class="no-content"> Vous n'avez pas ajouté de logements </p>
     {% endif %}  
 </div>
-<div class="buttons">
+<div class="buttons" data-intro="Après avoir sélectionné un logement, vous pouvez soit le supprimer soit le modifier" data-step="2">
     <button class="action-btn" id="supprimer" onclick="toggleFormPopup('delete-popup-form')">SUPPRIMER</button>
     <button class="action-btn" id='modifier' onclick="toggleFormPopup('edit-popup-form')">MODIFIER</button>
 </div> 
 
+
+<script>
+    function redirectToRoomManagement(url) {
+        var selectedLogementID = selected_logement_dbID;
+        console.log("html log id: " + selectedLogementID);
+        if (selectedLogementID != null) {
+            var url = "{{ url_for('logements.manage_room', id=0) }}".replace("0", selectedLogementID);
+            url += "?ClientID={{ current_user.proprio.id_proprio }}";
+            window.location.href = url;
+            //window.location.href = "{{url_for('logements.manage_room', id=1)}}" + "?ClientID=" + "{{current_user.proprio.id_proprio}}";
+        }else {
+            console.log("No logement selected");
+        }
+    }
+</script>
 <!-- For de modification -->
 <div id="edit-popup-form" class="overlay-container">
     <div class="popup-box">
@@ -79,6 +94,8 @@
 
             <label class="form-label" for="description">Description logement:</label>
             <input class="form-input form-textarea" type="text" placeholder="Description du logement" id="edit-description-input" name="description">
+
+            <button type="button" class="btn-open-room-form" onclick="redirectToRoomManagement()">Gerer les pièces</button>
 
             <div class="form-btn-container">
                 <button type="button" class="btn-close-popup" onclick="toggleFormPopup('edit-popup-form')">Annuler</button>

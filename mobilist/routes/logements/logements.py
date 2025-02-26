@@ -1,23 +1,41 @@
-from mobilist.models import *
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
+import json
+
 from flask import Blueprint
 from flask import (
-    flash, jsonify, 
+    jsonify, 
     render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
+    redirect, 
+    render_template, url_for
     )
-from flask import request
+from flask import request, jsonify
 from flask_login import login_required
 from flask_login import login_user, current_user
-import json
+from ...app import db
 
 
 logements_bp = Blueprint('logements', __name__)
 
 @logements_bp.route("/afficheLogements/", methods=("GET", "POST",))
 @login_required
-def affiche_logements():
+def affiche_logements() -> str:
+    """
+    Fonction qui permet à un utilisateur de voir ses logements, de les supprimer ou de les modifier
+
+    Returns :
+        - Si la méthode est GET : la page avec la liste des logements du propriétaire est affichée
+        - Si la méthode est POST : après la suppression ou la modification d'un logement, la page avec la mise à jour de la liste des logements est affichée
+    """
     session = db.session
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = proprio.logements
@@ -28,7 +46,7 @@ def affiche_logements():
         contenu = True
     type_logement = [type for type in LogementType]
     if request.method == "POST": #utilisation de request car pas envie d'utiliser les méthodes de flask, car j utilise JS
-        print("recerption de la requete")
+        print("réception de la requete")
         form_type = request.form.get("type-form")
         print("form_type",form_type)
         match form_type:
@@ -67,7 +85,6 @@ def affiche_logements():
                     session.rollback()
                     print("Erreur lors de la modification du logement")
                     print(e)
-                # return render_template("updateLogement.html", logement=logement)
         proprio = Proprietaire.query.get(current_user.id_user)
         logements = proprio.logements
         return render_template("afficheLogements.html", logements=logements, type_logement=type_logement, contenu=contenu)
@@ -75,7 +92,15 @@ def affiche_logements():
 
 
 @logements_bp.route("/logement/ajout", methods =["GET","POST"])
-def ajout_logement():
+@login_required
+def ajout_logement() -> str:
+    """
+    Fonction qui permet d'ajouter un nouveau logement
+
+    Returns :
+        - Si la méthode est GET : le formulaire d'ajout d'un logement est affiché
+        - Si la méthode est POST : l'utilisateur est redirigé vers la page d'accueil après l'ajout du logement et des pièces
+    """
     if request.method == "POST":
         print("Ajout logement")
         print(f"form data: {request.form}")
@@ -105,7 +130,97 @@ def ajout_logement():
             print(e)
     return render_template("ajout_logement.html", type_logement=[type for type in LogementType])
 
+@logements_bp.route("/logement/manage_room/<int:id>", methods=["GET", "POST", "PUT", "DELETE"])
+@login_required
+def manage_room(id):
+    accessID = request.args.get("ClientID")
+    print("access to manage romm page with logement ID:", id)
+    print("Client ID request param:", accessID)
+    print("Current user database ID:", current_user.id_user)
+    print("Check user access logement perm:",check_logement_access(id))
+    if not check_logement_access(id):
+        print("Access denied")
+        return redirect(url_for("accueil_connexion"))
+    print("Access granted")
+    logement = Logement.query.get(id)
+    if logement is None: return redirect(url_for("accueil_connexion"))
+    try: 
+        handle_manage_room_request(request, id) 
+    except Exception as e:
+        print("Erreur lors de la gestion de la pièce")
+    pieces = Piece.query.filter_by(id_logement=id).all()
+    print("pieces:", pieces)
+    return render_template("manage_room.html", rooms=pieces, logement=logement)
+
+def handle_manage_room_request(request, id):
+    print("handling request - params:", request, "LogementID",id)
+    print("received request:", request)
+    print("request.method:", request.method)
+    match request.method:
+        case "POST":
+            room_name = request.form.get("roomName")
+            room_desc = request.form.get("roomDesc")
+            print("request data:", request.form)
+            ajout_piece_logement(Logement.query.get(id), room_name, room_desc)
+            return url_for("logements.manage_room", id=id)
+        
+        case "PUT": 
+            data = request.get_json()
+            print("request data:", data)
+            logement_id = data.get("logementId")
+            room_id = data.get("roomId")
+            room_name = data.get("roomName")
+            room_desc = data.get("roomDesc")
+            try: 
+                piece = Piece.query.get((room_id, logement_id))
+                piece.set_nom_piece(room_name)
+                piece.set_desc_piece(room_desc)
+                db.session.commit()
+                print("Piece modifiée")
+            except Exception as e:
+                db.session.rollback()
+                print("Erreur lors de la modification de la pièce")
+                print(e)
+            return url_for("manage_room", id=id)
+        
+        case "DELETE": 
+            deleted_item_id= request.args.get("roomId")
+            try: 
+                piece = Piece.query.get((deleted_item_id, request.args.get("logementId")))
+                piece.delete()
+                db.session.commit()
+                print("Piece supprimée")
+            except Exception as e:
+                db.session.rollback()
+                print("Erreur lors de la suppression de la pièce")
+                print(e)
+
+def check_logement_access(id):
+    result = False
+    try:
+        logement = Logement.query.get(id)
+        proprio = Proprietaire.query.get(current_user.id_user)
+        if logement in proprio.logements:
+            result = True
+        else:
+            result = False
+    except Exception as e:
+        print("Erreur lors de la vérification de l'accès au logement")
+    return result
+
 def create_logement(name: str, type: str, address: str, description: str) -> Logement:
+    """
+    Fonction qui permet de créer un nouveau logement en l'ajouter à la base de données
+
+    Args :
+        name (str) : le nom du logement
+        type (str) : le type du logement
+        address (str) : l'adresse du logement
+        description (str) : la description du logement
+
+    Returns : 
+        (Logement) : le nouvel logement créé
+    """
     session = db.session
     id_logement = Logement.next_id()
     print("id_logement:", id_logement)
@@ -129,7 +244,19 @@ def create_logement(name: str, type: str, address: str, description: str) -> Log
         print(e)
     return new_logement
 
-def ajout_piece_logement(Logement: Logement, room_name: str = "", desc: str = ""):
+def ajout_piece_logement(Logement: Logement, room_name: str = "", desc: str = "") -> bool:
+    """
+    Fonction qui permet d'ajouter une nouvelle pièce à un logement
+
+    Args :
+        Logement (Logement) : le logement auquel la pièce doit être ajoutée
+        room_name (str) : le nom de la pièce, une chaîne vide par défaut
+        desc (str) : la description de la pièce, une chaîne vide par défaut
+
+    Returns :
+        (bool) : 'True' si la pièce a été ajoutée avec succès, 'False' si non
+
+    """
     session = db.session
     success = False
     try:
@@ -152,6 +279,16 @@ def ajout_piece_logement(Logement: Logement, room_name: str = "", desc: str = ""
     return success
 
 def link_logement_owner(logement: Logement, proprio: Proprietaire):
+    """
+    Relie un logement à un propriétaire dans la base de données
+
+    Args :
+        logement (Logement) : le logement
+        proprio (Proprietaire) : le propriétaire
+
+    Return :
+        (bool) : 'True' si la liaison a été effectuée avec succès, 'False' si non
+    """
     session = db.session
     success = False
     try:
@@ -173,6 +310,15 @@ def link_logement_owner(logement: Logement, proprio: Proprietaire):
 @logements_bp.route("/get_pieces/<int:logement_id>")
 @login_required
 def get_pieces(logement_id):
+    """
+    Récupère toutes les pièces d'un logement donné et les renvoie sous forme d'un JSON
+
+    Args :
+        logement_id (int) : l'ID du logement
+
+    Return :
+        (json) : un JSON avec la liste des pièces associées au logement, avec pour chaque pièce son 'id' et son 'name'
+    """
     pieces = Piece.query.filter_by(id_logement=logement_id).all()
     pieces_data = [{"id": piece.get_id_piece(), "name": piece.get_nom_piece()} for piece in pieces]
     return jsonify({"pieces": pieces_data})

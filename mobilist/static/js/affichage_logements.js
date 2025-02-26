@@ -13,9 +13,9 @@ function Logement(logement_element_id, id_logement, nom_logement, type_logement,
     }    
 
 // declaration des variables
+// let selected_logement_elementID = String();
 const array_logement_obj = Array();
 const array_logement = Array();
-let selected_logement_elementID = String();
 let selected_logement_dbID
 
 // Attribution des EventListener apres le DOM est chargé

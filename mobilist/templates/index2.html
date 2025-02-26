@@ -7,12 +7,14 @@
     {% block styles %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet", href="{{ url_for('static',filename='index.css') }}">
+    <link rel="stylesheet", href="{{ url_for('static',filename='index2.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.1.0/introjs.min.css">
+
     {% endblock %}
     <title>MobiList</title>
     {% block scripts %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-xrR3fF2ZqRG5FO9U2mDqDlZ9UJ0n6UJ0U2rZuXrU2mZ"> </script>
-   
-    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-xrR3fF2ZqRG5FO9U2mDqDlZ9UJ0n6UJ0U2rZuXrU2mZ" defer> </script>
+      {% endblock %}
     {% endblock %}
   </head>
   <script>
@@ -27,9 +29,13 @@
         section.classList.add('visible');
       }
     }
-
+    function demarrerTutoriel() {
+      introJs().start();
+    }
+</script>
+<body>
   </script>
-    <div class="index">
+    <div class="index d-flex flex-column min-vh-100">
     <header>
       <!-- Fixed navbar --> 
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-white" id="navbar">
@@ -82,7 +88,8 @@
               <ul class="list-unstyled">
                 <li><a id="lien-info-compte" href="{{ url_for('mon_compte') }}"> Mes informations </a></li>
                 <li><a id="lien-aide-compte" href="https://docs.google.com/document/d/16dpaxeVN0CVKy709dVxJmXKVClDkCGof3maOtLKUEs4/edit?usp=sharing"> Aide </a></li>
-                <li><a id="lien-deconnexion" href="{{ url_for('accueil') }}"> Déconnexion </a></li>
+                <li><a id="lien-deconnexion" href="{{ url_for('login.logout') }}" href="#"> Déconnexion </a></li>
+                <li><a id="lien-tutoriel" href="#" onclick="demarrerTutoriel()"> Tutoriel </a></li>
               </ul>
               <button onclick="afficherMenu()" class="btn btn-sm btn-primary pull-left overlay-close" id="btn-fermer" type="button">
                 Fermer
@@ -95,7 +102,7 @@
         </nav>
     </header>          
   </header>
-  <main class="flex-shrink-0">
+  <main class="main d-flex flex-column">
     <div class="content">
     {% block content %} 
       
@@ -109,99 +116,10 @@
       <p id="groupe"> © AKHTAR NAIMA - VALIN OPHÉLIE - BOCQUET CLÉMENCE - VILCOQ YOHANN - RANDRIANTSOA NATHAN </p>
     </div>
   </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.1.0/intro.min.js"></script>
+  <script>
+    console.log("Intro.js chargé !");
+    console.log(typeof introJs);
+  </script>
 </body>
-<style>
-
-#panneau-droit {
-    visibility: hidden;
-    position: fixed;
-    right: 0;
-    top : 98px;
-    width: 250px;
-    height: 45%;
-    opacity: 0;
-    transform: translateX(100%);
-    background-color: rgba(255,255,255,0.8);
-    box-sizing: border-box;
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s; 
-}
-
-#panneau-droit.visible {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(0);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    
-}
-
-.modal-header {
-    background-color: initial;
-    background-image: linear-gradient(-180deg, #5e5df0, #2a2ae7);
-    color: #FFFFFF;
-}
-
-
-#btn-fermer {
-    background-color: initial;
-    background-image: linear-gradient(-180deg, #5e5df0, #2a2ae7);
-    border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-    color: #FFFFFF;
-    cursor: pointer;
-    display: inline-block;
-    font-family: inherit;
-    font-weight: 500;
-    height: 40px;
-    line-height: 40px;
-    outline: 0;
-    overflow: hidden;
-    padding: 0 20px;
-    pointer-events: auto;
-    position: relative;
-    text-align: center;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    vertical-align: top;
-    white-space: nowrap;
-    width: 100%;
-    z-index: 9;
-    border: 0;
-    transition: box-shadow .2s;
-}
-
-#btn-fermer:hover {
-  box-shadow: rgba(55, 0, 255, 0.5) 0 3px 8px;
-}
-
-.modal-body ul {
-    display: flex;
-    flex-direction: column;
-    font-size: 30px ;
-    justify-content: center;
-    align-items: center;
-}
-
-  
-#lien-info-compte,
-#lien-aide-compte,
-#lien-deconnexion {
-    display: block;    
-    width: 100%;       
-    text-align: center; 
-    padding: 10px 0;    
-    color: inherit;   
-    text-decoration: none; 
-    white-space: nowrap;   
-    
-}
-
-#lien-info-compte:hover,
-#lien-aide-compte:hover,
-#lien-deconnexion:hover {
-    background-color: rgb(219, 219, 219);
-}
-</style>
-
 </html>
-

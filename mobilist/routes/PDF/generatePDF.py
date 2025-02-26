@@ -1,29 +1,41 @@
 import io
-from flask import (
-    flash, jsonify, 
-    render_template, 
-    send_file, redirect, 
-    render_template, url_for, 
-    render_template_string
-    )
-from mobilist.app import app, db
+
+# Importations de modules
+from flask import send_file
+from mobilist.app import db
 from reportlab.pdfgen import canvas
 from datetime import datetime, date
 from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
 import spacy
-from PyPDF2 import PdfReader
-import ast
-import webbrowser
 nlp = spacy.load("fr_core_news_md")
 from mobilist.app import app
-from mobilist.models import *
+from ...models.classes.User import User
+from ...models.classes.TypeBien import TypeBien
+from ...models.classes.Proprietaire import Proprietaire
+from ...models.classes.Logement import Piece
+from ...models.classes.Logement import LogementType
+from ...models.classes.Logement import Logement
+from ...models.classes.Justificatif import Justificatif
+from ...models.classes.Categorie import Categorie
+from ...models.classes.Logement import Bien
+from ...models.classes.Logement import AVOIR
+from ...models.classes.Avis import Avis
+from sqlalchemy.sql.expression import func
 
 
 
 def generate_pdf_tous_logements(proprio,logements) -> io.BytesIO:
+    """
+    Fonction qui génère un inventaire en PDF, récapitulant les logements et biens d'un propriétaire
+
+    Args:
+        proprio (Proprio) : le propriétaire
+        logements (list[Logement]) : la liste des logements du propriétaire
+
+    Returns:
+        (io.BytesIO) : l'inventaire PDF généré
+    """
     buffer = io.BytesIO()
     canva = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -86,7 +98,7 @@ def generate_pdf_tous_logements(proprio,logements) -> io.BytesIO:
             biens_par_categorie = {}
             total_piece = 0
             for bien, categorie in biens:
-                # vétusté = (âge de l'équipement/durée de vie estimée) x 100, ici on considère que la durée de vie = 10ans  (source : www.pap.fr)
+                # Calcul de la vétusté : (âge de l'équipement/durée de vie estimée) x 100, ici on considère que la durée de vie = 10ans (source : www.pap.fr)
                 age_equipement = datetime.now().year - bien.date_achat.year
                 vetuste = age_equipement / 10 * 100
                 total_current_piece = bien.prix - vetuste
@@ -110,7 +122,7 @@ def generate_pdf_tous_logements(proprio,logements) -> io.BytesIO:
                 y -= 0.5 * cm  # Espace entre catégories
             canva.setFont("Helvetica-Bold", 11)
             canva.drawRightString(width - 2 * cm, y, f"Total : {total_piece}€")
-            y -= 1 * cm  
+            y -= 1 * cm 
             # Ligne de fin
             canva.line(1 * cm, y, width - 2 * cm, y)
             y -= 1 * cm        
@@ -120,6 +132,18 @@ def generate_pdf_tous_logements(proprio,logements) -> io.BytesIO:
 
 
 def generate_pdf(proprio,logement_id,sinistre_annee,sinistre_type) -> io.BytesIO:
+    """
+    Fonction qui génère un inventaire en PDF, récapitulant les biens d'un logement spécifié
+
+    Args : 
+        proprio (Proprio) : le propriétaire
+        logement_id (int) : l'identifiant du logement
+        sinistre_annee (int) : l'année du sinistre
+        sinistre_type (str) : le type de sinistre
+
+    Returns : 
+        (io.BytesIO) : l'inventaire PDF généré
+    """
     buffer = io.BytesIO()
     canva = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -180,7 +204,7 @@ def generate_pdf(proprio,logement_id,sinistre_annee,sinistre_type) -> io.BytesIO
         biens_par_categorie = {}
         total_piece = 0
         for bien, categorie in biens:
-            # vétusté = (âge de l'équipement/durée de vie estimée) x 100, ici on considère que la durée de vie = 10ans  (source : www.pap.fr)
+            # Calcul de la vétusté : (âge de l'équipement/durée de vie estimée) x 100, ici on considère que la durée de vie = 10ans (source : www.pap.fr)
             age_equipement = datetime.now().year - bien.date_achat.year
             vetuste = age_equipement / 10 * 100
             total_current_piece = bien.prix - vetuste

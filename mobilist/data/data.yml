@@ -451,3 +451,9 @@
   MAIL: 'christophe@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+
+- TYPE: USER
+  ID_USER: 7
+  MAIL: 'admin@mail.com'
+  ROLE: "admin"
+  PASSWORD: '1234'

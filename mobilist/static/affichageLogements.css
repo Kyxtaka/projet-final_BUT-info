@@ -125,6 +125,21 @@ section h1 {
     background-color: #4caf50;
 }
 
+.btn-open-room-form {
+    font-size: 18px;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 8px;
+    background-color: cyan;
+}
+
+.btn-open-room-form:hover {
+    background-color: green;
+}
+
 .overlay-container {
     display: none;
     position: fixed;

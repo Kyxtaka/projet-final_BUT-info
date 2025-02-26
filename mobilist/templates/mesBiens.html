@@ -106,7 +106,7 @@
 {% endblock %}
 {% block content %}
 <div class="mesBiens">
-    <div class="bandeau">
+    <div class="bandeau" data-intro="Choisissez un logement pour afficher ses pièces" data-step="1">
         <h2>Vos biens répertoriés par pièces</h2>
         <form method="GET" action="{{ url_for('biens.mesBiens') }}">
             <div class="choix_logement">
@@ -126,7 +126,7 @@
     <div class="plan">
         {% if pieces %}
             <p><em>Cliquez sur une pièce pour voir les biens contenu dans celle-ci.</em></p>
-            <table class="table">
+            <table class="table" data-intro="Visualisez les biens de vos pièces" data-step="2">
                 <tr>
                     {% for piece in pieces %}
                         <td>
