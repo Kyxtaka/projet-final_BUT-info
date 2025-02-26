@@ -43,38 +43,41 @@
     </div>
     {% endif %}
 
-    <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Ajouter un utilisateur</a></p>
+    <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Inscrire un utilisateur</a></p>
     
     <!-- Modal pour ajouter un utilisateur -->
     <div class="modal fade" id="ajtUtilisateur" tabindex="-1" role="dialog" aria-labelledby="ajtUtilisateurLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ajtUtilisateurLabel">Ajouter un utilisateur</h5>
+                    <h5 class="modal-title" id="ajtUtilisateurLabel">Inscrire un utilisateur</h5>
                 </div>
                 <form method="POST" action="{{ url_for('utilisateurs.lesUtilisateurs') }}">
-                    {{ form.hidden_tag() }}
+                    {{ form_inscription.hidden_tag() }}
                     <div class="modal-body">
-                        <div>
-                            <label class="form-label" for="name">Nom :</label>
-                            <input class="form-input" type="text" placeholder="Entrez le nom de l'utilisateur" id="edit-name-input" name="nom" required>
-                        </div>
-                        <div>
-                            <label class="form-label" for="prenom">Prénom:</label>
-                            <input class="form-input" type="text" placeholder="Entrez le prénom de l'utilisateur" id="edit-prenom-input" name="prenom" required>
-                        </div>
-                        <div>
-                            <label class="form-label" for="mail">Mail utilisateur:</label>
-                            <input class="form-input" type="email" placeholder="Mail de l'utilisateur" id="edit-mail-input" name="mail" required>
-                        </div>
-                        <div>
-                            <label class="form-label" for="motsdepasse">Mot de passe utilisateur:</label>
-                            <input class="form-input" type="password" placeholder="Mot de passe de l'utilisateur" id="edit-motsdepasse-input" name="motsdepasse" required>
-                        </div>
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.nom.label }}</p>
+                                {{ form_inscription.nom(size=50, class_="form-control", placeholder ="Nom") }}
+                            </div> 
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.prenom.label }}</p>
+                                {{ form_inscription.prenom(size=50, class_="form-control", placeholder ="Prénom") }}
+                            </div>
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.mail.label }}</p>
+                                {{ form_inscription.mail(size=50, class_="form-control", placeholder ="email@exemple.com") }}
+                                {% if present %}
+                                <div role="tooltip" id="infobulle">Compte déjà existant</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.password.label }}</p>
+                                {{ form_inscription.password(size=50, class_="form-control", placeholder="motdepasse123") }}
+                            </div>  
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Ajouter l'utilisateur</button>
+                        <button type="submit" class="btn btn-primary">Inscrire l'utilisateur</button>
                     </div>
                 </form>
             </div>

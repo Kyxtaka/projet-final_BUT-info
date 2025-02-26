@@ -10,6 +10,9 @@ from ...models.classes.Logement import Bien
 from ...models.classes.Logement import AVOIR
 from ...models.classes.Avis import Avis
 from .classes.recherche import RechercheForm
+from ..login.classes.InscriptionForm import InscriptionForm
+from mobilist.commands import create_user
+
 import json
 
 from flask import Blueprint
@@ -40,5 +43,14 @@ def lesUtilisateurs() -> str:
         proprio = form.champ.data
         res_recherche = Proprietaire.get_by_nom(proprio)
         return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche)
+    form_inscription = InscriptionForm()
+    if form_inscription.is_submitted() and form_inscription.validate_on_submit():
+        user = form_inscription.get_authenticated_user()
+        if user:
+            login_user(user)
+            return render_template("lesUtilisateurs.html", form_inscription=form_inscription, present=True)
+        create_user(form_inscription.mail.data, form_inscription.password.data, "proprio")
+        User.modifier(form_inscription.mail.data, form_inscription.nom.data, form_inscription.prenom.data)
+        return redirect(url_for('utilisateurs.lesUtilisateurs'))
     proprios = Proprietaire.get_all()
-    return render_template("lesUtilisateurs.html", form = form, proprios = proprios)
+    return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
