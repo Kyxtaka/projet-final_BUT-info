@@ -15,11 +15,12 @@
     <div class="img-logement">
         <img id="img-log" src="{{ url_for('static',filename='img/logement.png') }}" alt="page affichage logements"/> 
     </div>
-    <h1>Gerer les pieces</h1>
+    <h1>Gérer vos pieces</h1>
+    <h2>Logement : {{ logement.get_nom_logement()}}</h2>
     <div>
         <!-- <p>List piece à ajouté</p> -->
         <!-- <h2>Pièces à ajouter</h2> -->
-        <table>
+        <table class="room-table">
             <thead>
                 <tr id="first-row" style="text-align: center;">
                     <th>Nom</th>
@@ -29,7 +30,7 @@
             </thead>
             <tbody id="room-list">
                 {% for room in rooms %}
-                <tr>
+                <tr class="room-row" style="text-align: center;">
                     <td>{{ room.get_nom_piece() }}</td>
                     <td>{{ room.get_desc_piece() }}</td>
                     <td>
