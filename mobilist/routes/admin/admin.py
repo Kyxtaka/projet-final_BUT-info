@@ -1,10 +1,4 @@
-from ...models.classes.User import User
-from ...models.classes.TypeBien import TypeBien
-from ...models.classes.Proprietaire import Proprietaire
-from ...models.classes.Logement import Piece
-from ...models.classes.Logement import LogementType
-from ...models.classes.Logement import Logement
-from ...models.classes.Justificatif import Justificatif
+
 from ...models.classes.Categorie import Categorie
 from ...models.classes.Logement import Bien
 from ...models.classes.Logement import AVOIR
@@ -19,8 +13,6 @@ from flask import (
     render_template, url_for
     )
 from flask import request
-from flask_login import login_required
-from flask_login import login_user, current_user
 from ...app import db
 
 admin_bp = Blueprint('admin', __name__)
@@ -43,7 +35,7 @@ def lesBiens() -> str:
     return render_template("lesBiens.html", cat=all_categories, notif="0")
 
 
-@admin_bp.route("/lesAvis/")
+@admin_bp.route("/lesAvis/", methods=["GET", "POST"])
 def lesAvis() -> str:
     """
     Affiche les avis
@@ -51,4 +43,13 @@ def lesAvis() -> str:
     Returns :
         la page 'lesAvis' est affichée
     """
-    return render_template("lesAvis-admin.html")
+    avis = Avis.get_all()
+    if request.method == "POST":
+        id_avis = request.form.get('value_avis')
+        Avis.delete(id_avis)
+        avis = Avis.get_all()
+        return render_template("lesAvis-admin.html", avis=avis, notif="1")
+    return render_template("lesAvis-admin.html", avis=avis, notif="0")
+
+
+
