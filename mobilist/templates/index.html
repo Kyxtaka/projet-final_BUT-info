@@ -28,25 +28,22 @@
             <ul class="navbar-nav-left">
                 <li class="nav-img" >
                   <div class=BAccueil>
-                    <a href="{{ url_for('accueil') }}"><img src="{{ url_for('static',filename='img/accueil.png') }}" alt="icône accueil"/></a>
+          
                     <a class="nav-link active" aria-current="page" href="{{ url_for('accueil') }}">Accueil</a>
                   </div>
                 </li>
                 <li class="nav-img" >
                   <div class="BServices">
-                      <img src="{{ url_for('static',filename='img/services.png') }}" alt="icône nos services"/>
                       <a class="nav-link active" aria-current="page" href="{{ url_for('services') }}">Nos services</a>
                   </div>
                 </li>
                   <li class="nav-img" >
                       <div class="BContact">
-                          <img src="{{ url_for('static',filename='img/contact.png') }}" alt="icône contact"/>
                           <a class="nav-link active" aria-current="page" href="{{ url_for('accueil') + '#coord'}}">Contact</a>
                       </div>
                   </li>
                 <li class="nav-img" >
                   <div class="BAvis">
-                      <img src="{{ url_for('static',filename='img/avis.png') }}" alt="icône avis"/>
                       <a class="nav-link active" aria-current="page" href=" {{ url_for('avis')}}">Avis</a>
                   </div>
                 </li>
