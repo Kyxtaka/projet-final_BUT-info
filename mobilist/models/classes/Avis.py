@@ -104,8 +104,9 @@ class Avis(Base):
         """Supprime l'avis de la session, dans la base de données
         """
         avis = Avis.get_avis(id_avis)
-        db.session.delete(avis)
-        db.session.commit()
+        if avis is not None:
+            db.session.delete(avis)
+            db.session.commit()
 
     @staticmethod
     def ajoute(avis):

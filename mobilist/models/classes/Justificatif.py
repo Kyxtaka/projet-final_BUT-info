@@ -152,10 +152,6 @@ class Justificatif(Base):
         return liste_non_justifies
                     
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     @staticmethod
     def get_max_id():
         """Retourne l'ID maximal des justificatifs présents dans la base de données

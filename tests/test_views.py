@@ -177,4 +177,44 @@ def test_protected_ensemblebiens_success(mock_current_user, client):
     response = client.get("/ensemblebiens/")
     assert response.status_code == 200
 
-   
+@patch("mobilist.routes.views.current_user")
+def test_protected_admin_biens(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"admin@mail.com","password":"123","next":4, "id":3},follow_redirects=True)
+
+    response = client.get("/lesBiens/")
+    assert response.status_code == 200
+
+    response = client.post("/lesBiens/", data={'name': 'Téléphonie'})
+    assert response.status_code == 200
+
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_admin_avis(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"admin@mail.com","password":"123","next":4, "id":3},follow_redirects=True)
+
+    response = client.get("/lesAvis/")
+    assert response.status_code == 200
+
+    response = client.post("/lesAvis/", data={'value_avis': '1'})
+    assert response.status_code == 200
+
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_admin_user(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"admin@mail.com","password":"123","next":4, "id":3},follow_redirects=True)
+
+    response = client.get("/lesUtilisateurs/")
+    assert response.status_code == 200
+
+    response = client.post("/lesUtilisateurs/", data={'champ':'champ','recherche':''})
+    assert response.status_code == 200
+
+
+
+
