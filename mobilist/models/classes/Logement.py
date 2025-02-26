@@ -9,7 +9,9 @@ from .User import User
 from sqlalchemy import desc
 from .Justificatif import Justificatif
 import json
-
+from .Categorie import Categorie
+from .TypeBien import TypeBien
+import datetime 
 class LogementType(enum.Enum):
     __tablename__ = "LOGEMENTTYPE"
 

@@ -21,7 +21,7 @@
                         <input type="hidden" id="type-form" name="type-form" value="ADD_LOGEMENT" required>
                         <input type="hidden" id="rooms-array" name="rooms-array" value="" >
                     </div>
-                    <div>
+                    <div data-intro="Saisissez le nom de votre logement ici" data-step="1">
                         <label class="form-label" for="name">Nom :</label>
                         <input class="form-input" type="text" placeholder="Entrez le nom du logement"  id="edit-name-input" name="name" required>
                     </div>
@@ -42,11 +42,11 @@
                         <label class="form-label" for="description">Description logement:</label>
                         <input class="form-input form-textarea" type="text" placeholder="Description du logement" id="edit-description-input" name="description" default="">
                     </div>
-                    <div>
+                    <div data-intro="Ajouter une pièce à votre logement" data-step="2">
                         <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-piece-popup-form')">Ajouter pièce</button>
                     </div>
                 </div>
-                <div>
+                <div data-intro="Gérer ici vos pièces" data-step="3">
                     <!-- <p>List piece à ajouté</p> -->
                     <h2>Pièces à ajouter</h2>
                     <table>
