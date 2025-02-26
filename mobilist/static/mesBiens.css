@@ -37,31 +37,22 @@
     background-size: 16px;
 }
 
-.modal-body table{
+.modal-body table {
+    font-size: 1em;
+    min-width: 400px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     margin:auto;
 }
-.modal-body table button
 
-.modal-body th{
-    text-align: center;
+.modal-body table thead tr {
+    background-color: #612bb7;
+    color: #ffffff;
+    text-align: left;
 }
 
-.modal-body td, th{
-    padding: 10px;
-}
-
-.modal-body td{
-    border: solid 1px;
-}
-
-.modal-body td{
-    border: solid 1px;
-}
-
-.modal-body
-
-#lastRow{
-    background-color: lightpink ; 
+.modal-body th,td {
+    padding: 12px 15px;
 }
 
 .mesBiens .bandeau .choix_logement select option {
@@ -117,8 +108,12 @@
     color: white;
 }
 
-#tableBien {
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-    padding-bottom: 10px;
-    border-radius: 10px;
+#firstRow{
+    background-color: #612bb7;
+    color: white;
+}
+
+#lastRow {
+    background-color: brown;
+    color: white;
 }
