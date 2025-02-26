@@ -67,7 +67,8 @@ def accueil_admin():
     """
     Renvoie la page d'accueil d'un admin
     """
-    return render_template("accueil_admin.html")
+    avis = Avis.get_all()
+    return render_template("accueil_admin.html", avis=avis[:2])
     
 @app.route("/information")
 def information():
