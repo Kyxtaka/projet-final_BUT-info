@@ -4,6 +4,7 @@ from ..constante import Base
 from ...app import db
 from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.schema import ForeignKey
+from .Proprietaire import Proprietaire
 
 class Avis(Base):
     __tablename__ = "AVIS"
@@ -103,3 +104,19 @@ class Avis(Base):
         """
         db.session.delete(self)
         db.session.commit()
+
+    @staticmethod
+    def max_id():
+        """get max id categorie"""
+        max_id = db.session.query(func.max(Avis.id_avis)).scalar()
+        return max_id
+
+    @staticmethod
+    def get_all():
+        """Getter de tous les categories
+
+        Returns:
+            list<Categorie>: tous les categories
+        """
+        return db.session.query(Avis, Proprietaire).join(Proprietaire).all()
+        
