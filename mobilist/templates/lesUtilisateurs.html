@@ -1,11 +1,12 @@
 {% extends "index_admin.html" %}
 {% block styles %}
 {{ super() }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 {% block scripts %}
 {{ super() }}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-7nV2Yr6iX5oml2YtT2h32JwH6dd0xWvXa6A3j6h5olDL2Otj7Wf7hdIK+ESihA5r" crossorigin="anonymous"></script>
 {% endblock %}
 {% block content %}
 <div class="accueil-admin"> 
@@ -13,7 +14,7 @@
     <h2>Gestion des utilisateurs de l'application</h2>
     
     <div class="recherche">
-        <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
+        <form class="form-horizontal" role="form"  method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
             {{ form.hidden_tag() }} 
         <div class="form-control-static">
             {{ form.champ(size=50, class_="form-control", placeholder="Rechercher un utilisateur par son nom") }}
@@ -42,33 +43,43 @@
     </div>
     {% endif %}
 
-    <div id="first-collumn" style="text-align: center"; >
-        <div>
-            <input type="hidden" id="type-form" name="type-form" value="ADD_UTILISATEUR" required>
-            <input type="hidden" id="utilisateurs-array" name="utilisateurs-array" value="" >
-        </div>
-        <div>
-            <label class="form-label" for="name">Nom :</label>
-            <input class="form-input" type="text" placeholder="Entrez le nom du utilisateur"  id="edit-name-input" name="nom" required>
-        </div>
-        <div>
-            <label class="form-label" for="type">Prénom:</label>
-            <input class="form-input" type="text" placeholder="Entrez le prénom du utilisateur"  id="edit-name-input" name="prenom" required>
-        </div>
-        <div>
-            <label class="form-label" for="address">Mail utilisateur:</label>
-            <input class="form-input" type="text" placeholder="Mail du utilisateur" id="edit-adress-input" name="mail" required>
-        </div>
-        <div>
-            <label class="form-label" for="description">Mots de passe utilisateur:</label>
-            <input class="form-input form-textarea" type="text" placeholder="Mots de passe du utilisateur" id="edit-description-input" name="motsdepasse" default="">
-        </div>
-        <div>
-            <button type="button" class="btn-open-room-form" onclick="toggleFormPopup('add-piece-popup-form')">Ajouter utilisateur</button>
+    <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Ajouter un utilisateur</a></p>
+    
+    <!-- Modal pour ajouter un utilisateur -->
+    <div class="modal fade" id="ajtUtilisateur" tabindex="-1" role="dialog" aria-labelledby="ajtUtilisateurLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ajtUtilisateurLabel">Ajouter un utilisateur</h5>
+                </div>
+                <form method="POST" action="{{ url_for('utilisateurs.lesUtilisateurs') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="modal-body">
+                        <div>
+                            <label class="form-label" for="name">Nom :</label>
+                            <input class="form-input" type="text" placeholder="Entrez le nom de l'utilisateur" id="edit-name-input" name="nom" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="prenom">Prénom:</label>
+                            <input class="form-input" type="text" placeholder="Entrez le prénom de l'utilisateur" id="edit-prenom-input" name="prenom" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="mail">Mail utilisateur:</label>
+                            <input class="form-input" type="email" placeholder="Mail de l'utilisateur" id="edit-mail-input" name="mail" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="motsdepasse">Mot de passe utilisateur:</label>
+                            <input class="form-input" type="password" placeholder="Mot de passe de l'utilisateur" id="edit-motsdepasse-input" name="motsdepasse" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Ajouter l'utilisateur</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    <div>
-
 
 </main>
 {% endblock %}
