@@ -183,9 +183,11 @@ main {
     transform: scale(1.05) translateY(.125rem);
 }
   
-.chronologie .btn:focus {
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+#btn2020 {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 
   
 .chronologie .btn:focus:before {
