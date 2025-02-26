@@ -2,8 +2,8 @@
 
 /* Utilisation de variables réutilisables dans le fichier */
 :root {
-    --violet: hsl(261, 83%, 42%);
-    --animation-timing: 0.6s;
+    --violet: #5e5df0;
+    --animation-timing: 0.3s;
 }
 
 
@@ -42,7 +42,7 @@ main {
     margin-left: 35px;
     font-size: 17px;
     text-align: center;
-    margin-top: 2%;
+    margin-top: 3%;
 }
 
 .index .nav-img div{
