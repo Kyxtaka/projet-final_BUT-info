@@ -3,7 +3,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='connexion.css')}}">
 {% endblock %}
 {% block content %}
-<main>
+<main class="connexion">
+  <video id="background-video" autoplay loop muted>
+    <source src="{{ url_for('static',filename='video/pluie_fond.mp4') }}" type="video/mp4">
+  </video>
   <span>
     <a href="{{ url_for('home') }}"><button class="accueil" role="button">Accueil</button></a>
   </span>
@@ -15,12 +18,12 @@
     {{ form.hidden_tag() }}
     <div class="form-control-static">
       <p>{{ form.mail.label }}</p>
-      {{ form.mail(size=50, class_="form-control", placeholder ="email@exemple.com") }}
+      {{ form.mail(size=50, class_="form-control", placeholder =" email@exemple.com") }}
     </div>
 
     <div class="form-control-static">
       <p>{{ form.password.label }}</p>
-      {{ form.password(size=50, class_="form-control", placeholder ="monmotdepasse123") }}
+      {{ form.password(size=50, class_="form-control", placeholder =" monmotdepasse123") }}
     </div> 
     {% if not (mdp) %}
     <p class="erreur"> Votre mot de passe est erroné </p>
