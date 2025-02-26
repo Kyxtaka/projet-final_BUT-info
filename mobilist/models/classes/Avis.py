@@ -99,10 +99,12 @@ class Avis(Base):
         """
         return Avis.query.all()
     
-    def delete(self):
+    @staticmethod
+    def delete(id_avis):
         """Supprime l'avis de la session, dans la base de données
         """
-        db.session.delete(self)
+        avis = Avis.get_avis(id_avis)
+        db.session.delete(avis)
         db.session.commit()
 
     @staticmethod
@@ -120,3 +122,8 @@ class Avis(Base):
         """
         return db.session.query(Avis, Proprietaire).join(Proprietaire).all()
         
+    @staticmethod
+    def get_avis(id_avis):
+        """Get un avis à partir de son id
+        """
+        return Avis.query.filter_by(id_avis=id_avis).first()
