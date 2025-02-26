@@ -34,6 +34,20 @@
       }
   }
 
+  function afficherAvis() {
+    var menuModif = document.getElementById('menu-avis');
+    var menuMdp = document.getElementById('menu-mdp');
+
+    if (menuModif.classList.contains('visible')) {
+        menuModif.classList.remove('visible');
+      
+      } else {
+        if (!menuMdp.classList.contains('visible')) {
+          menuModif.classList.add('visible');
+        }
+      }
+  }
+
 </script>
 <section class ="titre">
     <div id="image-user">
@@ -68,6 +82,10 @@
   <li class="changement-mdp" data-intro="Modifiez votre mot de passe" data-step="2">
       <button onclick="afficherChangement()" id="changer-mdp" type="button">Changer le mot de passe</button>
   </li>
+  <li class="avis">
+        <button onclick="afficherAvis()" id="avis" type="button">Donner votre avis</button>
+</li>
+
 </ul>
 </section>
 
@@ -117,5 +135,20 @@
     </span>
   </form>
   <button onclick="afficherChangement()" id="annuler">Annuler</button>
+</div>
+
+
+<div id="menu-avis">
+  <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('ajouter_avis') }}">
+    <div class="form-control-static">
+      <p class="content" >Votre avis</p>
+      <textarea id="text-avis" name="avis" rows="5" cols="33">
+      Votre avis...
+      </textarea>
+    </div>
+    <span class="form-control-static">
+      <button id="submit" type="submit" class="btn btn-primary mb-3">Envoyer</button>
+    </span>
+  </form>
 </div>
 {% endblock %}

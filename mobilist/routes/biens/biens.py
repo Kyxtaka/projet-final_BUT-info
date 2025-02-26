@@ -22,6 +22,7 @@ from ..PDF.generatePDF import *
 
 biens_bp = Blueprint('biens', __name__)
 @biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE"])
+@login_required
 def mesBiens() -> str:
     """
     Affiche les biens et logements d'un propriétaire 
@@ -57,6 +58,7 @@ def deleteBiens(request, logement_id):
 
 
 @biens_bp.route("/simulation/", methods =("GET","POST" ,))
+@login_required
 def simulation() -> str:
     """
     Permet de faire une simulation de sinistre pour un logement et de génèrer un inventaire

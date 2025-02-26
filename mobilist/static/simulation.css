@@ -78,7 +78,7 @@
 }
 
 .simulation .info table {
-    margin-left: 580px;
+    margin: auto;
 }
 
 .simulation .styled-table {
@@ -115,6 +115,7 @@
 }
 
 .simulation .telecharger .download-btn {
+    margin: auto;
     position: relative;
     left: 0px;
     top: 15px;
