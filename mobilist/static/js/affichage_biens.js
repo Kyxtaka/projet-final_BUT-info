@@ -12,6 +12,19 @@ class Categorie {
     }
 }
 
+class TypeBien {
+    id;
+    name;
+    constructor(name, id){
+        this.id =`type-${id}`;
+        this.name = name;
+    }
+    toString(){
+        console.log(this.name);
+        return this.name + " ";
+    }
+}
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -19,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let elementId = 0;
     const arrayCategories = new BehaviorSubject([]);
-    const $arryCategories = arrayCategories.asObservable();
+    const $arryCat = arrayCategories.asObservable();
 
     const catFormButton = document.getElementById('add-cat-btn');
     const catTable = document.getElementById('cat-list');
@@ -33,12 +46,12 @@ document.addEventListener("DOMContentLoaded", function() {
         elementId++;
 
         arrayCategories.next([...arrayCategories.getValue(), cat]);
-        console.log("Updated rooms array:", arrayCategories.getValue());
+        console.log("Updated cat array:", arrayCategories.getValue());
 
         toggleFormPopup('add-cat-popup-form');
     });
 
-    $arryCategories.subscribe({
+    $arryCat.subscribe({
         next: (response) => {
             console.log("arrayCategories Changed", arrayCategories.getValue());
             if (response.length > getHtmlTableLenght("cat-list")) {
@@ -88,3 +101,5 @@ function toggleFormPopup(overlay_id) {
         document.getElementsByClassName('action-btn')[i].style.display =  document.getElementsByClassName('action-btn')[i].style.display === 'none' ? 'block' : 'none';
     }
 }
+
+
