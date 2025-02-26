@@ -108,6 +108,11 @@ class Avis(Base):
         db.session.commit()
 
     @staticmethod
+    def ajoute(avis):
+        db.session.add(avis)
+        db.session.commit()
+
+    @staticmethod
     def max_id():
         """get max id categorie"""
         max_id = db.session.query(func.max(Avis.id_avis)).scalar()

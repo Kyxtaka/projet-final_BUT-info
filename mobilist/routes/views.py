@@ -68,6 +68,8 @@ def accueil_admin():
     Renvoie la page d'accueil d'un admin
     """
     avis = Avis.get_all()
+    if avis != None:
+        avis.reverse()
     return render_template("accueil_admin.html", avis=avis[:2])
     
 @app.route("/information")
@@ -100,6 +102,14 @@ def mon_compte():
         return redirect(url_for('mon_compte'))
     return render_template("mon-compte.html", form=form)
 
+@app.route("/ajout_avis/", methods=["POST"])
+def ajouter_avis():
+    """Ajoute un avis à la base de données"""
+    message = request.form.get('avis')
+    proprio = current_user.proprio.id_proprio
+    max_id = Avis.max_id()+1
+    Avis.ajoute(Avis(max_id, message, proprio))
+    return redirect(url_for('mon_compte'))
 
 @app.route("/test/")
 def test():

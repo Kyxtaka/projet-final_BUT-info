@@ -52,3 +52,4 @@ def lesAvis() -> str:
     return render_template("lesAvis-admin.html", avis=avis, notif="0")
 
 
+
