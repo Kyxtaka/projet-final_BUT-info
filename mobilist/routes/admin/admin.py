@@ -26,7 +26,7 @@ from ...app import db
 admin_bp = Blueprint('admin', __name__)
 
 
-@admin_bp.route("/lesBiens/")
+@admin_bp.route("/lesBiens/", methods=["GET", "POST"])
 def lesBiens() -> str:
     """
     Affiche les caractèristiques des biens
@@ -34,7 +34,13 @@ def lesBiens() -> str:
     Returns :
         la page 'lesBiens' est affichée
     """
-    return render_template("lesBiens.html")
+    all_categories = Categorie.get_all()
+    if request.method == "POST":
+        nom_cat = request.form.get('name')
+        cat = Categorie(Categorie.max_id()+1, nom_cat)
+        Categorie.put_categorie(cat)
+        return render_template("lesBiens.html", cat=all_categories, notif= "1")
+    return render_template("lesBiens.html", cat=all_categories, notif="0")
 
 
 @admin_bp.route("/lesAvis/")
