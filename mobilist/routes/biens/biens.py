@@ -21,7 +21,7 @@ from ..PDF.generatePDF import *
 
 
 biens_bp = Blueprint('biens', __name__)
-@biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE"])
+@biens_bp.route("/mesBiens/", methods =["GET", "DELETE"])
 @login_required
 def mesBiens() -> str:
     """
