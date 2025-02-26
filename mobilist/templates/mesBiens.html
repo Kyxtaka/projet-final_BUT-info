@@ -5,7 +5,104 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='mesBiens.css')}}">
 {{ super() }}
 <!-- Bootstrap CSS -->
+{% endblock %}
+{% block scripts %}
+<script>
+
+    class Bien {
+        id;
+        name;
+        prix;
+        constructor(name, prix, id) {
+            this.id = id;
+            this.name = name;
+            this.prix = prix;
+        }
+    }
+    
+   
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const { BehaviorSubject } = rxjs; // import de rxjs apres avoir load le script dans le html car on utilise pas node et Typescript
+        const arraybiens = new BehaviorSubject([]);
+        const $arrybiens = arraybiens.asObservable();
+        const bienFormButton = document.getElementById('supp-bien-btn');
+        const bienTable = document.getElementById('bien-list');
+    
+        document.querySelectorAll(".btn").forEach(button => {
+            button.addEventListener("click", function(event) {
+                let idBien = parseInt(this.id);
+                console.log("Bouton cliqué avec ID:", idBien);
+                if(this.innerText === "Supprimer") {
+                    event.preventDefault();
+                    let bienName = document.getElementById(`nomBien${idBien}`).textContent;
+                    let bienPrix = parseFloat(document.getElementById(`prixBien${idBien}`).textContent);
+                
+                    console.log("bienName", bienName);
+                    console.log("bienPrix", bienPrix);
+                
+                    let bien = new Bien(bienName, bienPrix, idBien);
+                
+                    arraybiens.next([...arraybiens.getValue(), bien]);
+                    console.log("Updated biens array:", arraybiens.getValue());
+                
+                    this.innerText = "Annuler";
+                    this.style.backgroundColor = "green";
+                } else if(this.innerText === "Annuler") {
+                        event.preventDefault();
+                        const updatedbiens = arraybiens.getValue().filter(bien => bien.id !== idBien);
+                        arraybiens.next(updatedbiens);
+                        
+                        console.log("Updated biens array:", arraybiens.getValue());
+                        this.innerText = "Supprimer";
+                        this.style.backgroundColor = "brown";
+                } else if(this.innerText === "Confirmer") {
+                    deleteBiens(); 
+                }
+                
+            });
+    
+            $arrybiens.subscribe({
+                next: (reponse) => {
+                    let bienPrixSupprimer = 0;
+                    reponse.forEach(element => {
+                        bienPrixSupprimer += element.prix;
+                    });
+                    bienPrixSupprimer = bienPrixSupprimer.toFixed(2);
+                    document.getElementById("total").textContent = bienPrixSupprimer;
+                },
+                error: (error) => {
+                    console.error(error);
+                },
+            });
+
+            function deleteBiens() {
+                fetch("{{ url_for('biens.mesBiens')}}" + "?logement=" + "{{ logement_id }}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(arraybiens.getValue()),
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("biens supprimés");
+                        arraybiens.next([]);
+                        window.location.reload();
+                    } else {
+                        console.error("Erreur lors de la suppression des biens");
+                    }
+                }).catch(error => {
+                    console.error("Erreur lors de la suppression des biens", error);
+                });
+            }
+        });
+    });
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.5/rxjs.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}
 {% block content %}
 <div class="mesBiens">
@@ -53,16 +150,32 @@
                             <div class="modal-body">
                                 {% if piece.get_list_biens() %}   
                                     <p><em>Liste des biens pour la pièce {{ piece.nom_piece }} :</em></p> 
-                                    <ul>
+                                    <div id="tableBien">
+                                    <table>
+                                        <tr id="firstRow">
+                                            <th>Nom</th>
+                                            <th>Prix €</th>
+                                            <th>Actions</th>
+                                        </tr>
                                         {% for bien in piece.get_list_biens() %}
-                                            <li> • {{ bien.nom_bien }} : {{ bien.prix }} € </li>
+                                            <tr>
+                                                <td id="nomBien{{ bien.id_bien }}" class="nomBien">{{ bien.nom_bien }} </td>
+                                                <td id="prixBien{{ bien.id_bien }}" class="prixBien">{{ bien.prix }}</td>
+                                                <td> <button class="btn" id="{{bien.id_bien}}"> Supprimer </button> </td>
+                                            </tr>
                                         {% endfor %}
-                                    </ul>
+                                        <tr id="lastRow">
+                                            <td colspan="2"> Valeur des biens à supprimer : </td>
+                                            <td id="total">0</td>
+                                        </tr>
+                                    </table>
+                                </div>
                                 {% else %}
                                     <p><em>Aucun biens ajoutés pour cette pièce pour le moment.</em></p>
                                 {% endif %}
                             </div>
                             <div class="modal-footer">
+                                <button type="button" id="confirmersupp" class="btn btn-primary">Confirmer</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
@@ -74,4 +187,5 @@
         {% endif %}
     </div>
 </div>
+
 {% endblock %}
