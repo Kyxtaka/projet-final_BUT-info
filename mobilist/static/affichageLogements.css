@@ -1,9 +1,12 @@
 /* Generation of clip-path on : https://bennettfeely.com/clippy/ */
 
-
+main {
+    height: 2000px;
+}
 
 .img-rents{
     position: relative;
+    margin-bottom: 100px;
 }
 
 .img-rents img {
@@ -38,8 +41,22 @@
     font-size: 15px;
 }
 
-
-footer {
-    position: absolute;
-    bottom: 0;
+.card {
+    display: inline-block;
+    background: white;
+    padding: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 10%;
 }
+
+.card img {
+    width: 500px;
+    height: 350px;
+    border-radius: 2px;
+    display: block;
+    margin: 5px;
+}
+
+
