@@ -103,6 +103,7 @@ def mon_compte():
     return render_template("mon-compte.html", form=form)
 
 @app.route("/ajout_avis/", methods=["POST"])
+@login_required
 def ajouter_avis():
     """Ajoute un avis à la base de données"""
     message = request.form.get('avis')
