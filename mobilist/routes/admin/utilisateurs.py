@@ -68,11 +68,19 @@ def lesUtilisateurs() -> str:
             
             # verifie si le mail est déjà utilisé
             user_existant = User.query.filter_by(mail=form_inscription.mail.data).first()
-            if user_existant:
-                login_user(user_existant)
+            proprio_existant = Proprietaire.query.filter_by(mail=form_inscription.mail.data).first()
+            if user_existant or proprio_existant:
                 flash("Ce compte existe déjà.", "error")
                 return redirect(url_for('utilisateurs.lesUtilisateurs'))
             
+            
+            max_id = (Proprietaire.max_id() or 0) +1
+            proprio = Proprietaire(max_id,form_inscription.mail.data,form_inscription.nom.data,form_inscription.prenom.data)
+            db.session.add(proprio)
+            db.session.commit()
+            user_temp = User(form_inscription.mail.data,"temporaire","proprio",max_id)
+            db.session.add(user_temp)
+            db.session.commit()
             
             tentative = False
             genrated_token = ChangePasswordToken(accountEmail=form_inscription.mail.data) # generation du token avec validite de 10min par default
@@ -95,8 +103,6 @@ def lesUtilisateurs() -> str:
                 flash("Mail envoyé avec succès!", "success")
                 return redirect(url_for('utilisateurs.lesUtilisateurs'))
                 
-    
-     
     proprios = Proprietaire.get_all()
     proprios_triee = sorted(proprios, key=lambda personne: (personne.nom.lower(), personne.prenom.lower()))
 
@@ -111,10 +117,14 @@ def supprimer_utilisateur():
     if "supprimer_submit" in request.form:
         utilisateur_id = request.form.get('utilisateur_id')
         if utilisateur_id:
-            utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
-            user = User.query.get_or_404(utilisateur.get_mail())
+            utilisateur = Proprietaire.query.get(utilisateur_id)
+            if not utilisateur:
+                flash('Utilisateur non trouvé', 'error')
+                return redirect(url_for('utilisateurs.lesUtilisateurs'))
+            user = User.query.filter_by(mail=utilisateur.mail).first()
+            if user:
+                db.session.delete(user)
             db.session.delete(utilisateur)
-            db.session.delete(user)
             db.session.commit()
             flash("Utilisateur supprimé avec succès!", "success")
         else:
@@ -141,7 +151,7 @@ def pwd_email(mail, token) -> bool:
     email = GOOGLE_SMTP_USER
     password = GOOGLE_SMTP_PWD
     subject = "Mobilist - Validez votre mot de passe"
-    generated_change_password_link = f"http://127.0.0.1:5000/forgotPassword/setPassword?token={token}"
+    generated_change_password_link = f"http://127.0.0.1:5000/set_mdp?token={token}"
 
     body = f"""
     Pour vous inscrire chez Mobilist, veuillez valider votre mot de passe.
@@ -192,22 +202,14 @@ def set_mdp():
     if not valid_access:  
         return render_template("unauthorized_access.html"), 401
 
+    user = User.get_by_mail(ChangePasswordToken.get_by_token(token).get_email())
     form_mdp = ResetPasswordForm()
 
-    if form_mdp.is_submitted() and form_mdp.validate_on_submit():
+    if form_mdp.is_submitted():
         if form_mdp.mdp.data == form_mdp.valider.data:
-            # Créer le propriétaire et l'utilisateur
-            proprio = Proprietaire(nom=form_mdp.nom.data, prenom=form_mdp.prenom.data, mail=tokenObject.mail)
-            db.session.add(proprio)
-            db.session.commit()
-
-            create_user(tokenObject.mail, form_mdp.mdp.data, "proprio")
-
-            # Marquer le token comme utilisé
+            user.set_password(form_mdp.mdp.data)
             tokenObject.set_used()
             db.session.commit()
-
-            flash("Compte créé avec succès ! Vous pouvez maintenant vous connecter.", "success")
             return redirect(url_for('home'))
 
-    return render_template("reinitialiser_mdp.html", form=form_mdp, token_access=token)
+    return render_template("inscription_confirmation.html", form=form_mdp, token_access=token)

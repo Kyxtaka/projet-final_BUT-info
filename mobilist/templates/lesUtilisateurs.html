@@ -105,7 +105,7 @@
                                 <p>Logements : 
                                     {% if personne.logements %}
                                         {% for l in personne.logements %} 
-                                        <span>l</span>
+                                        <li>{{ l.nom_logement }}</li>
                                         {% endfor %}
                                     {% else %}
                                         <span>Aucun logements pour l'instant.</span>
@@ -180,7 +180,7 @@
                                 <p>Logements : 
                                     {% if personne.logements %}
                                         {% for l in personne.logements %} 
-                                        <span>l</span>
+                                        <li>{{ l.nom_logement }}</li>
                                         {% endfor %}
                                     {% else %}
                                         <span>Aucun logements pour l'instant.</span>
