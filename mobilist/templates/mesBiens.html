@@ -54,7 +54,7 @@
                         console.log("Updated biens array:", arraybiens.getValue());
                         this.innerText = "Supprimer";
                         this.style.backgroundColor = "brown";
-                } else if(this.innerText === "Confirmer") {
+                } else if(this.innerText === "Confirmer pour tout") {
                     await deleteBiens(); 
                     await moveBiens();
                     setTimeout(() => {
@@ -70,7 +70,16 @@
                         bienPrixSupprimer += element.prix;
                     });
                     bienPrixSupprimer = bienPrixSupprimer.toFixed(2);
-                    document.getElementById("total").textContent = bienPrixSupprimer;
+                    const element = document.getElementsByClassName("total");
+                    Array.prototype.forEach.call(element, (htmlElem) => {
+                        console.log("element", htmlElem);
+                        htmlElem.textContent = bienPrixSupprimer;
+                    });
+                    //.forEach(element => {
+                        
+                     //   element.textContent = bienPrixSupprimer;
+                    //});
+                    //.textContent = bienPrixSupprimer;
                 },
                 error: (error) => {
                     console.error(error);
@@ -203,7 +212,7 @@
                                         {% endfor %}
                                         <tr id="lastRow">
                                             <td colspan="2"> Valeur des biens à supprimer : </td>
-                                            <td id="total">0</td>
+                                            <td class="total">0</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -212,7 +221,7 @@
                                 {% endif %}
                             </div>
                             <div class="modal-footer">
-                                <button type="button" id="confirmersupp" class="btn btn-primary">Confirmer</button>
+                                <button type="button" id="confirmersupp" class="btn btn-primary">Confirmer pour tout</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
