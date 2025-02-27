@@ -139,6 +139,12 @@
             fillForm(nameParam, priceParam, dateParam);
         }
 
+        function getConfirmation(file) {
+            const fileName = file.name;
+            const message = `Vous avez importé le fichier: ${fileName}\nVoulez vous utiliser la reconnaissance de fochier pour préremplir le formulaire (nom, prix, date)?`;
+            return confirm(`\n${message}`);
+        }
+
 
         fileInput.addEventListener("change", async (event) => {
             const file = event.target.files[0];
@@ -153,6 +159,8 @@
                 return;
             }
 
+            if (!getConfirmation(file)) return;
+            
             const overlay = document.getElementById('import-loading');
             overlay.classList.toggle('show');
             // console.log("overlay-container",document.querySelector(".overlay-container")); // logs de l'overlay
