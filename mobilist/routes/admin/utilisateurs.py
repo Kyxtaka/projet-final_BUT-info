@@ -64,7 +64,7 @@ def lesUtilisateurs() -> str:
             User.modifier(form_inscription.mail.data, form_inscription.nom.data, form_inscription.prenom.data)
             flash("Utilisateur ajouté avec succès!", "success")
             return redirect(url_for('utilisateurs.lesUtilisateurs'))
- 
+     
     proprios = Proprietaire.get_all()
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
 

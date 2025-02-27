@@ -102,6 +102,15 @@
                                 <p>Nom : {{ personne.nom }}</p>
                                 <p>Prénom : {{ personne.prenom }}</p>
                                 <p>Email : {{ personne.mail }}</p>
+                                <p>Logements : 
+                                    {% if personne.logements %}
+                                        {% for l in personne.logements %} 
+                                        <span>l</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span>Aucun logements pour l'instant.</span>
+                                    {% endif %}
+                                </p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
