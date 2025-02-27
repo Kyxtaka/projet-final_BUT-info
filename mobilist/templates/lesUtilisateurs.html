@@ -52,9 +52,8 @@
     <div class="proprios">
         {% for personne in proprios %}
             <div class="d-flex justify-content-between align-items-center mb-2">                
-                <span>{{ personne.nom }} {{ personne.prenom }} {{ personne.mail }}</span>
+                <span><a href="#" data-bs-toggle="modal" data-bs-target="#infoUtilisateur{{ personne.id_proprio }}">{{ personne.nom }} {{ personne.prenom }} - {{ personne.mail }}</a></span>
                 <p><a href="#supprimerUtilisateur{{ personne.id_proprio }}" data-bs-toggle="modal" data-bs-target="#supprimerUtilisateur{{ personne.id_proprio }}" data-utilisateur_id="{{ personne.id_proprio }}">Supprimer</a></p>
-
 
                 <!-- Modal pour supprimer un utilisateur -->
                 <div class="modal fade" id="supprimerUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="supprimerUtilisateurLabel" aria-hidden="true">
@@ -84,6 +83,29 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal informations -->
+                <div class="modal fade" id="infoUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="infoUtilisateurLabel{{ personne.id_proprio }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoUtilisateurLabel{{ personne.id_proprio }}">
+                                    Informations de {{ personne.nom }} {{ personne.prenom }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Nom : {{ personne.nom }}</p>
+                                <p>Prénom : {{ personne.prenom }}</p>
+                                <p>Email : {{ personne.mail }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
         {% endfor %}
     </div>
