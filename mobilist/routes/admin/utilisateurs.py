@@ -67,17 +67,18 @@ def lesUtilisateurs() -> str:
     proprios = Proprietaire.get_all()
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
 
-@utilisateur_bp.route("/supprimer_utilisateur/", methods=("GET","POST",))
+@utilisateur_bp.route("/supprimer_utilisateur/", methods=("GET", "POST",))
 @login_required
 def supprimer_utilisateur():
     """
     Supprime un utilisateur 
     """
-    utilisateur_id = request.form.get('utilisateur_id')
-    utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
-    user = User.query.get_or_404(utilisateur.get_mail())
-    db.session.delete(utilisateur)
-    db.session.delete(user)
-    db.session.commit()
-    flash("Utilisateur supprimé avec succès!", "success")
+    if "supprimer_submit" in request.form:
+        utilisateur_id = request.form.get('utilisateur_id')
+        utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
+        user = User.query.get_or_404(utilisateur.get_mail())
+        db.session.delete(utilisateur)
+        db.session.delete(user)
+        db.session.commit()
+        flash("Utilisateur supprimé avec succès!", "success")
     return redirect(url_for('utilisateurs.lesUtilisateurs'))

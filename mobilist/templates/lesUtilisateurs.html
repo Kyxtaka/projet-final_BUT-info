@@ -75,9 +75,17 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <form method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
                         {{ form.hidden_tag() }}
                         <input type="hidden" id="utilisateur_id" name="utilisateur_id" value="">
+                        <script>
+                            $('#supprimerUtilisateur').on('show.bs.modal', function (event) {
+                                var button = $(event.relatedTarget); 
+                                var utilisateurId = button.data('utilisateur_id');
+                                var modal = $(this);
+                                modal.find('#utilisateur_id').val(utilisateurId);
+                            });
+                        </script>
                         <span class="form-control-static">
                             <button type="submit" name="supprimer_submit" class="btn btn-danger">Supprimer</button>
                         </span>
@@ -86,15 +94,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $('#supprimerUtilisateur').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); 
-            var utilisateurId = button.data('utilisateur_id');
-            var modal = $(this);
-            modal.find('#utilisateur_id').val(utilisateurId);
-        });
-    </script>
     
 
 
