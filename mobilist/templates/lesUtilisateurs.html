@@ -60,11 +60,16 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="supprimerUtilisateurLabel">Supprimer un utilisateur</h5>
+                                <h5 class="modal-title" id="supprimerUtilisateurLabel{{ personne.id_proprio }}">
+                                    Supprimer un utilisateur
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                Etes-vous sûre de vouloir supprimer {{ personne.nom }} {{ personne.prenom }} ?
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                <form class="form-horizontal" role="form" method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
+                                <form class="utilutilisateurform-horizontal" role="form" method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
                                     {{ form.hidden_tag() }}
                                     <input type="hidden" id="utilisateur_id" name="utilisateur_id" value="{{ personne.id_proprio }}">
                                     <script>
@@ -92,7 +97,6 @@
                                 <h5 class="modal-title" id="infoUtilisateurLabel{{ personne.id_proprio }}">
                                     Informations de {{ personne.nom }} {{ personne.prenom }}
                                 </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <p>Nom : {{ personne.nom }}</p>
