@@ -47,10 +47,13 @@ def lesUtilisateurs() -> str:
     if form.is_submitted() and form.validate_on_submit():
         proprio = form.champ.data
         res_recherche = Proprietaire.get_by_nom(proprio) 
+        res_recherche = list(res_recherche) 
         if not res_recherche:
-            res_recherche = None
+            res_recherche_triee = None
+        else:
+            res_recherche_triee = sorted(res_recherche, key=lambda personne: personne.nom.lower())
         print(res_recherche)
-        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche, form_inscription = form_inscription)
+        return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche_triee, form_inscription = form_inscription)
         
     # inscrire un utilisateur
     if "inscription_submit" in request.form:
@@ -66,7 +69,9 @@ def lesUtilisateurs() -> str:
             return redirect(url_for('utilisateurs.lesUtilisateurs'))
      
     proprios = Proprietaire.get_all()
-    return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
+    proprios_triee = sorted(proprios, key=lambda personne: personne.nom.lower())
+
+    return render_template("lesUtilisateurs.html", form = form, proprios = proprios_triee, form_inscription = form_inscription)
 
 @utilisateur_bp.route("/supprimer_utilisateur/", methods=("GET", "POST",))
 @login_required
