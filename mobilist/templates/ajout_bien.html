@@ -141,7 +141,9 @@
 
         function getConfirmation(file) {
             const fileName = file.name;
-            const message = `Vous avez importé le fichier: ${fileName}\nVoulez vous utiliser la reconnaissance de fochier pour préremplir le formulaire (nom, prix, date)?`;
+            const message = `Vous avez importé le fichier: ${fileName}
+            \nVoulez vous utiliser la reconnaissance de fichier pour préremplir le formulaire (nom, prix, date) ?
+            \nAttention: les informations préremplies peuvent être incorrectes.`;
             return confirm(`\n${message}`);
         }
 
@@ -160,7 +162,7 @@
             }
 
             if (!getConfirmation(file)) return;
-            
+
             const overlay = document.getElementById('import-loading');
             overlay.classList.toggle('show');
             // console.log("overlay-container",document.querySelector(".overlay-container")); // logs de l'overlay
