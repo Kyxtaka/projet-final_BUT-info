@@ -1,0 +1,93 @@
+.accueil-admin {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.recherche {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.recherche .form-control-static {
+    margin-bottom: 0px;
+}
+
+
+.recherche .form-control-static .form-control {
+} 
+
+.recherche .form-horizontal {
+    display: flex;
+    gap: 5px;
+}
+
+.recherche .submit-button {
+    padding: 10px 61px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #612bb7;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.recherche .submit-button:hover {
+    background-color: #b387e6;
+}
+
+.proprios div {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proprios .personne{
+    margin-bottom: 20px;
+}
+
+
+.resultat li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    list-style-type: none;
+    font-size: 1rem;
+}
+
+.bouton_inscrire {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.bouton_inscrire p a {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #612bb7;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+}
+
+
+a[data-bs-toggle="modal"] {
+    text-decoration: none;
+    background-color: #c50c0c;
+    padding: 5px 8px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+a[data-bs-toggle="modal"]:hover {
+    background-color: #cf6060;
+}

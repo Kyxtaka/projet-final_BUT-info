@@ -2,6 +2,7 @@
 {% block styles %}
 {{ super() }}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='lesUtilisateurs.css')}}">
 {% endblock %}
 {% block scripts %}
 {{ super() }}
@@ -11,7 +12,7 @@
 {% block content %}
 <div class="accueil-admin"> 
 <main>
-    <h2>Gestion des utilisateurs de l'application</h2>
+    <h2>Les utilisateurs de l'application</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -44,10 +45,14 @@
         </form>
     </div>
 
+    <div class="bouton_inscrire">
+        <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Inscrire un utilisateur</a></p>
+    </div>
+
     {% if not res_recherche %}
     <div class="proprios">
         {% for personne in proprios %}
-            <div>
+            <div class="d-flex justify-content-between align-items-center mb-2">                
                 <span>{{ personne.nom }} {{ personne.prenom }} {{ personne.mail }}</span>
                 <p><a href="#supprimerUtilisateur" data-bs-toggle="modal" data-bs-target="#supprimerUtilisateur" data-utilisateur_id="{{ personne.id_proprio }}">Supprimer</a></p>
             </div>
@@ -95,9 +100,6 @@
         </div>
     </div>
     
-
-
-    <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Inscrire un utilisateur</a></p>
     
     <!-- Modal pour ajouter un utilisateur -->
     <div class="modal fade" id="ajtUtilisateur" tabindex="-1" role="dialog" aria-labelledby="ajtUtilisateurLabel" aria-hidden="true">
