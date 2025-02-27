@@ -6,6 +6,8 @@ from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 from mobilist.models.classes.Categorie import Categorie
 from mobilist.models.classes.Logement import *
+from mobilist.routes.login.classes.ResetForm import ResetForm
+from mobilist.routes.uploadfile.classes.AjoutBienForm import AjoutBienForm
 import datetime
 from flask import session
 import pytest
@@ -139,8 +141,8 @@ def test_protected_ajouteBien_success(mock_current_user, client,monkeypatch):
     mock_current_user.is_authenticated = True
     mock_current_user.id_user = 2
     client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
-    form = MagicMock()
-    form.validate_on_submit.return_value = True 
+    form = MagicMock(spec=AjoutBienForm)
+    form.validate()
 
     form.nom_bien.data = "bien1"
     form.date_bien.data = datetime.date(2024, 11, 12)
@@ -151,8 +153,7 @@ def test_protected_ajouteBien_success(mock_current_user, client,monkeypatch):
     form.type_bien.data = 1
     form.categorie_bien.data = 1
 
-    monkeypatch.setattr('mobilist.routes.uploadfile.classes.AjoutBienForm', lambda: form)
-
+    monkeypatch.setattr('mobilist.routes.uploadfile.classes', form)
 
     response = client.post("/bien/ajout", data={"Logement":"logement1", "Nom du bien": "mon bien 1", "Type de bien":"Canapé", "Catégorie": "Décoration",'Nombre de pièces':"piece1", 'Prix neuf': 111, "Date de l'achat": "2020-20-12", "id_proprio": 2, "id_bien":2})
     assert response.status_code == 200
@@ -173,8 +174,8 @@ def test_protected_modifierBien_success(mock_current_user, client,monkeypatch):
     mock_current_user.is_authenticated = True
     mock_current_user.id_user = 2
     client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
-    form = MagicMock()
-    form.validate_on_submit.return_value = True 
+    form = MagicMock(spec=AjoutBienForm)
+    form.validate()
 
     form.nom_bien.data = "bien1"
     form.date_bien.data = datetime.date(2024, 11, 12)
@@ -185,7 +186,8 @@ def test_protected_modifierBien_success(mock_current_user, client,monkeypatch):
     form.type_bien.data = 1
     form.categorie_bien.data = 1
 
-    monkeypatch.setattr('mobilist.routes.uploadfile.classes.AjoutBienForm', lambda: form)
+    monkeypatch.setattr('mobilist.routes.uploadfile.classes.AjoutBienForm', form)
+
     bien = Bien(3,"chaise",2,datetime.date(2024, 11, 12), 19.99, 1,1,1,1)
     Bien.put_bien(bien)
 
@@ -312,8 +314,8 @@ def test_protected_page_oublie(mock_current_user, client, monkeypatch):
     client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
 
     form = MagicMock()
-    form.validate_on_submit.return_value = True
-    monkeypatch.setattr('mobilist.routes.login.classes.ResetForm', lambda: form) 
+    form.validate()
+    monkeypatch.setattr('mobilist.routes.login.classes.ResetForm.ResetForm', lambda: form) 
     form.email.data = "trixymartin@email.com"
 
     response = client.get('/forgotPassword/')
