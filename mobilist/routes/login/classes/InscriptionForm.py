@@ -22,7 +22,7 @@ class InscriptionForm(FlaskForm):
     nom = StringField('Nom', validators=[DataRequired(message="Le nom est requis")])
     prenom = StringField('Prénom', validators=[DataRequired(message="Le prénom est requis")])
     mail = StringField('Adresse e-mail', validators=[DataRequired(message="L'email est requis")])
-    password = PasswordField('Mot de passe', validators=[DataRequired(message="Le mot de passe est requis")])
+    password = PasswordField('Mot de passe')
     next = HiddenField()
 
     def get_authenticated_user(self):
