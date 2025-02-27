@@ -21,7 +21,7 @@ from ..PDF.generatePDF import *
 
 
 biens_bp = Blueprint('biens', __name__)
-@biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE"])
+@biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE", "PUT"])
 @login_required
 def mesBiens() -> str:
     """
@@ -36,6 +36,13 @@ def mesBiens() -> str:
     if request.method == "DELETE" and request.args.get("logement") != None:
         print("DELETE")
         deleteBiens(request, request.args.get("logement"))
+    if request.method == "PUT" and request.args.get("logement"):
+        print("PUT")
+        print(request.get_json())
+        logementID =  request.args.get("logement")
+        data = request.get_json()
+        for d in data:
+            moveBiens(logementID, d["id_piece"], d["id_bien"])
     for logement in proprio.logements:
         logements.append(logement)
     if logement_id:
@@ -55,6 +62,18 @@ def deleteBiens(request, logement_id):
         bien.delete()
         db.session.commit()
     return 
+
+def moveBiens(logement_id, piece_id, bien_id):
+    print("étape 3")
+    try:
+        bien = Bien.query.get(bien_id)
+        bien.set_id_piece(piece_id) 
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+    print("étape 4")
+    return
 
 
 @biens_bp.route("/simulation/", methods =("GET","POST" ,))

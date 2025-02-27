@@ -484,6 +484,14 @@ class Bien(Base):
         """
         return self.id_piece
     
+    def set_id_piece(self, id_piece):
+        """setter de l'id de la pièce
+
+        Args:
+            id_piece (int): le nouvel id de la pièce
+        """
+        self.id_piece = id_piece
+    
     def get_id_type(self):
         """getter de l'id du type
 

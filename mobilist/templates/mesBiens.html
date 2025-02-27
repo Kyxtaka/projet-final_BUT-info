@@ -20,8 +20,6 @@
         }
     }
     
-   
-
     document.addEventListener("DOMContentLoaded", function() {
         const { BehaviorSubject } = rxjs; // import de rxjs apres avoir load le script dans le html car on utilise pas node et Typescript
         const arraybiens = new BehaviorSubject([]);
@@ -30,7 +28,7 @@
         const bienTable = document.getElementById('bien-list');
     
         document.querySelectorAll(".btn").forEach(button => {
-            button.addEventListener("click", function(event) {
+            button.addEventListener("click", async function(event) {
                 let idBien = parseInt(this.id);
                 console.log("Bouton cliqué avec ID:", idBien);
                 if(this.innerText === "Supprimer") {
@@ -57,11 +55,14 @@
                         this.innerText = "Supprimer";
                         this.style.backgroundColor = "brown";
                 } else if(this.innerText === "Confirmer") {
-                    deleteBiens(); 
+                    await deleteBiens(); 
+                    await moveBiens();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 600);              
                 }
-                
             });
-    
+
             $arrybiens.subscribe({
                 next: (reponse) => {
                     let bienPrixSupprimer = 0;
@@ -76,7 +77,7 @@
                 },
             });
 
-            function deleteBiens() {
+            async function deleteBiens() {
                 fetch("{{ url_for('biens.mesBiens')}}" + "?logement=" + "{{ logement_id }}", {
                     method: "DELETE",
                     headers: {
@@ -87,7 +88,6 @@
                     if (response.ok) {
                         console.log("biens supprimés");
                         arraybiens.next([]);
-                        window.location.reload();
                     } else {
                         console.error("Erreur lors de la suppression des biens");
                     }
@@ -95,6 +95,38 @@
                     console.error("Erreur lors de la suppression des biens", error);
                 });
             }
+
+            async function moveBiens() {
+                let biensToMove = [];
+                document.querySelectorAll(".deplacer").forEach(select => {
+                    let idBien = select.id;
+                    let idPiece = select.value;
+                    console.log("idBien", idBien);
+                    console.log("idPiece", idPiece);
+                    if (idPiece !== "NotMoved") {
+                        biensToMove.push({ id_bien: idBien, id_piece: idPiece });
+                    }
+                });
+        
+                if (biensToMove.length > 0) {
+                    fetch("{{ url_for('biens.mesBiens')}}" + "?logement=" + "{{ logement_id }}", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(biensToMove),
+                    }).then(response => {
+                        if (response.ok) {
+                            console.log("Biens déplacés avec succès");
+                        } else {
+                            console.error("Erreur lors du déplacement des biens");
+                        }
+                    }).catch(error => {
+                        console.error("Erreur lors du déplacement des biens", error);
+                    });
+                }
+            }
+
         });
     });
 
@@ -161,7 +193,12 @@
                                             <tr>
                                                 <td id="nomBien{{ bien.id_bien }}" class="nomBien">{{ bien.nom_bien }} </td>
                                                 <td id="prixBien{{ bien.id_bien }}" class="prixBien">{{ bien.prix }}</td>
-                                                <td> <button class="btn" id="{{bien.id_bien}}"> Supprimer </button> </td>
+                                                <td> <select class="deplacer" id="{{bien.id_bien}}"> 
+                                                    <option value="NotMoved">Déplacer vers</option>
+                                                    {% for piece in pieces %}
+                                                        <option class="selection" value="{{ piece.id_piece }}">{{ piece.nom_piece }}</option>
+                                                    {% endfor %}
+                                                </select> <button class="btn" id="{{bien.id_bien}}"> Supprimer </button> </td>
                                             </tr>
                                         {% endfor %}
                                         <tr id="lastRow">
@@ -182,7 +219,7 @@
                     </div>
                 </div>
             {% endfor %}
-        {% else %}
+        {% else %}              
             <p><em>Aucun logement sélectionné ou aucune pièce trouvée pour ce logement.</em></p>
         {% endif %}
     </div>
