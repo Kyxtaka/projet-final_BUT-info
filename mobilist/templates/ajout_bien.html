@@ -5,11 +5,15 @@
 {{ super()}}
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/lecture_fichier.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/lecture_fichier.js') }}"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 {{ super()}}
 <!-- utilisation de JS pour actualiser les choix de pieces en fonction du logement -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+        // -----------------------------------------------------------------------------------Gestion des pieces en fonction du logement selectionne ----------------------------------------------------------------------------------- //
         const logementSelect = document.getElementById("logement-select");
         const pieceSelect = document.getElementById("piece-select");
 
@@ -60,6 +64,127 @@
                 })
                 .catch(error => console.error("Erreur lors de l'obtention des pieces:", error));
         });
+
+        //  -----------------------------------------------------------------------------------Gestion de l'importation de justificatif ----------------------------------------------------------------------------------- //
+        
+        const fileInput = document.getElementById("justif_input");
+        const allowedExtensions = new Array("image/jpeg", "image/png", "image/jpg", "application/pdf");
+        console.log("HTML elem",fileInput); // logs du fichier selectionne
+
+        let nameMatch = "", dateMatch = "", priceMatch = "";
+        function resetMatches() { nameMatch = "", dateMatch = "", priceMatch = "" };
+
+       
+
+        function printLoaderLogs(text, nameMatch, priceMatch, dateMatch) {
+            console.log("printing logs");
+            console.log("text",text); // logs du texte extrait du fichier
+            console.log("nameMatch",nameMatch); // logs du nom extrait du fichier
+            console.log("dateMatch",dateMatch); // logs de la date extrait du fichier
+            console.log("priceMatch",priceMatch); // logs du prix extrait du fichier
+            console.log("nameMatch[1]",nameMatch[1]); // logs du nom extrait du fichier
+            console.log("dateMatch[1]",dateMatch[1]); // logs de la date extrait du fichier
+            console.log("priceMatch[1]",priceMatch[1]); // logs du prix extrait du fichier
+
+        }
+
+        function fillForm(name, price, date) {
+            console.log("fillForm with: ", name, price, date);
+            const nomInput = document.getElementById("auto-fill-nom");
+            const prixInput = document.getElementById("auto-fill-prix");
+            const dateInput = document.getElementById("auto-fill-date");
+            (name) ? nomInput.value = name : "";
+            (price) ? prixInput.value = price : "";
+            if (date) {
+                let formatedDate = date.replace(/(\d{2})[-\/](\d{2})[-\/](\d{4})/, "$3-$2-$1");
+                dateInput.value = formatedDate;
+            }
+        }
+
+        async function pdfLoaderAndFiller(event) {
+            const bytes = new Uint8Array(event.target.result);
+            const pdf = await pdfjsLib.getDocument(bytes).promise;
+            let extractedText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                console.log("page",i); // logs de la page
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const text = textContent.items.map(item => item.str).join(" ");
+                extractedText += text;
+            }
+            resetMatches();
+            nameMatch = extractedText.match(/Nom[:\s]+(\w+)/i);
+            dateMatch = extractedText.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})/);
+            priceMatch = extractedText.match(/(\d+[\.,]?\d*)\s?(€|EUR|\$|USD)/);
+            printLoaderLogs(extractedText, nameMatch, priceMatch, dateMatch);
+            const nameParam = nameMatch ? nameMatch[1] : "";
+            const priceParam = priceMatch ? priceMatch[1] : "";
+            const dateParam = dateMatch ? dateMatch[1] : "";
+            console.log("extracted pdf Text",extractedText); // logs du texte extrait du fichier
+            fillForm(nameParam, priceParam, dateParam);
+        }
+
+        async function imageLoaderAndFiller(file) {
+            const { data: { text } } = await Tesseract.recognize(file, "eng+fra", { logger: m => console.log(m) });
+            // console.log("event",event); // logs de l'event
+            // const text = event.data.text;
+            resetMatches();
+            nameMatch = text.match(/Nom[:\s]+(\w+)/i);
+            dateMatch = text.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})/);
+            priceMatch = text.match(/(\d+[\.,]?\d*)\s?(€|EUR|\$|USD)/);
+            printLoaderLogs(text, nameMatch, priceMatch, dateMatch);
+            const nameParam = nameMatch ? nameMatch[1] : "";
+            const priceParam = priceMatch ? priceMatch[1] : "";
+            const dateParam = dateMatch ? dateMatch[1] : "";
+            fillForm(nameParam, priceParam, dateParam);
+        }
+
+        function getConfirmation(file) {
+            const fileName = file.name;
+            const message = `Vous avez importé le fichier: ${fileName}\nVoulez vous utiliser la reconnaissance de fochier pour préremplir le formulaire (nom, prix, date)?`;
+            return confirm(`\n${message}`);
+        }
+
+
+        fileInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            console.log(file);
+            
+            if (!file) return; 
+            console.log("file type",file.type); // logs du fichier selectionne
+            
+            if (!allowedExtensions.find(ext => ext === file.type)) {
+                console.log("type de fichier trouvé",file.type); // logs du type de fichier
+                console.error("Type de fichier non supporté");
+                return;
+            }
+
+            if (!getConfirmation(file)) return;
+            
+            const overlay = document.getElementById('import-loading');
+            overlay.classList.toggle('show');
+            // console.log("overlay-container",document.querySelector(".overlay-container")); // logs de l'overlay
+
+            try {
+                if (file.type === "application/pdf") {
+                    console.log("pdf file");
+                    const reader = new FileReader();
+                    // reader.onload = () => pdfloader(reader); //ancienne version
+                    reader.onload = pdfLoaderAndFiller;
+                    const pdfText = reader.readAsArrayBuffer(file);
+                    // console.log("pdfText",pdfText); // logs du texte extrait du fichier
+                }else {
+                    // await Tesseract.recognize(file, "eng+fra", { logger: m => console.log(m) }).then(imageLoaderAndFiller);
+                    await imageLoaderAndFiller(file);
+                }
+            }catch (error) {
+                console.error("Erreur lors de la lecture du fichier:", error);
+                overlay.classList.toggle('show');
+            }finally{
+                overlay.classList.toggle('show');
+            }
+        });
+            
     });
 </script>
 {% endblock %}
@@ -76,7 +201,7 @@
                 {{ form.logement(class="form-group-element", id="logement-select") }}
 
                 <label class="form-group-element" for="nom" id="form_nom">Nom du bien</label>
-                {{ form.nom_bien(class="form-group-element") }}
+                {{ form.nom_bien(class="form-group-element", id="auto-fill-nom") }}
 
                 <label class="form-group-element" for="categorie" id="form_cat">Categorie du bien</label>
                 {{ form.categorie_bien(class="form-group-element") }}
@@ -88,17 +213,17 @@
                 {{ form.piece_bien(class="form-group-element", id="piece-select") }}
 
                 <label class="form-group-element" for="prix" id="form_prix">Prix neuf</label>
-                {{ form.prix_bien(class="form-group-element") }}
+                {{ form.prix_bien(class="form-group-element", id="auto-fill-prix") }}
 
                 <label class="form-group-element" for="date" id="form_date">Date de l'achat</label>
-                {{ form.date_bien(class="form-group-element") }}
+                {{ form.date_bien(class="form-group-element", id="auto-fill-date") }}
 
                 <label class="form-group-element" for="description" id="form_desc">Description</label>
                 {{ form.description_bien(class="form-group-element") }}
             </div>
             <div id="right-side" data-intro="Vous pouvez ajouter votre justificatif pour préremplir le forumulaire" data-step="3">
                 <label class="form-group-element" for="justificatif" id="form_justif">Justificatif</label>
-                {{ form.file(class="form-group-element")}}
+                {{ form.file(class="form-group-element", id="justif_input") }}
             </div>
         </div>
         {% if error == True %}
@@ -110,5 +235,13 @@
         {% endif %}
         <button class="btn btn-primary mb-3" id="formsumbmit" type="submit">Ajouter</button> 
     </form>
+</div>
+<div class="overlay-container" id="import-loading">
+    <div class="popup-box">
+        <span class="close" onclick="document.getElementById('import-loading').classList.toggle('show')">&times;</span>
+        <h2>Importation en cours</h2>
+        <p>Lecture des données du justificatif</p>
+        <div class="loader"></div>	
+    </div>
 </div>
 {% endblock %} 

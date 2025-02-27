@@ -104,8 +104,9 @@ class Avis(Base):
         """Supprime l'avis de la session, dans la base de données
         """
         avis = Avis.get_avis(id_avis)
-        db.session.delete(avis)
-        db.session.commit()
+        if avis is not None:
+            db.session.delete(avis)
+            db.session.commit()
 
     @staticmethod
     def ajoute(avis):
@@ -116,6 +117,8 @@ class Avis(Base):
     def max_id():
         """get max id categorie"""
         max_id = db.session.query(func.max(Avis.id_avis)).scalar()
+        if max_id is None:
+            max_id = 0
         return max_id
 
     @staticmethod

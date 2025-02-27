@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const fileInput = document.querySelector("#form_justif + input");
+    const fileInput = document.getElementById("form_justif");
     
     fileInput.addEventListener("change", function(event) {
         const file = event.target.files[0];

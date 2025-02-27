@@ -75,9 +75,3 @@ class TypeBien(Base):
         """
         db.session.add(type)
         db.session.commit()
-
-    def delete(self):
-        """Supprime un type de bien de la base de données
-        """
-        db.session.delete(self)
-        db.session.commit()

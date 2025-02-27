@@ -91,6 +91,8 @@ class Categorie(Base):
     def max_id():
         """get max id categorie"""
         max_id = db.session.query(func.max(Categorie.id_cat)).scalar()
+        if max_id is None:
+            max_id = 0
         return max_id
 
     @staticmethod
