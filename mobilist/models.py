@@ -34,8 +34,6 @@ class LogementType(enum.Enum):
     def get_type(self):
         return self.name
 
-    def get_type(self):
-        return self.name
 
 class Avis(Base):
     __tablename__ = "AVIS"
