@@ -49,25 +49,21 @@
               <ul class="navbar-nav-left">
                   <li class="nav-img" ></a>
                     <div class=BAccueil>
-                      <a href="{{ url_for('accueil_connexion') }}"><img src="{{ url_for('static',filename='img/accueil.png') }}" alt="icône accueil"/></a>
                       <a class="nav-link active" aria-current="page" href="{{ url_for('accueil_connexion') }}">Accueil</a>
                     </div>
                   </li>
                   <li class="nav-img" >
                     <div class="Biens">
-                        <img src="{{ url_for('static',filename='img/mes-biens.png') }}" alt="icône mes biens"/>
                         <a class="nav-link active" aria-current="page" href="{{ url_for('biens.mesBiens')}}">Mes biens</a>
                     </div>
                   </li>
                     <li class="nav-img" >
                         <div class="BLogements">
-                            <img src="{{ url_for('static',filename='img/mes-logements.png') }}" alt="icône mes logements"/>
                             <a class="nav-link active" aria-current="page" href="{{ url_for('logements.affiche_logements') }}">Mes logements</a>
                         </div>
                     </li>
                   <li class="nav-img" >
                     <div class="BSinistres">
-                        <img src="{{ url_for('static',filename='img/simuler-sinistre.png') }}" alt="icône simuler un sinistre"/>
                         <a class="nav-link active" aria-current="page" href="{{ url_for('biens.simulation')}}">Simuler un sinistre</a>
                     </div>
                   </li>
