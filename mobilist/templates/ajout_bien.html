@@ -11,6 +11,9 @@
 {{ super()}}
 <!-- utilisation de JS pour actualiser les choix de pieces en fonction du logement -->
 <script>
+
+    
+
     document.addEventListener("DOMContentLoaded", function() {
         const logementSelect = document.getElementById("logement-select");
         const pieceSelect = document.getElementById("piece-select");
@@ -71,9 +74,54 @@
         //     alert("Lecture du justificatif en cours");
         // }
 
+        async function pdfloader(reader) {
+            const bytes = new Uint8Array(reader.result);
+            const pdf = await pdfjsLib.getDocument(bytes).promise;
+
+            let extractedText = "";
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                console.log("page",i); // logs de la page
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const text = textContent.items.map(item => item.str).join(" ");
+                extractedText += text;
+            }
+            nameMatch = "", dateMatch = "", priceMatch = "";
+            nameMatch = extractedText.match(/Nom[:\s]+(\w+)/i);
+            dateMatch = extractedText.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})/);
+            priceMatch = extractedText.match(/(\d+[\.,]?\d*)\s?(€|EUR|\$|USD)/);
+            console.log("text",extractedText); // logs du texte extrait du fichier
+            console.log("nameMatch",nameMatch); // logs du nom extrait du fichier
+            console.log("dateMatch",dateMatch); // logs de la date extrait du fichier
+            console.log("priceMatch",priceMatch); // logs du prix extrait du fichier
+            console.log("nameMatch[1]",nameMatch[1]); // logs du nom extrait du fichier
+            console.log("dateMatch[1]",dateMatch[1]); // logs de la date extrait du fichier
+            console.log("priceMatch[1]",priceMatch[1]); // logs du prix extrait du fichier
+            const nameParam = nameMatch ? nameMatch[1] : "";
+            const priceParam = priceMatch ? priceMatch[1] : "";
+            const dateParam = dateMatch ? dateMatch[1] : "";
+            console.log("extracted pdf Text",extractedText); // logs du texte extrait du fichier
+            fillForm(nameParam, priceParam, dateParam);
+        }
+
+        function fillForm(name, price, date) {
+            console.log("fillForm with: ", name, price, date);
+            const nomInput = document.getElementById("auto-fill-nom");
+            const prixInput = document.getElementById("auto-fill-prix");
+            const dateInput = document.getElementById("auto-fill-date");
+            (name) ? nomInput.value = name : "";
+            (price) ? prixInput.value = price : "";
+            if (date) {
+                let formatedDate = date.replace(/(\d{2})[-\/](\d{2})[-\/](\d{4})/, "$3-$2-$1");
+                dateInput.value = formatedDate;
+            }
+        }
+
         const fileInput = document.getElementById("justif_input");
         console.log("fsqbfqsmnfipqsnfmlqsnfqms")
         console.log("HTML elem",fileInput); // logs du fichier selectionne
+
         fileInput.addEventListener("change", async (event) => {
             const file = event.target.files[0];
             console.log(file);
@@ -103,19 +151,6 @@
             overlay.classList.toggle('show');
             // console.log("overlay-container",document.querySelector(".overlay-container")); // logs de l'overlay
 
-            function fillForm(name, price, date) {
-                console.log("fillForm with: ", name, price, date);
-                const nomInput = document.getElementById("auto-fill-nom");
-                const prixInput = document.getElementById("auto-fill-prix");
-                const dateInput = document.getElementById("auto-fill-date");
-                (name) ? nomInput.value = name : "";
-                (price) ? prixInput.value = price : "";
-                if (date) {
-                    let formatedDate = date.replace(/(\d{2})[-\/](\d{2})[-\/](\d{4})/, "$3-$2-$1");
-                    dateInput.value = formatedDate;
-                }
-            }
-
             let nameMatch = "";
             let dateMatch = "";
             let priceMatch = "";
@@ -123,36 +158,7 @@
                 if (file.type === "application/pdf") {
                     console.log("pdf file");
                     const reader = new FileReader();
-                    reader.onload = async () => {
-                        const bytes = new Uint8Array(reader.result);
-                        const pdf = await pdfjsLib.getDocument(bytes).promise;
-
-                        let extractedText = "";
-
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            console.log("page",i); // logs de la page
-                            const page = await pdf.getPage(i);
-                            const textContent = await page.getTextContent();
-                            const text = textContent.items.map(item => item.str).join(" ");
-                            extractedText += text;
-                        }
-                        nameMatch = "", dateMatch = "", priceMatch = "";
-                        nameMatch = extractedText.match(/Nom[:\s]+(\w+)/i);
-                        dateMatch = extractedText.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})/);
-                        priceMatch = extractedText.match(/(\d+[\.,]?\d*)\s?(€|EUR|\$|USD)/);
-                        console.log("text",extractedText); // logs du texte extrait du fichier
-                        console.log("nameMatch",nameMatch); // logs du nom extrait du fichier
-                        console.log("dateMatch",dateMatch); // logs de la date extrait du fichier
-                        console.log("priceMatch",priceMatch); // logs du prix extrait du fichier
-                        console.log("nameMatch[1]",nameMatch[1]); // logs du nom extrait du fichier
-                        console.log("dateMatch[1]",dateMatch[1]); // logs de la date extrait du fichier
-                        console.log("priceMatch[1]",priceMatch[1]); // logs du prix extrait du fichier
-                        const nameParam = nameMatch ? nameMatch[1] : "";
-                        const priceParam = priceMatch ? priceMatch[1] : "";
-                        const dateParam = dateMatch ? dateMatch[1] : "";
-                        console.log("extracted pdf Text",extractedText); // logs du texte extrait du fichier
-                        fillForm(nameParam, priceParam, dateParam);
-                    } 
+                    reader.onload = () => pdfloader(reader);
                     const pdfText = reader.readAsArrayBuffer(file);
                     console.log("pdfText",pdfText); // logs du texte extrait du fichier
                 }else {
