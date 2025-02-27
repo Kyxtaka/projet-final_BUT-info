@@ -42,28 +42,29 @@ def lesUtilisateurs() -> str:
     """
     form = RechercheForm()
     form_inscription = InscriptionForm()
-    res_recherche = None
 
     # barre de recherche
     if form.is_submitted() and form.validate_on_submit():
         proprio = form.champ.data
-        res_recherche = Proprietaire.get_by_nom(proprio)
+        res_recherche = Proprietaire.get_by_nom(proprio) 
+        if not res_recherche:
+            res_recherche = None
         print(res_recherche)
         return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche, form_inscription = form_inscription)
         
     # inscrire un utilisateur
     if "inscription_submit" in request.form:
         if form_inscription.is_submitted() and form_inscription.validate_on_submit():
-            user = form_inscription.get_authenticated_user()
-            if user:
-                login_user(user)
+            user_existant = User.query.filter_by(mail=form_inscription.mail.data).first()
+            if user_existant:
+                login_user(user_existant)
                 flash("Ce compte existe déjà.", "error")
                 return redirect(url_for('utilisateurs.lesUtilisateurs'))
             create_user(form_inscription.mail.data, form_inscription.password.data, "proprio")
             User.modifier(form_inscription.mail.data, form_inscription.nom.data, form_inscription.prenom.data)
             flash("Utilisateur ajouté avec succès!", "success")
             return redirect(url_for('utilisateurs.lesUtilisateurs'))
-    
+ 
     proprios = Proprietaire.get_all()
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios, form_inscription = form_inscription)
 
@@ -75,10 +76,13 @@ def supprimer_utilisateur():
     """
     if "supprimer_submit" in request.form:
         utilisateur_id = request.form.get('utilisateur_id')
-        utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
-        user = User.query.get_or_404(utilisateur.get_mail())
-        db.session.delete(utilisateur)
-        db.session.delete(user)
-        db.session.commit()
-        flash("Utilisateur supprimé avec succès!", "success")
+        if utilisateur_id:
+            utilisateur = Proprietaire.query.get_or_404(utilisateur_id)
+            user = User.query.get_or_404(utilisateur.get_mail())
+            db.session.delete(utilisateur)
+            db.session.delete(user)
+            db.session.commit()
+            flash("Utilisateur supprimé avec succès!", "success")
+        else:
+            flash('Utilisateur non trouvé', 'error')
     return redirect(url_for('utilisateurs.lesUtilisateurs'))
