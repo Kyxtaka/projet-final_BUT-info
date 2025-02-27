@@ -129,7 +129,7 @@ class Proprietaire(Base):
     
     @staticmethod
     def get_by_nom(nom):
-        """Getter des propriétaire par leur nom
+        """Getter des propriétaires par leur nom
 
         Args:
             nom (str): le nom
@@ -138,6 +138,19 @@ class Proprietaire(Base):
             List<Proprietaire>: la liste des propriétaires avec ce nom
         """
         return Proprietaire.query.filter_by(nom=nom).all()
+    
+    @staticmethod
+    def get_by_nom_sans_casse(nom):
+        """Getter des propriétaires par leur nom sans respecter la casse
+
+        Args:
+            nom (str): le nom
+
+        Returns:
+            List<Proprietaire>: la liste des propriétaires avec ce nom
+        """
+        return Proprietaire.query.filter(Proprietaire.nom.ilike(f"%{nom}%")).all()
+
     
     def delete(self):
         """Supprime un propriétaire et ses logements associés

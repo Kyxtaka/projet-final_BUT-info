@@ -46,12 +46,12 @@ def lesUtilisateurs() -> str:
     # barre de recherche
     if form.is_submitted() and form.validate_on_submit():
         proprio = form.champ.data
-        res_recherche = Proprietaire.get_by_nom(proprio) 
+        res_recherche = Proprietaire.get_by_nom_sans_casse(proprio)
         res_recherche = list(res_recherche) 
         if not res_recherche:
             res_recherche_triee = None
         else:
-            res_recherche_triee = sorted(res_recherche, key=lambda personne: personne.nom.lower())
+            res_recherche_triee = sorted(res_recherche, key=lambda personne: (personne.nom.lower(), personne.prenom.lower()))
         print(res_recherche)
         return render_template("lesUtilisateurs.html", form = form, res_recherche = res_recherche_triee, form_inscription = form_inscription)
         
@@ -69,7 +69,7 @@ def lesUtilisateurs() -> str:
             return redirect(url_for('utilisateurs.lesUtilisateurs'))
      
     proprios = Proprietaire.get_all()
-    proprios_triee = sorted(proprios, key=lambda personne: personne.nom.lower())
+    proprios_triee = sorted(proprios, key=lambda personne: (personne.nom.lower(), personne.prenom.lower()))
 
     return render_template("lesUtilisateurs.html", form = form, proprios = proprios_triee, form_inscription = form_inscription)
 
