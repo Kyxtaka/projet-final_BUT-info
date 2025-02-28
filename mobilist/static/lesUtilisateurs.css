@@ -6,18 +6,33 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 .recherche {
     margin-top: 30px;
     margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.recherche .form-control {
+    width: 942px;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 .recherche .form-control-static {
     margin-bottom: 0px;
 }
 
-
-.recherche .form-control-static .form-control {
-} 
 
 .recherche .form-horizontal {
     display: flex;
@@ -40,7 +55,37 @@
     background-color: #b387e6;
 }
 
+.recherche .resultat_recherche a{
+    color: black;
+    text-decoration: none;
+}
+
+.proprios .resultat_recherche a {
+    color: black;
+    text-decoration: none;
+}
+
+.proprios .resultat_recherche a:hover {
+    color: #612bb7
+}
+
+.resultat a {
+    color: black;
+    text-decoration: none; 
+}
+
+.resultat a:hover {
+    color: #612bb7; 
+}
+
 .proprios div {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resultat div {
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 5px;
@@ -50,7 +95,6 @@
 .proprios .personne{
     margin-bottom: 20px;
 }
-
 
 .resultat li {
     padding: 10px;
@@ -65,9 +109,8 @@
     justify-content: center;
 }
 
-
 .bouton_inscrire p a {
-    padding: 10px 20px;
+    padding: 10px 492px;
     font-size: 1rem;
     border-radius: 5px;
     background-color: #612bb7;
@@ -75,10 +118,25 @@
     border: none;
     cursor: pointer;
     justify-content: center;
+    text-decoration: none;
+    font-weight: bold;
 }
 
+.bouton_inscrire{
+    margin-top: 50px;
+}
 
-a[data-bs-toggle="modal"] {
+.bouton_inscrire a:hover {
+    background-color: #b387e6;
+}
+
+.btn_supprimer {
+    outline: none;
+    box-shadow: none; 
+    text-align: right;
+}
+
+.btn_supprimer a[data-bs-toggle="modal"] {
     text-decoration: none;
     background-color: #c50c0c;
     padding: 5px 8px;
@@ -88,6 +146,6 @@ a[data-bs-toggle="modal"] {
     display: inline-block;
 }
 
-a[data-bs-toggle="modal"]:hover {
+.btn_supprimer a[data-bs-toggle="modal"]:hover {
     background-color: #cf6060;
 }
