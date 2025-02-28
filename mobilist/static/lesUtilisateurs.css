@@ -149,3 +149,27 @@ h1 {
 .btn_supprimer a[data-bs-toggle="modal"]:hover {
     background-color: #cf6060;
 }
+
+
+#ajtUtilisateur button {
+    margin-top: 30px;
+    margin-left: 115px;
+}
+
+.modal-body .form-control-static {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.modal-body .form-control-static p {
+    font-weight: bold;
+    margin-bottom: 0%;
+}
+
+.modal-body .form-control {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
