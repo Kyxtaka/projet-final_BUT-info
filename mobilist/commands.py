@@ -105,7 +105,8 @@ def loaddb(filename):
                 )
                 session.add(new_avoir)
             case 'USER':
-                create_user(entity['MAIL'], entity['PASSWORD'], entity['ROLE'])
+                date = datetime.strptime(entity['DATE'], date_format)
+                create_user(entity['MAIL'], entity['PASSWORD'], entity['ROLE'], date)
         db.session.commit()
     print(f"loaded file: {filename}")
 
@@ -113,7 +114,7 @@ def loaddb(filename):
 @click.argument('mail')
 @click.argument('password')
 @click.argument('role')
-def newuser(mail, password, role):
+def newuser(mail, password, role,date=None):
     """Crée un nouvel utilisateur
 
     Args:
@@ -121,9 +122,12 @@ def newuser(mail, password, role):
         password (str): le mot de passe 
         role (str): le rôle de l'utilisateur
     """
-    create_user(mail, password, role)
+    if date is None:
+        create_user(mail, password, role)
+    else:
+        create_user(mail, password, role, date)
     
-def create_user(mail, password, role):
+def create_user(mail, password, role, date=None):
     """Crée un utilisateur avec un mot de passe crypté et un rôle donné
 
     Args:
@@ -147,7 +151,10 @@ def create_user(mail, password, role):
             db.session.add(proprio)
         else: 
             id_p = proprio.get_id_proprio()
-    u = User(mail = mail, password = m.hexdigest(), role = role, id_user = id_p)
+    if date is not None :
+        u = User(mail = mail, password = m.hexdigest(), role = role, id_user = id_p, date=date)
+    else:
+        u = User(mail = mail, password = m.hexdigest(), role = role, id_user = id_p)
     db.session.add(u)
     db.session.commit()
      

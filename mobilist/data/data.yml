@@ -428,39 +428,46 @@
   MAIL: 'clemence@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-28"
 
 - TYPE: USER
   ID_USER: 2
   MAIL: 'ophelie@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-28"
 
 - TYPE: USER
   ID_USER: 3
   MAIL: 'naima@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-27"
 
 - TYPE: USER
   ID_USER: 4
   MAIL: 'nathan@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-26"
 
 - TYPE: USER
   ID_USER: 5
   MAIL: 'yohann@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-26"
 
 - TYPE: USER
   ID_USER: 6
   MAIL: 'christophe@mail.com'
   ROLE: "proprio"
   PASSWORD: '1234'
+  DATE: "2025-02-25"
 
 - TYPE: USER
   ID_USER: 7
   MAIL: 'admin@mail.com'
   ROLE: "admin"
   PASSWORD: '1234'
+  DATE: "2025-02-25"

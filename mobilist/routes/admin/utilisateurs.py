@@ -5,6 +5,7 @@ from ...models.classes.User import User
 from ...models.classes.TypeBien import TypeBien
 from ...models.classes.Proprietaire import Proprietaire
 from ...models.classes.Logement import Piece
+from datetime import datetime
 from ...models.classes.Logement import LogementType
 from ...models.classes.Logement import Logement
 from ...models.classes.Justificatif import Justificatif
@@ -78,7 +79,7 @@ def lesUtilisateurs() -> str:
             proprio = Proprietaire(max_id,form_inscription.mail.data,form_inscription.nom.data,form_inscription.prenom.data)
             db.session.add(proprio)
             db.session.commit()
-            user_temp = User(form_inscription.mail.data,"temporaire","proprio",max_id)
+            user_temp = User(form_inscription.mail.data,"temporaire","proprio",max_id, datetime.today().strftime('%Y-%m-%d'))
             db.session.add(user_temp)
             db.session.commit()
             

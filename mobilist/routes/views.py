@@ -144,3 +144,13 @@ def extraire_informations(texte):
 def open_fic():
     url = request.args.get("url")
     return redirect(url_for('accueil_connexion'))
+
+@app.route("/data/inscriptions", methods=["GET"])
+@login_required
+def get_inscriptions():
+    data = db.session.query(db.func.date(User.date), db.func.count(User.mail)).group_by(db.func.date(User.date)).all()
+    
+    labels = [row[0].strftime('%Y-%m-%d') for row in data]
+    values = [row[1] for row in data]
+
+    return jsonify({'labels': labels, 'values': values})
