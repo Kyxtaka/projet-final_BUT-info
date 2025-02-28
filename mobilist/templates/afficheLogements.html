@@ -10,56 +10,78 @@
 <script src="{{ url_for('static', filename='js/affichage_logements.js') }}"></script> 
 {% endblock %}  
 {% block content %}
-<div class="img-logement">
-    <img id="img-log" src="{{ url_for('static',filename='img/logement.png') }}" alt="page affichage logements"/>
-</div> 
-
-<div class="list-logements">
-    <h1> Mes logements </h1>
-    <div class="log">
-      {% if contenu %}
+<div class="img-rents">
+    <img src="{{ url_for('static', filename='img/logement.jpg') }}" alt="exemplelogement">
+    <h1>Consultez vos logements ici</h1>
+    <p>Retrouvez ici tous les logements que vous avez enregistrés sur notre plateforme. Gérez, modifiez et consultez facilement les informations de vos biens en quelques clics.</p>
+</div>
+<h1 id="content">Tous vos logements à portée de main</h1>
+    <div class="list-logements">
+        {% if contenu %}
         {% for x in logements %}
-        <section class="logement" id="log-{{ x.id_logement }}">
-            <h1>Logement n°{{x.id_logement}}</h1>
-            <article>
-                <h3>Nom : {{x.nom_logement}}</h3>
-                <h3>Type : {{x.type_logement.get_type()}}</h3>
-                <h3>Adresse : {{x.adresse}}</h3>
-                <h3>Pièces : </h3>
-                <h3>Description : {{x.desc_logement}}</h3>
-            </article>
-        </section>
-    </div>
-    <script>
-        // declaration variable var (let n autorise pas la déclaration dans une boucle for)
-        var logment_object = new Logement(
-                                        "log-{{x.id_logement}}",
-                                        "{{x.id_logement}}", 
-                                        "{{x.nom_logement}}",
-                                        "{{x.type_logement.get_type()}}",
-                                        "{{x.adresse}}",
-                                        "{{x.desc_logement}}"
-                                    );
-        var log = document.getElementById("log-{{x.id_logement}}");
-        console.log(log);
-        addLogementToArray(array_logement_obj,logment_object);
-        addLogementToArray(array_logement,log);
-    </script>
+        <div class="log-row">
+            <div class="card-logement" >
+                <img src="{{ url_for('static', filename='img/' + x.type_logement.get_type() + '.jpg') }}">
+            </div>
+
+            <div class="log">
+                <section class="logement" id="log-{{ x.id_logement }}">
+                    <article>
+                        <h3>Nom : {{x.nom_logement}}</h3>
+                        <h3>Type : {{x.type_logement.get_type()}}</h3>
+                        <h3>Adresse : {{x.adresse}}</h3>
+                        <h3>Pièces : </h3>
+                        <h3>Description : {{x.desc_logement}}</h3>
+                    </article>
+                </section>
+            </div>
+        </div>
+        <script>
+            // declaration variable var (let n autorise pas la déclaration dans une boucle for)
+            var logment_object = new Logement(
+                                            "log-{{x.id_logement}}",
+                                            "{{x.id_logement}}", 
+                                            "{{x.nom_logement}}",
+                                            "{{x.type_logement.get_type()}}",
+                                            "{{x.adresse}}",
+                                            "{{x.desc_logement}}"
+                                        );
+            var log = document.getElementById("log-{{x.id_logement}}");
+            console.log(log);
+            addLogementToArray(array_logement_obj,logment_object);
+            addLogementToArray(array_logement,log);
+        </script>
     {% endfor %}
     {% endif %}
-    {% if not (contenu) %}
-        <p class="no-content"> Vous n'avez pas ajouté de logements </p>
-    {% endif %}  
+        {% if not (contenu) %}
+            <h1 class="no-content"> Vous n'avez pas ajouté de logements</h1>
+        {% endif %}  
+    </div>
 </div>
-<div class="buttons">
+<div class="buttons" data-intro="Après avoir sélectionné un logement, vous pouvez soit le supprimer soit le modifier" data-step="2">
     <button class="action-btn" id="supprimer" onclick="toggleFormPopup('delete-popup-form')">SUPPRIMER</button>
     <button class="action-btn" id='modifier' onclick="toggleFormPopup('edit-popup-form')">MODIFIER</button>
 </div> 
 
+
+<script>
+    function redirectToRoomManagement(url) {
+        var selectedLogementID = selected_logement_dbID;
+        console.log("html log id: " + selectedLogementID);
+        if (selectedLogementID != null) {
+            var url = "{{ url_for('logements.manage_room', id=0) }}".replace("0", selectedLogementID);
+            url += "?ClientID={{ current_user.proprio.id_proprio }}";
+            window.location.href = url;
+            //window.location.href = "{{url_for('logements.manage_room', id=1)}}" + "?ClientID=" + "{{current_user.proprio.id_proprio}}";
+        }else {
+            console.log("No logement selected");
+        }
+    }
+</script>
 <!-- For de modification -->
 <div id="edit-popup-form" class="overlay-container">
     <div class="popup-box">
-        <h2 style="color: green;">Modification infos logement</h2>
+        <h2 style="color: #4caf50;">Modification infos logement</h2>
         <form class="form-container" method="POST">
             <input type="hidden" id="type-form" name="type-form" value="UPDATE_LOGEMENT" required>
             <input type="hidden" id="edit-id-input" name="id" required>
@@ -80,6 +102,8 @@
             <label class="form-label" for="description">Description logement:</label>
             <input class="form-input form-textarea" type="text" placeholder="Description du logement" id="edit-description-input" name="description">
 
+            <button type="button" class="btn-open-room-form" onclick="redirectToRoomManagement()">Gerer les pièces</button>
+
             <div class="form-btn-container">
                 <button type="button" class="btn-close-popup" onclick="toggleFormPopup('edit-popup-form')">Annuler</button>
                 <button type="submit" class="btn-submit" >Confirmer</button>
@@ -91,7 +115,7 @@
 <!-- Form de suppression -->
 <div id="delete-popup-form" class="overlay-container">
     <div class="popup-box">
-        <h2 style="color: red;"> CONFIRMATION SUPPRESION LOGEMENT</h2>
+        <h2 style="color: #e74c3c;"> CONFIRMATION SUPPRESION LOGEMENT</h2>
         <form class="form-container" method="POST">
             <input type="hidden" id="type-form" name="type-form" value="DELETE_LOGEMENT" required>
             <input type="hidden" id="delete-id-input" name="id" required>
@@ -116,12 +140,12 @@
 <!-- Popup erreur selection de logement -->
 <div id="unselected-logement-popup", class="overlay-container">
     <div class="popup-box">
-        <h2 style="color: red;"> Aucun logement selectionné</h2>
+        <h2 style="color: #e74c3c;"> Aucun logement selectionné</h2>
         <h3 style="color: blue;"> Veuillez selectionner un logement</h3>
         <div class="form-btn-container">
             <button  type="button"  class="btn-submit" onclick="toggleFormPopup('unselected-logement-popup')">Continuer</button>
         </div>
     </div>
 </div>
-{% endblock %}
 
+{% endblock %}

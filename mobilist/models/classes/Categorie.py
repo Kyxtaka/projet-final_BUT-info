@@ -86,4 +86,21 @@ class Categorie(Base):
         """
         db.session.delete(self)
         db.session.commit()
+    
+    @staticmethod
+    def max_id():
+        """get max id categorie"""
+        max_id = db.session.query(func.max(Categorie.id_cat)).scalar()
+        if max_id is None:
+            max_id = 0
+        return max_id
+
+    @staticmethod
+    def get_all():
+        """Getter de tous les categories
+
+        Returns:
+            list<Categorie>: tous les categories
+        """
+        return Categorie.query.all()
         

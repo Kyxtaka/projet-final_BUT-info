@@ -17,17 +17,17 @@
 <main>
   <section class="ajout">
     <article class="box-ajout">
-      <div>
+      <div data-intro="Ajouter un bien à un logement" data-step="2">
         <a href="{{ url_for('upload.ajout_bien') }}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
-        <a class="ajout-elem" href="{{ url_for('upload.ajout_bien') }}">Ajouter un bien</a>
+        <a class="ajout-elem" href="{{ url_for('upload.ajout_bien') }}" >Ajouter un bien</a>
       </div>
-      <div>
+      <div data-intro="Ajouter un nouveau logement pour mettre vos biens" data-step="1">
         <a href="{{ url_for('logements.ajout_logement')}}"><img class="add" src="{{ url_for('static',filename='img/add.png') }}" alt="add something"></a>
         <a class="ajout-elem" href="{{ url_for('logements.ajout_logement')}}">Ajouter un logement</a>
       </div>
     </article>
   </section>
-  <section class="derniers_ajouts">
+  <section class="derniers_ajouts" data-intro="Retrouvez vos derniers ajouts ici" data-step="3">
     <h3>Récents ajouts </h3>
   <table class="tableau">
     <thead>
@@ -92,7 +92,7 @@
     <a href="{{ url_for('biens.ensemble_biens')}}" class="voir_plus"><u>Voir plus</u></a>
   </section>
   <section class="telecharger">
-    <form method="POST" action="/accueil-connexion/">
+    <form method="POST" action="/accueil-connexion/" data-intro="Retrouvez l'inventaire complet de tous vos logements, tous vos biens" data-step="4">
       <p>Votre inventaire ici</p>
       <button type="submit" name="bouton_telecharger" class="download-btn">TÉLÉCHARGER</button>
     </form>

@@ -9,7 +9,9 @@ from .User import User
 from sqlalchemy import desc
 from .Justificatif import Justificatif
 import json
-
+from .Categorie import Categorie
+from .TypeBien import TypeBien
+import datetime 
 class LogementType(enum.Enum):
     __tablename__ = "LOGEMENTTYPE"
 
@@ -481,6 +483,14 @@ class Bien(Base):
             int: l'id de la pièce
         """
         return self.id_piece
+    
+    def set_id_piece(self, id_piece):
+        """setter de l'id de la pièce
+
+        Args:
+            id_piece (int): le nouvel id de la pièce
+        """
+        self.id_piece = id_piece
     
     def get_id_type(self):
         """getter de l'id du type

@@ -18,6 +18,8 @@ from datetime import date
 from .classes.AjoutBienForm import AjoutBienForm
 from flask import request
 from flask_login import login_required
+from ...app import db
+
 
 from flask import Blueprint
 from flask import (
@@ -170,8 +172,8 @@ def modifier_bien():
 
     if request.method == "GET":
         form_bien.set_id(id)
-        form_bien.prix_bien.data = bien.prix
-        form_bien.nom_bien.data = bien.nom_bien
+        form_bien.prix_bien.data = bien.get_prix()
+        form_bien.nom_bien.data = bien.get_nom_bien()
         form_bien.logement.data = form_bien.get_log_choices(bien.get_typelogement(bien).nom_logement)
         form_bien.categorie_bien.data = form_bien.get_cat_bien_choices(bien.get_catbien(bien).nom_cat)
         form_bien.type_bien.data = form_bien.get_type_bien_choices(bien.get_typebien(bien).nom_type)

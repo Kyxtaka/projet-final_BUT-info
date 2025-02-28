@@ -10,6 +10,8 @@ from .classes.ResetForm import ResetForm
 from .classes.ResetPasswordForm import ResetPasswordForm
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+
 from email.mime.multipart import MIMEMultipart
 from hashlib import sha256
 from flask_login import login_user , current_user
@@ -91,11 +93,26 @@ def send_change_pwd_email(mail, token) -> bool:
     domain = "127.0.0.1"
     port = "5000"
     generated_change_password_link = f"{protocol}://{domain}:{port}/forgotPassword/setPassword?token={token}"
-    body = f"""
-    Pour réinitialiser votre mot de passe Mobilist,
-    veuillez accéder à la page suivante : {generated_change_password_link}
-    Ce lien est à usage unique et expirera dans 10 minutes.
-    """
+    html_content = """
+        <html>
+        <head>
+            
+        </head>
+        <body>
+            <h1>Réinitialisez votre mot de passe</h1>
+            <p>Pour réinitialiser votre mot de passe <b>Mobilist</b>,</p>
+            <p>Veuillez accéder à la page suivante : <a href="{generated_change_password}" class="button" style="text-decoration:none; color:purple;">Réinitialiser le mot de passe</a></p>
+            <p>Ce lien est à usage unique et expirera dans 10 minutes.</p>
+            <p>Merci, <br> L'équipe Mobilist</p>
+            <img src="cid:image1" alt="Logo Mobilist" />
+            
+        </body>
+        </html>
+        """
+
+    html_content = html_content.format(generated_change_password=generated_change_password_link)
+    image_path = "static/img/logo_mobilist.png"  
+
     try:
         # Configuration du serveur SMTP
         server = smtplib.SMTP(GOOGLE_SMTP)
@@ -107,7 +124,12 @@ def send_change_pwd_email(mail, token) -> bool:
         msg["From"] = email
         msg["To"] = mail
         msg["Subject"] = subject
-        msg.attach(MIMEText(body, "plain"))
+        msg.attach(MIMEText(html_content, "html"))
+
+        with open(image_path, "rb") as img_file:
+            img = MIMEImage(img_file.read())
+            img.add_header('Content-ID', '<image1>')  
+            msg.attach(img)
 
         # Envoie de l'email
         server.sendmail(email, mail, msg.as_string())

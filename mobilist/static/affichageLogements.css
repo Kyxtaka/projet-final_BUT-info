@@ -1,55 +1,100 @@
-main {
-    padding-top: 75px;
+/* Generation of clip-path on : https://bennettfeely.com/clippy/ */
+
+
+.img-rents{
+    position: relative;
+    margin-bottom: 100px;
 }
 
-.nav-item-logement a {
+.img-rents img {
+    width: 100%;
+    height: 600px;
+    clip-path: polygon(100% 62%, 50% 93%, 0 61%, 0 0, 48% 0, 100% 0);
+    opacity: 0.9;
+}
+
+.img-rents h1,
+.img-rents p {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    color: white; 
     font-weight: bold;
-}
-
-.img-logement {
     text-align: center;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); 
+    font-family: "LL Circular",sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
-#img-log {
-    height: 350px;
-    
+.img-rents h1 {
+    top: 40%;
+    left: 50%;
+    font-size: 50px;
+}
+
+.img-rents p {
+    top: 50%;
+    left: 50%;
+    font-size: 15px;
 }
 
 .list-logements {
-    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 40px;
+}
+
+.log-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+    
+.card-logement {
+    flex-shrink: 0;
+    background: white;
+    padding: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
     text-align: center;
 }
 
-.no-content {
-    font-size: 25px;
-    margin:2%;
+.card-logement img {
+    width: 500px;
+    height: 350px;
+    border-radius: 2px;
+    display: block;
+    margin: 5px;
 }
 
-.list-logements > h1 {
-    font-weight: bolder;
-    
-}
-
-section h1 {
-    font-weight: bolder;
-    background-color: rgb(240, 240, 240);
-}
-
-.logement {
-    text-align: left;
-    margin-top: 3rem;
-    margin-left: 30rem;
-    margin-right: 25%;
+.log {
+    flex: 1;
+    max-width: 500px; 
     border: 2px dotted;
     border-radius: 30px;
     padding: 20px;
 }
 
-.logement:hover {
+.logement h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#content,
+.no-content {
+    margin:2%;
+    text-align: center;
+}
+
+.log:hover {
     border: 1px solid;
     border-color: #5E5DF0;
 }
-
 
 .buttons {
     margin-top: 50px;
@@ -112,7 +157,7 @@ section h1 {
 .btn-open-popup {
     padding: 12px 24px;
     font-size: 18px;
-    background-color: green;
+    background-color: #4caf50;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -123,6 +168,21 @@ section h1 {
 
 .btn-open-popup:hover {
     background-color: #4caf50;
+}
+
+.btn-open-room-form {
+    font-size: 18px;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 8px;
+    background-color: cyan;
+}
+
+.btn-open-room-form:hover {
+    background-color: green;
 }
 
 .overlay-container {
@@ -187,7 +247,7 @@ section h1 {
 }
 
 .btn-submit {
-    background-color: green;
+    background-color: #4caf50;
     color: #fff;
 }
 
@@ -224,15 +284,3 @@ section h1 {
     display: flex;
     justify-content: space-between;
 }
-
-
-/* body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif;
-    } */

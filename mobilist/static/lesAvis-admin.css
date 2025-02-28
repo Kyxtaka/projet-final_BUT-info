@@ -1,0 +1,77 @@
+.titre{
+    padding-top: 2%;
+    padding-bottom: 2%;
+    background-color: #e9eaee
+}
+
+
+.titre>h1{
+    font-size: 45px;
+    text-align: center;
+    font-weight: bold;
+}
+.h1pt1 {
+    color: black ;
+}
+.h1pt2{
+    color:#612bb7;
+}
+
+.avis{
+    display : flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+main h2 {
+    text-align: center;
+}
+
+.avis section{
+    padding: 25px;
+    margin-top: 4em;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    border-radius: 30px; 
+    width: 35%;
+}
+
+.avis>section>p{
+    margin-top: 2%;
+    font-size: 20px;
+}
+
+.supprimer {
+  background: #FF4742;
+  border: 1px solid #FF4742;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  text-rendering: geometricprecision;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+}
+
+.supprimer:hover,
+.supprimer:active {
+  background-color: initial;
+  background-position: 0 0;
+  color: #FF4742;
+}
+
+.supprimer:active {
+  opacity: .5;
+}
+

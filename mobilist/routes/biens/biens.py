@@ -21,7 +21,8 @@ from ..PDF.generatePDF import *
 
 
 biens_bp = Blueprint('biens', __name__)
-@biens_bp.route("/mesBiens/", methods =["GET"])
+@biens_bp.route("/mesBiens/", methods =["GET", "POST", "DELETE", "PUT"])
+@login_required
 def mesBiens() -> str:
     """
     Affiche les biens et logements d'un propriétaire 
@@ -32,6 +33,16 @@ def mesBiens() -> str:
     logement_id = request.args.get("logement")
     proprio = Proprietaire.query.get(current_user.id_user)
     logements = []
+    if request.method == "DELETE" and request.args.get("logement") != None:
+        print("DELETE")
+        deleteBiens(request, request.args.get("logement"))
+    if request.method == "PUT" and request.args.get("logement"):
+        print("PUT")
+        print(request.get_json())
+        logementID =  request.args.get("logement")
+        data = request.get_json()
+        for d in data:
+            moveBiens(logementID, d["id_piece"], d["id_bien"])
     for logement in proprio.logements:
         logements.append(logement)
     if logement_id:
@@ -42,8 +53,31 @@ def mesBiens() -> str:
         pieces = []
     return render_template("mesBiens.html",logements=logements,logement_id=logement_id,pieces=pieces,logement_actuel=logement_actuel)
 
+def deleteBiens(request, logement_id):
+    data_json = request.get_json()
+    print(data_json)
+    for data in data_json:
+        print(data)
+        bien = Bien.query.get(data["id"])
+        bien.delete()
+        db.session.commit()
+    return 
+
+def moveBiens(logement_id, piece_id, bien_id):
+    print("étape 3")
+    try:
+        bien = Bien.query.get(bien_id)
+        bien.set_id_piece(piece_id) 
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+    print("étape 4")
+    return
+
 
 @biens_bp.route("/simulation/", methods =("GET","POST" ,))
+@login_required
 def simulation() -> str:
     """
     Permet de faire une simulation de sinistre pour un logement et de génèrer un inventaire
@@ -97,5 +131,4 @@ def biens():
     for justifie in justifies:
         a_justifier.append([justifie.nom_bien, justifie.get_nom_logement_by_bien(justifie.id_bien).nom_logement, justifie.get_nom_piece_by_bien(justifie.id_bien).nom_piece, str(justifie.id_bien)])
     return infos, a_justifier
-
 

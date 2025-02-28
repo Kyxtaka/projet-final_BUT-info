@@ -18,7 +18,7 @@ from flask import (
     redirect, 
     render_template, url_for
     )
-from flask import request
+from flask import request, jsonify
 from flask_login import login_required
 from flask_login import login_user, current_user
 from ...app import db
@@ -92,6 +92,7 @@ def affiche_logements() -> str:
 
 
 @logements_bp.route("/logement/ajout", methods =["GET","POST"])
+@login_required
 def ajout_logement() -> str:
     """
     Fonction qui permet d'ajouter un nouveau logement
@@ -128,6 +129,84 @@ def ajout_logement() -> str:
             print("Erreur lors de l'ajout du logement phase 1")
             print(e)
     return render_template("ajout_logement.html", type_logement=[type for type in LogementType])
+
+@logements_bp.route("/logement/manage_room/<int:id>", methods=["GET", "POST", "PUT", "DELETE"])
+@login_required
+def manage_room(id):
+    accessID = request.args.get("ClientID")
+    print("access to manage romm page with logement ID:", id)
+    print("Client ID request param:", accessID)
+    print("Current user database ID:", current_user.id_user)
+    print("Check user access logement perm:",check_logement_access(id))
+    if not check_logement_access(id):
+        print("Access denied")
+        return redirect(url_for("accueil_connexion"))
+    print("Access granted")
+    logement = Logement.query.get(id)
+    if logement is None: return redirect(url_for("accueil_connexion"))
+    try: 
+        handle_manage_room_request(request, id) 
+    except Exception as e:
+        print("Erreur lors de la gestion de la pièce")
+    pieces = Piece.query.filter_by(id_logement=id).all()
+    print("pieces:", pieces)
+    return render_template("manage_room.html", rooms=pieces, logement=logement)
+
+def handle_manage_room_request(request, id):
+    print("handling request - params:", request, "LogementID",id)
+    print("received request:", request)
+    print("request.method:", request.method)
+    match request.method:
+        case "POST":
+            room_name = request.form.get("roomName")
+            room_desc = request.form.get("roomDesc")
+            print("request data:", request.form)
+            ajout_piece_logement(Logement.query.get(id), room_name, room_desc)
+            return url_for("logements.manage_room", id=id)
+        
+        case "PUT": 
+            data = request.get_json()
+            print("request data:", data)
+            logement_id = data.get("logementId")
+            room_id = data.get("roomId")
+            room_name = data.get("roomName")
+            room_desc = data.get("roomDesc")
+            try: 
+                piece = Piece.query.get((room_id, logement_id))
+                piece.set_nom_piece(room_name)
+                piece.set_desc_piece(room_desc)
+                db.session.commit()
+                print("Piece modifiée")
+            except Exception as e:
+                db.session.rollback()
+                print("Erreur lors de la modification de la pièce")
+                print(e)
+            return url_for("manage_room", id=id)
+        
+        case "DELETE": 
+            deleted_item_id= request.args.get("roomId")
+            try: 
+                piece = Piece.query.get((deleted_item_id, request.args.get("logementId")))
+                piece.delete()
+                db.session.commit()
+                print("Piece supprimée")
+            except Exception as e:
+                db.session.rollback()
+                print("Erreur lors de la suppression de la pièce")
+                print(e)
+
+def check_logement_access(id):
+    result = False
+    try:
+        logement = Logement.query.get(id)
+        proprio = Proprietaire.query.get(current_user.id_user)
+        if logement in proprio.logements:
+            result = True
+        else:
+            result = False
+    except Exception as e:
+        print("Erreur lors de la vérification de l'accès au logement")
+    return result
 
 def create_logement(name: str, type: str, address: str, description: str) -> Logement:
     """
