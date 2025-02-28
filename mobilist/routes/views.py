@@ -70,7 +70,10 @@ def accueil_admin():
     avis = Avis.get_all()
     if avis != None:
         avis.reverse()
-    return render_template("accueil_admin.html", avis=avis[:2])
+    user = User.get_all()
+    if user != None:
+        user.reverse()
+    return render_template("accueil_admin.html", avis=avis[:2], user=user[:2])
     
 @app.route("/information")
 def information():

@@ -12,7 +12,18 @@
 <div class="accueil-admin"> 
 <main>
     <h2>Bienvenue admin</h2>
-    <h3>Récent avis</h3>
+    <h3>Les derniers news</h3>
+    <h4>Récents inscrits</h4>
+    <div class ="inscrit">
+        {% for x in user  %}
+        <section >
+            <p class="nom">{{ x.mail }}</p>
+        </section>
+
+        {% endfor %}
+    </div>
+    
+    <h4>Récents avis</h4>
 
     <div class ="avis">
         {% for x in avis  %}
