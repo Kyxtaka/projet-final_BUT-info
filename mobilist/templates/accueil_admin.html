@@ -39,18 +39,18 @@
     </div>
 
 </main><script>
-    fetch('/api/inscriptions') // Récupère les données Flask
+    fetch('/data/inscriptions') // Récupère les données Flask
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById('myChart').getContext('2d');
 
             new Chart(ctx, {
-                type: 'bar', // Change en 'line', 'pie' selon tes besoins
+                type: 'bar', 
                 data: {
-                    labels: data.labels, // Jours d'inscription
+                    labels: data.labels, 
                     datasets: [{
                         label: 'Inscriptions par jour',
-                        data: data.values, // Nombre d'inscriptions
+                        data: data.values, 
                         backgroundColor: 'rgba(54, 162, 235, 0.5)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
