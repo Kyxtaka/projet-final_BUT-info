@@ -7,12 +7,26 @@
 {% block scripts %}
 {{ super() }}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>  
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 {% block content %}
 <div class="accueil-admin"> 
-<main>
+<main class="main-accueil">
     <h2>Bienvenue admin</h2>
-    <h3>Récent avis</h3>
+    <h3>Les derniers news</h3>
+    <canvas id="myChart"></canvas>
+
+    <h4><a href="{{ url_for('utilisateurs.lesUtilisateurs')}}">Récents inscrits</a></h4>
+    <div class ="inscrit">
+        {% for x in user  %}
+        <section >
+            <p class="nom">{{ x.mail }}</p>
+        </section>
+
+        {% endfor %}
+    </div>
+    
+    <h4><a href="{{ url_for('admin.lesAvis') }}">Récents avis</a></h4>
 
     <div class ="avis">
         {% for x in avis  %}
@@ -24,5 +38,42 @@
         {% endfor %}
     </div>
 
-</main>
+</main><script>
+    fetch('/data/inscriptions')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: data.labels, 
+                    datasets: [{
+                        label: 'Inscriptions par jour',
+                        data: data.values, 
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1, 
+                            callback: function(value, index, values) {
+                                return Number.isInteger(value) ? value : null; 
+                            }
+                        }
+                    }
+                }
+            }
+
+            });
+        })
+        .catch(error => console.error('Erreur lors du chargement des données', error));
+</script>   
+    
 {% endblock %}

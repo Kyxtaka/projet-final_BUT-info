@@ -17,14 +17,16 @@ class User(Base, UserMixin):
     mail = Column(String(50), primary_key=True, name="MAIL")
     password = Column(String(64), name="PASSWORD")
     role = Column(String(10), name="ROLE")
-    id_user = Column(Integer, ForeignKey("PROPRIETAIRE.ID_PROPRIO", ondelete="CASCADE"), name="ID_PROPRIO")    
+    id_user = Column(Integer, ForeignKey("PROPRIETAIRE.ID_PROPRIO", ondelete="CASCADE"), name="ID_PROPRIO") 
+    date = Column(Date, name="DATE_INSCRIPTION", nullable=True)
     proprio = relationship('Proprietaire', back_populates='user', uselist=False, cascade="all, delete")
     
-    def __init__(self, mail, password, role, id_user):
+    def __init__(self, mail, password, role, id_user, date=None):
         self.mail = mail
         self.password = password
         self.role = role
         self.id_user = id_user
+        self.date = date
                 
     def get_id(self):
         """getter du mail (id)

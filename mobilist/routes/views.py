@@ -16,6 +16,7 @@ from flask import request
 from flask_login import login_required
 from mobilist.exception import *
 import spacy
+from datetime import datetime
 nlp = spacy.load("fr_core_news_md")
 
 from .PDF.generatePDF import *
@@ -70,7 +71,10 @@ def accueil_admin():
     avis = Avis.get_all()
     if avis != None:
         avis.reverse()
-    return render_template("accueil_admin.html", avis=avis[:2])
+    user = User.get_all()
+    if user != None:
+        user.reverse()
+    return render_template("accueil_admin.html", avis=avis[:2], user=user[:2])
     
 @app.route("/information")
 def information():
@@ -141,3 +145,13 @@ def extraire_informations(texte):
 def open_fic():
     url = request.args.get("url")
     return redirect(url_for('accueil_connexion'))
+
+@app.route("/data/inscriptions", methods=["GET"])
+@login_required
+def get_inscriptions():
+    data = db.session.query(db.func.date(User.date), db.func.count(User.mail)).group_by(db.func.date(User.date)).all()
+    
+    labels = [datetime.strptime(row[0], '%Y-%m-%d').strftime('%Y-%m-%d') for row in data]
+    values = [row[1] for row in data]
+
+    return jsonify({'labels': labels, 'values': values})
