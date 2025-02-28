@@ -43,3 +43,7 @@ Pour lancer l'application après avoir activé votre environnement virtuel, depu
 > Vous pouvez lancer l'application avec **flask run**  
 > Ouvrir la page depuis le lien donné (Running on http://127.0...)
 
+### Lancer les tests
+Pour lancer les tests, à la racine du projet ```python -m pytest``` ou  ```coverage run -m pytest```  
+Pour obtenir la couverture, à la racine du projet ```coverage html --omit=mobilist/commands.py,mobilist/routes/PDF/generatePDF.py```
+
