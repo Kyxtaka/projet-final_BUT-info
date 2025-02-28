@@ -17,7 +17,7 @@
   <div class="index">
   <header>
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-white">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-white" id="navbar">
       <div class="logo">
         <a href="#">
           <img src="{{ url_for('static',filename='img/logo_mobilist_etendu.png') }}" alt="logo du site"/>
@@ -28,30 +28,27 @@
             <ul class="navbar-nav-left">
                 <li class="nav-img" >
                   <div class=BAccueil>
-                    <a href="{{ url_for('accueil') }}"><img src="{{ url_for('static',filename='img/accueil.png') }}" alt="icône accueil"/></a>
+          
                     <a class="nav-link active" aria-current="page" href="{{ url_for('accueil') }}">Accueil</a>
                   </div>
                 </li>
                 <li class="nav-img" >
                   <div class="BServices">
-                      <img src="{{ url_for('static',filename='img/services.png') }}" alt="icône nos services"/>
                       <a class="nav-link active" aria-current="page" href="{{ url_for('services') }}">Nos services</a>
                   </div>
                 </li>
                   <li class="nav-img" >
                       <div class="BContact">
-                          <img src="{{ url_for('static',filename='img/contact.png') }}" alt="icône contact"/>
                           <a class="nav-link active" aria-current="page" href="{{ url_for('accueil') + '#coord'}}">Contact</a>
                       </div>
                   </li>
                 <li class="nav-img" >
                   <div class="BAvis">
-                      <img src="{{ url_for('static',filename='img/avis.png') }}" alt="icône avis"/>
                       <a class="nav-link active" aria-current="page" href=" {{ url_for('avis')}}">Avis</a>
                   </div>
                 </li>
                 <li id="connexion">
-                  <a href="{{ url_for('login') }}">
+                  <a href="{{ url_for('login.login') }}">
                     <button class="connexion">Se connecter</button>
                   </a>
                 </li>
@@ -65,7 +62,7 @@
           </div>
       </nav>         
   </header>
-  </header>
+
 
   <main class="flex-shrink-0">
     <div class="content">
@@ -82,6 +79,7 @@
       <p id="groupe"> © AKHTAR NAIMA - VALIN OPHÉLIE - BOCQUET CLÉMENCE - VILCOQ YOHANN - RANDRIANTSOA NATHAN </p>
     </div>
   </footer>
+</div>
 </body>
 </html>
 

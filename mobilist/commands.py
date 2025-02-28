@@ -1,5 +1,16 @@
 from .app import app, db
-from .models import *
+
+from .models.classes.User import User
+from .models.classes.TypeBien import TypeBien
+from .models.classes.Proprietaire import Proprietaire
+from .models.classes.Logement import Piece
+from .models.classes.Logement import LogementType
+from .models.classes.Logement import Logement
+from .models.classes.Justificatif import Justificatif
+from .models.classes.Categorie import Categorie
+from .models.classes.Logement import Bien
+from .models.classes.Logement import AVOIR
+from .models.classes.Avis import Avis
 from datetime import *
 import yaml
 import click
@@ -103,10 +114,24 @@ def loaddb(filename):
 @click.argument('password')
 @click.argument('role')
 def newuser(mail, password, role):
+    """Crée un nouvel utilisateur
+
+    Args:
+        mail (str): l'email
+        password (str): le mot de passe 
+        role (str): le rôle de l'utilisateur
+    """
     create_user(mail, password, role)
     
 def create_user(mail, password, role):
-    from.models import User
+    """Crée un utilisateur avec un mot de passe crypté et un rôle donné
+
+    Args:
+        mail (str): l'email
+        password (str): le mot de passe
+        role (str): le rôle de l'utilisateur
+    """
+    from .models.classes.User import User
     from hashlib import sha256
     m = sha256()
     m.update(password.encode())
@@ -130,7 +155,13 @@ def create_user(mail, password, role):
 @click.argument('mail')
 @click.argument('password')
 def passwd(mail, password):
-    from.models import User
+    """Modifie le mot de passe d'un utilisateur existant
+
+    Args:
+        mail (str): l'email de l'utilisateur
+        password (str): le nouveau mot de passe
+    """
+    from .models.classes.User import User
     from hashlib import sha256
     m = sha256()
     m.update(password.encode())

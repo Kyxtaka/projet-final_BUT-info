@@ -4,32 +4,145 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='information.css')}}">
 {% endblock %}
 {% block content %}
-<h1 class="apropos">À propos de Mobilist</h1>
-<section class="paragraphe1">
-    <p>Besoin de dresser un inventaire de vos biens et leurs valeurs ?
-        MobiList est fait pour vous !
-    </p>
+<script>
+    function showCard(yearID, buttonID) {
+        document.querySelectorAll('.card').forEach(div => {
+            div.classList.remove('visible');
+        });
+        document.getElementById(yearID).classList.add('visible');
+        document.querySelectorAll('.buttons-years .btn').forEach(btn => {
+        btn.style.boxShadow = "none";
+        document.getElementById(buttonID).style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.3)";
+    });
+    }
+</script>
+<section class="about-mobilist">
+    <div class="content-mobilist">
+        <p> A propos de Mobilist </p>
+        <h2> Votre inventaire digital sécurisé.</h2>
+        <p>Mobilist est l'application incontournable pour répertorier et protéger vos biens.
+            En quelques clics, créez un inventaire détaillé de vos objets de valeur, estimez leur prix et générez un rapport téléchargeable en cas de sinistre. 
+            Que vous soyez un particulier soucieux de vos biens ou un professionnel cherchant une solution simple de gestion d’actifs, Mobilist vous accompagne.
+        </p>
+        <a class="creer-compte" href="{{ url_for('login.inscription')}}">
+            <button>Créez votre compte</button>
+        </a>
+    </div>
+    <img src="{{ url_for('static', filename='img/content-mobilist.jpg') }}" alt="illustration-worker">
 </section>
-<section class="paragraphe2">
-    <hr/>
-    <h1>MobiList face aux sinistres</h1>
-    <p id="para2.1"> Inondation, sécheresse, glissement de terrain, cyclone : certains événements marquent par leur
-        ampleur et laissent derrière eux de nombreux dégâts matériels. </p>
-    <p id="para2.2">Après un tel sinistre, il est important de dresser une liste des dommages subis à son assurance. 
-        Il faut regrouper les factures d’achat, de réparation, les certificats de garantie, des photos... ça fait beaucoup ! </p>
-    <p id="para2.3">Heureusement, MobiList est là ! Avec MobiList, vous pouvez facilement informatiser cet inventaire et automatiser sa mise à jour lors d’un nouvel achat d’un équipement.</p>
+<section class="chiffres-clés">
+    <div class="content-numbers">
+        <div class="title-numbers">
+            <h2> Nos chiffres clés </h2>
+        </div>
+        <div class="description-numbers">
+            <p> Depuis son lancement, Mobilist s’est imposée comme une référence en matière de gestion et de protection des biens personnels. 
+                Son interface intuitive et ses fonctionnalités avancées ont séduit des centaines de milliers d’utilisateurs à travers le monde. 
+                Grâce à sa technologie innovante et à son engagement envers la sécurité des données, Mobilist facilite la gestion du patrimoine personnel et professionnel.</p>
+        </div>
+    </div>
+    <hr />
+    <div class="numbers">
+        <ul>
+            <li><p><span>500 000+</span><br />de téléchargements de l'application</p></li>
+            <li><p><span>2M+</span><br />de biens enregistrés</p></li>
+            <li><p><span>100M+</span><br />de valeur estimée sur la plateforme</p></li>
+            <li><p><span>98%</span><br />de satisfaction client</p></li>
+            <li><p><span>12 pays</span><br />et disponible en 5 langues</p></li>
+        </ul>
+    </div>
 </section>
-<section class="paragraphe3">
-    <hr/>
-    <h1>En cas de sinistre, ça se passe comment ?</h1>
-    <p>En cas de sinistre, vous pouvez facilement télécharger l'inventaire de vos pertes depuis votre espace personel. 
-        Il ne vous reste plus qu'à le transmettre à votre assurance !
-    </p>
+<section class="our-company">
+    <div class="content-company">
+        <p>Chez Inventis Tech</p>
+        <h2> Notre histoire en quelques mots </h2>
+        <p class="paragraphe 1">Fondée en 2020, Inventis Tech est une startup française spécialisée dans le développement d’applications innovantes pour la gestion et la protection du patrimoine personnel. 
+            Sa mission est de simplifier la digitalisation des inventaires pour garantir aux utilisateurs une tranquillité d’esprit en cas de vol, sinistre ou besoin administratif.
+        </p>
+        <p class="paragraphe 2">Avec une équipe de 30 experts en tech et assurance, Inventis Tech collabore avec des partenaires majeurs du secteur pour proposer une solution fiable et intuitive. 
+            Son engagement envers l’expérience utilisateur et la sécurité des données fait de Mobilist un acteur de référence dans la gestion numérique des biens.
+        </p>
+    </div>
 </section>
-<section class="inscrire">
-    <hr/>
-    <h1>Qu'attendez-vous ?</h1>
-    <p> <a class="creer_compte" href="{{ url_for('inscription')}}"> Créer votre compte </a> dès maintenant et profitez de nos services.
-    </p>
+<section class="chronologie">
+    <p>Une expansion au fil des années...</p>
+    <h2>Un parcours dans le temps</h2>
+    <div class="buttons-years">
+        <ul>
+            <li><a><button id="btn2020" class="btn 2020" onclick="showCard('year-2020', 'btn2020')">2020</button></a></li>
+            <li><a><button id="btn2021" class="btn 2021" onclick="showCard('year-2021', 'btn2021')">2021</button></a></li>
+            <li><a><button id="btn2022" class="btn 2022" onclick="showCard('year-2022', 'btn2022')">2022</button></a></li>
+            <li><a><button id="btn2023" class="btn 2023" onclick="showCard('year-2023', 'btn2023')">2023</button></a></li>
+            <li><a><button id="btn2024" class="btn 2024" onclick="showCard('year-2024', 'btn2024')">2024</button></a></li>
+        </ul>
+    </div>
+    <div class="card year-2020" id="year-2020">
+        <img src="{{ url_for('static', filename='img/card-1.jpg') }}" alt="">
+        <h3>Création de l’Entreprise & Développement de Mobilist</h3>
+        <ul>
+            <li>🚀 Fondation d’Inventis Tech avec pour mission de digitaliser la gestion des biens personnels.</li>
+            <li>📱 Développement de l’application Mobilist, avec une première version en phase bêta test auprès de 1 000 utilisateurs.</li>
+        </ul>
+    </div>
+    <div class="card year-2021" id="year-2021">
+        <img src="{{ url_for('static', filename='img/card-2.jpg') }}" alt="">
+        <h3>Lancement Officiel & Premiers Partenariats</h3>
+        <ul>
+            <li>📌 Lancement officiel de Mobilist sur iOS et Android.</li>
+            <li>🤝 Premier partenariat avec une compagnie d’assurance permettant aux utilisateurs de transmettre directement leur inventaire en cas de sinistre.</li>
+            <li>🔍 Ajout d’une fonctionnalité de reconnaissance automatique des objets via intelligence artificielle.</li>
+        </ul>
+    </div>
+    <div class="card year-2022" id="year-2022">
+        <img src="{{ url_for('static', filename='img/card-3.jpg') }}" alt="">
+        <h3>Expansion et Améliorations Majeures</h3>
+        <ul>
+            <li>🌍 Disponibilité de Mobilist dans 5 nouveaux pays européens (Belgique, Suisse, Espagne, Allemagne, Italie).</li>
+            <li>📂 Introduction du stockage sécurisé sur le cloud pour sauvegarder les inventaires.</li>
+            <li>🔄 Mise en place de l’option "Valeur avec vétusté" pour des estimations plus précises des biens.</li>
+        </ul>
+    </div>
+    <div class="card year-2023" id="year-2023">
+        <img src="{{ url_for('static', filename='img/card-4.jpg') }}" alt="">
+        <h3>Intelligence Artificielle et Partenariats Bancaires</h3>
+        <ul>
+            <li>🤖 Déploiement d’un assistant IA capable d’estimer la valeur d’un objet en scannant une simple photo.</li>
+            <li>🏦 Signature d’un partenariat avec une banque, permettant d’intégrer Mobilist à certaines offres premium d’assurance habitation.</li>
+            <li>📊 Ajout d’un tableau de bord statistique pour suivre l’évolution de la valeur des biens en temps réel.</li>
+        </ul>
+    </div>
+    <div class="card year-2024" id="year-2024">
+        <img src="{{ url_for('static', filename='img/card-5.jpg') }}" alt="">
+        <h3>Sécurité et Automatisation Avancée</h3>
+        <ul>
+            <li>🔐 Authentification biométrique et chiffrement avancé des données pour une meilleure protection des utilisateurs.</li>
+            <li>🔄 Importation automatique des factures et reçus via connexion aux e-mails et comptes e-commerce (Amazon, Fnac, etc.).</li>
+            <li>📜 Création d’un rapport PDF certifié conforme aux exigences des assurances et organismes de gestion de patrimoine.</li>
+        </ul>
+    </div>
 </section>
+<section class="actualites">
+    <div class="title-news">
+        <p>News</p>
+        <h2> Nos projets pour 2025</h2>
+        <h3>Mobilist Pro et Internationalisation</h3>
+    </div>
+    <div class="year-2025">
+        <article class="expansion">
+            <p>May 2025</p>
+            <h2>Expansion en Amérique du Nord et en Asie, avec une version adaptée aux marchés locaux</h2>
+        </article>
+        <article class="mobilist-pro">
+            <p>June 2025</p>
+            <h2>Lancement de "Mobilist Pro", une version dédiée aux entreprises, agences immobilières et experts en assurance</h2>
+        </article>
+        <article class="blockchain">
+            <p>October 2025</p>
+            <h2>Intégration avec la blockchain pour certifier la propriété et la valeur des objets de collection</h2>
+        </article>
+    </div>
+</section>
+<div class="img-2025">
+    <img src="{{ url_for('static', filename='img/2025.jpg') }}">
+</div>
 {% endblock %}

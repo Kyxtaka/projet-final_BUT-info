@@ -1,17 +1,155 @@
 {% extends "accueil_2.html" %}
 {% block styles %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='mesBiens.css')}}">
-<!-- Bootstrap CSS -->
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='mesBiens.css')}}">
+{{ super() }}
+<!-- Bootstrap CSS -->
+{% endblock %}
+{% block scripts %}
+<script>
+
+    class Bien {
+        id;
+        name;
+        prix;
+        constructor(name, prix, id) {
+            this.id = id;
+            this.name = name;
+            this.prix = prix;
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const { BehaviorSubject } = rxjs; // import de rxjs apres avoir load le script dans le html car on utilise pas node et Typescript
+        const arraybiens = new BehaviorSubject([]);
+        const $arrybiens = arraybiens.asObservable();
+        const bienFormButton = document.getElementById('supp-bien-btn');
+        const bienTable = document.getElementById('bien-list');
+    
+        document.querySelectorAll(".btn").forEach(button => {
+            button.addEventListener("click", async function(event) {
+                let idBien = parseInt(this.id);
+                console.log("Bouton cliqué avec ID:", idBien);
+                if(this.innerText === "Supprimer") {
+                    event.preventDefault();
+                    let bienName = document.getElementById(`nomBien${idBien}`).textContent;
+                    let bienPrix = parseFloat(document.getElementById(`prixBien${idBien}`).textContent);
+                
+                    console.log("bienName", bienName);
+                    console.log("bienPrix", bienPrix);
+                
+                    let bien = new Bien(bienName, bienPrix, idBien);
+                
+                    arraybiens.next([...arraybiens.getValue(), bien]);
+                    console.log("Updated biens array:", arraybiens.getValue());
+                
+                    this.innerText = "Annuler";
+                    this.style.backgroundColor = "green";
+                } else if(this.innerText === "Annuler") {
+                        event.preventDefault();
+                        const updatedbiens = arraybiens.getValue().filter(bien => bien.id !== idBien);
+                        arraybiens.next(updatedbiens);
+                        
+                        console.log("Updated biens array:", arraybiens.getValue());
+                        this.innerText = "Supprimer";
+                        this.style.backgroundColor = "brown";
+                } else if(this.innerText === "Confirmer pour tout") {
+                    await deleteBiens(); 
+                    await moveBiens();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 600);              
+                }
+            });
+
+            $arrybiens.subscribe({
+                next: (reponse) => {
+                    let bienPrixSupprimer = 0;
+                    reponse.forEach(element => {
+                        bienPrixSupprimer += element.prix;
+                    });
+                    bienPrixSupprimer = bienPrixSupprimer.toFixed(2);
+                    const element = document.getElementsByClassName("total");
+                    Array.prototype.forEach.call(element, (htmlElem) => {
+                        console.log("element", htmlElem);
+                        htmlElem.textContent = bienPrixSupprimer;
+                    });
+                    //.forEach(element => {
+                        
+                     //   element.textContent = bienPrixSupprimer;
+                    //});
+                    //.textContent = bienPrixSupprimer;
+                },
+                error: (error) => {
+                    console.error(error);
+                },
+            });
+
+            async function deleteBiens() {
+                fetch("{{ url_for('biens.mesBiens')}}" + "?logement=" + "{{ logement_id }}", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(arraybiens.getValue()),
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("biens supprimés");
+                        arraybiens.next([]);
+                    } else {
+                        console.error("Erreur lors de la suppression des biens");
+                    }
+                }).catch(error => {
+                    console.error("Erreur lors de la suppression des biens", error);
+                });
+            }
+
+            async function moveBiens() {
+                let biensToMove = [];
+                document.querySelectorAll(".deplacer").forEach(select => {
+                    let idBien = select.id;
+                    let idPiece = select.value;
+                    console.log("idBien", idBien);
+                    console.log("idPiece", idPiece);
+                    if (idPiece !== "NotMoved") {
+                        biensToMove.push({ id_bien: idBien, id_piece: idPiece });
+                    }
+                });
+        
+                if (biensToMove.length > 0) {
+                    fetch("{{ url_for('biens.mesBiens')}}" + "?logement=" + "{{ logement_id }}", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(biensToMove),
+                    }).then(response => {
+                        if (response.ok) {
+                            console.log("Biens déplacés avec succès");
+                        } else {
+                            console.error("Erreur lors du déplacement des biens");
+                        }
+                    }).catch(error => {
+                        console.error("Erreur lors du déplacement des biens", error);
+                    });
+                }
+            }
+
+        });
+    });
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.5/rxjs.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}
 {% block content %}
 <div class="mesBiens">
-    <div class="bandeau">
+    <div class="bandeau" data-intro="Choisissez un logement pour afficher ses pièces" data-step="1">
         <h2>Vos biens répertoriés par pièces</h2>
-        <form method="GET" action="{{ url_for('mesBiens') }}">
+        <form method="GET" action="{{ url_for('biens.mesBiens') }}">
             <div class="choix_logement">
                 <select name="logement" id="logement-select" onchange="this.form.submit()">
                     <option value=""> Choisissez un logement </option>
@@ -29,7 +167,7 @@
     <div class="plan">
         {% if pieces %}
             <p><em>Cliquez sur une pièce pour voir les biens contenu dans celle-ci.</em></p>
-            <table class="table">
+            <table class="table" data-intro="Visualisez les biens de vos pièces" data-step="2">
                 <tr>
                     {% for piece in pieces %}
                         <td>
@@ -53,25 +191,47 @@
                             <div class="modal-body">
                                 {% if piece.get_list_biens() %}   
                                     <p><em>Liste des biens pour la pièce {{ piece.nom_piece }} :</em></p> 
-                                    <ul>
+                                    <div id="tableBien">
+                                    <table>
+                                        <tr id="firstRow">
+                                            <th>Nom</th>
+                                            <th>Prix €</th>
+                                            <th>Actions</th>
+                                        </tr>
                                         {% for bien in piece.get_list_biens() %}
-                                            <li> • {{ bien.nom_bien }} : {{ bien.prix }} € </li>
+                                            <tr>
+                                                <td id="nomBien{{ bien.id_bien }}" class="nomBien">{{ bien.nom_bien }} </td>
+                                                <td id="prixBien{{ bien.id_bien }}" class="prixBien">{{ bien.prix }}</td>
+                                                <td> <select class="deplacer" id="{{bien.id_bien}}"> 
+                                                    <option value="NotMoved">Déplacer vers</option>
+                                                    {% for piece in pieces %}
+                                                        <option class="selection" value="{{ piece.id_piece }}">{{ piece.nom_piece }}</option>
+                                                    {% endfor %}
+                                                </select> <button class="btn" id="{{bien.id_bien}}"> Supprimer </button> </td>
+                                            </tr>
                                         {% endfor %}
-                                    </ul>
+                                        <tr id="lastRow">
+                                            <td colspan="2"> Valeur des biens à supprimer : </td>
+                                            <td class="total">0</td>
+                                        </tr>
+                                    </table>
+                                </div>
                                 {% else %}
                                     <p><em>Aucun biens ajoutés pour cette pièce pour le moment.</em></p>
                                 {% endif %}
                             </div>
                             <div class="modal-footer">
+                                <button type="button" id="confirmersupp" class="btn btn-primary">Confirmer pour tout</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
                 </div>
             {% endfor %}
-        {% else %}
+        {% else %}              
             <p><em>Aucun logement sélectionné ou aucune pièce trouvée pour ce logement.</em></p>
         {% endif %}
     </div>
 </div>
+
 {% endblock %}

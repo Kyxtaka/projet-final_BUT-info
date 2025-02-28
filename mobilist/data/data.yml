@@ -393,7 +393,14 @@
   ID_AVIS: 2
   DESCRIPTION: "Si j'avais connu mobilist avant, je n'aurais pas pas perdu 5000€ à cause d'une inondation il y a 5 ans"
   ID_PROPRIETAIRE: 6
-
+- TYPE: AVIS
+  ID_AVIS: 3
+  DESCRIPTION: "Application pas ouf"
+  ID_PROPRIETAIRE: 3
+- TYPE: AVIS
+  ID_AVIS: 4
+  DESCRIPTION: "Mouais"
+  ID_PROPRIETAIRE: 4
 # Table AVOIR : 
 - TYPE : AVOIR
   ID_PROPRIETAIRE: 1
@@ -450,4 +457,10 @@
   ID_USER: 6
   MAIL: 'christophe@mail.com'
   ROLE: "proprio"
+  PASSWORD: '1234'
+
+- TYPE: USER
+  ID_USER: 7
+  MAIL: 'admin@mail.com'
+  ROLE: "admin"
   PASSWORD: '1234'

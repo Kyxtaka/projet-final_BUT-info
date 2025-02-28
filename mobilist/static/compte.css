@@ -92,6 +92,16 @@ hr {
     height: 40px;
 }
 
+#avis {
+    border-radius: 6px;
+    background: #8a8888;
+    box-shadow: #777779 0 3px 20px -10px;
+    color: #ffffff;
+    border: 1px solid;
+    border-color: gray;
+    height: 40px;
+}
+
 .gestion-profil {
     display: flex;
     align-items: center;
@@ -129,8 +139,22 @@ h4 {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);  
 }
+#menu-avis {
+    visibility: hidden;
+    position: fixed;
+    top: 33%;
+    left: 37%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+}
 
-
+#menu-avis.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
 #menu-mdp.visible {
     visibility: visible;
     opacity: 1;

@@ -13,9 +13,9 @@ function Logement(logement_element_id, id_logement, nom_logement, type_logement,
     }    
 
 // declaration des variables
+// let selected_logement_elementID = String();
 const array_logement_obj = Array();
 const array_logement = Array();
-let selected_logement_elementID = String();
 let selected_logement_dbID
 
 // Attribution des EventListener apres le DOM est chargé
@@ -54,9 +54,14 @@ function addLogementToArray(array,element) {
 // Fonction pour mettre à jour le style de tous les éléments
 function updateAllElementStyle() {
     array_logement.forEach(element => {
-        element.style.border = "2px dotted black";
-        if (element.id === selected_logement_id) {
-            element.style.border = "2px solid green";
+        // Remonter jusqu'à l'élément parent .log
+        let logementDiv = element.closest('.log');
+
+        if (logementDiv) {
+            logementDiv.style.border = "2px dotted black";
+            if (element.id === selected_logement_id) {
+                logementDiv.style.border = "2px solid green";
+            }
         }
     });
 }
