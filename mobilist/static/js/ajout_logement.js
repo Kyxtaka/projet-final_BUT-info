@@ -104,18 +104,6 @@ document.addEventListener("DOMContentLoaded", function() {
         table = document.getElementById(tableId);
         return table.rows.length;
     }
-
-    // DEBUG section
-
-//    function getArrayRooms() {
-//         return arrayRooms.getValue();
-//     }   
-
-    //attribution d'action pour l element arrayValue qui appelle get getArrayRooms ONLY FOR DEBUG
-    // document.getElementById("arrayValue").addEventListener("click", function() {
-    //     console.log(getArrayRooms());
-    // });
-
 });
 
 function toggleFormPopup(overlay_id) {

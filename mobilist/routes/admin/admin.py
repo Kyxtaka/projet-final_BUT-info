@@ -1,19 +1,17 @@
-
 from ...models.classes.Categorie import Categorie
 from ...models.classes.Logement import Bien
 from ...models.classes.Logement import AVOIR
 from ...models.classes.Avis import Avis
 import json
+from flask import request
+from ...app import db
+
 
 from flask import Blueprint
 from flask import (
-    jsonify, 
     render_template, 
-    redirect, 
-    render_template, url_for
+    render_template
     )
-from flask import request
-from ...app import db
 
 admin_bp = Blueprint('admin', __name__)
 

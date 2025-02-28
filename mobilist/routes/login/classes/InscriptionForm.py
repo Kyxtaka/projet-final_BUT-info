@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, HiddenField
+from wtforms.validators import DataRequired, Email
 from hashlib import sha256
 from mobilist.models.models import User 
 
@@ -18,9 +19,9 @@ class InscriptionForm(FlaskForm):
         get_authenticated_user() : Vérifie si l'utilisateur existe déjà dans la base de données
         Renvoie l'utilisateur s'il existe, sinon None
     """
-    nom = StringField('Nom')
-    prenom = StringField('Prénom')
-    mail = StringField('Adresse e-mail')
+    nom = StringField('Nom', validators=[DataRequired(message="Le nom est requis")])
+    prenom = StringField('Prénom', validators=[DataRequired(message="Le prénom est requis")])
+    mail = StringField('Adresse e-mail', validators=[DataRequired(message="L'email est requis")])
     password = PasswordField('Mot de passe')
     next = HiddenField()
 

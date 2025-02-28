@@ -1,46 +1,242 @@
 {% extends "index_admin.html" %}
 {% block styles %}
 {{ super() }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='lesUtilisateurs.css')}}">
 {% endblock %}
 {% block scripts %}
 {{ super() }}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-7nV2Yr6iX5oml2YtT2h32JwH6dd0xWvXa6A3j6h5olDL2Otj7Wf7hdIK+ESihA5r" crossorigin="anonymous"></script>
 {% endblock %}
 {% block content %}
 <div class="accueil-admin"> 
 <main>
-    <h2>Gestion des utilisateurs de l'application</h2>
-    
+    <h1>Les utilisateurs de l'application</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="alert alert-success alert-dismissible fade show" id="flash-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% elif category == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="bouton_inscrire">
+        <p><a href="#ajtUtilisateur" data-bs-toggle="modal" data-bs-target="#ajtUtilisateur">Inscrire un utilisateur</a></p>
+    </div>
+
     <div class="recherche">
-        <form class="form-horizontal" role="form" method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
+        <form class="form-horizontal" role="form"  method ="POST" action ="{{ url_for('utilisateurs.lesUtilisateurs') }}"> 
             {{ form.hidden_tag() }} 
         <div class="form-control-static">
             {{ form.champ(size=50, class_="form-control", placeholder="Rechercher un utilisateur par son nom") }}
         </div>
         <div class="form-control-static">
-            {{ form.recherche(class_="submit-button") }}
+            {{ form.rechercher(class_="submit-button") }}
         </div>
         </form>
     </div>
 
-    {% if res_recherche %}
-    <div class="resultat">
-        {% for personne in res_recherche %}
-        <li> {{ personne.nom }} {{ personne.prenom }} </li>
-        {% endfor %}
-    </div>
-    {% else %}
-        <p>Aucun utilisateur trouvé pour ce nom.</p>
-    {% endif %}
-
     {% if not res_recherche %}
     <div class="proprios">
         {% for personne in proprios %}
-        <li> {{ personne.nom }} {{ personne.prenom }} </li>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <section class="resultat_recherche">               
+                    <span><a href="#" data-bs-toggle="modal" data-bs-target="#infoUtilisateur{{ personne.id_proprio }}">{{ personne.nom }} {{ personne.prenom }} - {{ personne.mail }}</a></span>
+                </section> 
+                <section class="btn_supprimer">
+                    <p><a href="#supprimerUtilisateur{{ personne.id_proprio }}" data-bs-toggle="modal" data-bs-target="#supprimerUtilisateur{{ personne.id_proprio }}" data-utilisateur_id="{{ personne.id_proprio }}">Supprimer</a></p>
+                </section>
+                <!-- Modal pour supprimer un utilisateur -->
+                <div class="modal fade" id="supprimerUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="supprimerUtilisateurLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="supprimerUtilisateurLabel{{ personne.id_proprio }}">
+                                    Supprimer un utilisateur
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                Etes-vous sûre de vouloir supprimer {{ personne.nom }} {{ personne.prenom }} ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <form class="utilutilisateurform-horizontal" role="form" method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
+                                    {{ form.hidden_tag() }}
+                                    <input type="hidden" id="utilisateur_id" name="utilisateur_id" value="{{ personne.id_proprio }}">
+                                    <script>
+                                        $('#supprimerUtilisateur').on('show.bs.modal', function (event) {
+                                            var button = $(event.relatedTarget); 
+                                            var utilisateurId = button.data('utilisateur_id');
+                                            var modal = $(this);
+                                            modal.find('#utilisateur_id').val(utilisateurId);
+                                        });
+                                    </script>
+                                    <span class="form-control-static">
+                                        <button type="submit" name="supprimer_submit" class="btn btn-danger">Supprimer</button>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal informations -->
+                <div class="modal fade" id="infoUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="infoUtilisateurLabel{{ personne.id_proprio }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoUtilisateurLabel{{ personne.id_proprio }}">
+                                    Informations de {{ personne.nom }} {{ personne.prenom }}
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <p>Nom : {{ personne.nom }}</p>
+                                <p>Prénom : {{ personne.prenom }}</p>
+                                <p>Email : {{ personne.mail }}</p>
+                                <p>Logements : 
+                                    {% if personne.logements %}
+                                        {% for l in personne.logements %} 
+                                        <li>{{ l.nom_logement }}</li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span>Aucun logements pour l'instant.</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
         {% endfor %}
     </div>
     {% endif %}
+
+    {% if res_recherche is none %}
+        <p>Aucun utilisateur trouvé pour ce nom.</p>
+    {% else %}
+        <div class="resultat">
+            {% for personne in res_recherche %}
+                <div>
+                    <span><a href="#" data-bs-toggle="modal" data-bs-target="#infoUtilisateur{{ personne.id_proprio }}">{{ personne.nom }} {{ personne.prenom }} - {{ personne.mail }}</a></span>
+                    <section class="btn_supprimer">
+                        <p><a href="#supprimerUtilisateur{{ personne.id_proprio }}" data-bs-toggle="modal" data-bs-target="#supprimerUtilisateur{{ personne.id_proprio }}" data-utilisateur_id="{{ personne.id_proprio }}">Supprimer</a></p>
+                    </section>
+                </div>
+                <div class="modal fade" id="supprimerUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="supprimerUtilisateurLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="supprimerUtilisateurLabel{{ personne.id_proprio }}">
+                                    Supprimer un utilisateur
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                Etes-vous sûre de vouloir supprimer {{ personne.nom }} {{ personne.prenom }} ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <form class="utilutilisateurform-horizontal" role="form" method="POST" action="{{ url_for('utilisateurs.supprimer_utilisateur') }}">
+                                    {{ form.hidden_tag() }}
+                                    <input type="hidden" id="utilisateur_id" name="utilisateur_id" value="{{ personne.id_proprio }}">
+                                    <script>
+                                        $('#supprimerUtilisateur').on('show.bs.modal', function (event) {
+                                            var button = $(event.relatedTarget); 
+                                            var utilisateurId = button.data('utilisateur_id');
+                                            var modal = $(this);
+                                            modal.find('#utilisateur_id').val(utilisateurId);
+                                        });
+                                    </script>
+                                    <span class="form-control-static">
+                                        <button type="submit" name="supprimer_submit" class="btn btn-danger">Supprimer</button>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="infoUtilisateur{{ personne.id_proprio }}" tabindex="-1" role="dialog" aria-labelledby="infoUtilisateurLabel{{ personne.id_proprio }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoUtilisateurLabel{{ personne.id_proprio }}">
+                                    Informations de {{ personne.nom }} {{ personne.prenom }}
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <p>Nom : {{ personne.nom }}</p>
+                                <p>Prénom : {{ personne.prenom }}</p>
+                                <p>Email : {{ personne.mail }}</p>
+                                <p>Logements : 
+                                    {% if personne.logements %}
+                                        {% for l in personne.logements %} 
+                                        <li>{{ l.nom_logement }}</li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span>Aucun logements pour l'instant.</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    
+    <!-- Modal pour ajouter un utilisateur -->
+    <div class="modal fade" id="ajtUtilisateur" tabindex="-1" role="dialog" aria-labelledby="ajtUtilisateurLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ajtUtilisateurLabel">Inscrire un utilisateur</h5>
+                </div>
+                <form method="POST" action="{{ url_for('utilisateurs.lesUtilisateurs') }}">
+                    {{ form_inscription.hidden_tag() }}
+                    <div class="modal-body">
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.nom.label }}</p>
+                                {{ form_inscription.nom(size=50, class_="form-control", placeholder ="Nom") }}
+                            </div> 
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.prenom.label }}</p>
+                                {{ form_inscription.prenom(size=50, class_="form-control", placeholder ="Prénom") }}
+                            </div>
+                            <div class="form-control-static">
+                                <p>{{ form_inscription.mail.label }}</p>
+                                {{ form_inscription.mail(size=50, class_="form-control", placeholder ="email@exemple.com") }}
+                            </div>
+                            <span class="form-control-static">
+                                <button type="submit" name="inscription_submit" class="btn btn-primary mb-3">Envoyer un mail d'inscription</button>
+                            </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </main>
 {% endblock %}

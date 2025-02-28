@@ -165,4 +165,5 @@ class User(Base, UserMixin):
             proprio (Proprietaire): le propriétaire à associer à l'utilisateur
         """
         self.proprio = proprio
+        
 
