@@ -16,6 +16,7 @@ from flask import request
 from flask_login import login_required
 from mobilist.exception import *
 import spacy
+from datetime import datetime
 nlp = spacy.load("fr_core_news_md")
 
 from .PDF.generatePDF import *
@@ -150,7 +151,7 @@ def open_fic():
 def get_inscriptions():
     data = db.session.query(db.func.date(User.date), db.func.count(User.mail)).group_by(db.func.date(User.date)).all()
     
-    labels = [row[0].strftime('%Y-%m-%d') for row in data]
+    labels = [datetime.strptime(row[0], '%Y-%m-%d').strftime('%Y-%m-%d') for row in data]
     values = [row[1] for row in data]
 
     return jsonify({'labels': labels, 'values': values})

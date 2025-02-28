@@ -277,7 +277,7 @@ def inscription():
         if user:
             login_user(user)
             return render_template("inscription.html", form=f, present=True)
-        create_user(f.mail.data, f.password.data, "proprio")
+        create_user(f.mail.data, f.password.data, "proprio", datetime.now())
         User.modifier(f.mail.data, f.nom.data, f.prenom.data)
         return redirect(url_for("login.login"))
     return render_template(

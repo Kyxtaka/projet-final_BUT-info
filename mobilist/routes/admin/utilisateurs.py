@@ -79,7 +79,7 @@ def lesUtilisateurs() -> str:
             proprio = Proprietaire(max_id,form_inscription.mail.data,form_inscription.nom.data,form_inscription.prenom.data)
             db.session.add(proprio)
             db.session.commit()
-            user_temp = User(form_inscription.mail.data,"temporaire","proprio",max_id, datetime.today().strftime('%Y-%m-%d'))
+            user_temp = User(form_inscription.mail.data,"temporaire","proprio",max_id, datetime.now())
             db.session.add(user_temp)
             db.session.commit()
             
