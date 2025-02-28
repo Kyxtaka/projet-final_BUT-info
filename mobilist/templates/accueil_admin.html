@@ -39,7 +39,7 @@
     </div>
 
 </main><script>
-    fetch('/data/inscriptions') // Récupère les données Flask
+    fetch('/data/inscriptions')
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById('myChart').getContext('2d');
@@ -57,11 +57,20 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true }
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1, 
+                            callback: function(value, index, values) {
+                                return Number.isInteger(value) ? value : null; 
+                            }
+                        }
                     }
                 }
+            }
+
             });
         })
         .catch(error => console.error('Erreur lors du chargement des données', error));
