@@ -14,34 +14,17 @@ Groupe : Akhtar Naima, Bocquet Clemence, Randrianstoa Nathan, Valin Ophelie, Vil
 > MobiList est une application de gestion de biens matériels d’un logement. Celle-ci va permettre d’informatiser ce processus en dressant un inventaire des biens par pièces, de conserver les preuves d’achats et de calculer l’usure du bien au moment du dommage.
 > Ainsi, lors de dégâts subis, l’application permettra de fournir un état financier des possibles pertes en fonction de leur vétusté et d’afficher les justificatifs d’achats associés.
 
+Pour vous accompagner dans l'utilisation de Mobilist, vous trouverez dans le dossier 'Manuels' le manuel d'installation et le manuel utilisateur.
 
 ## Lancement application
-Pour lancer un environnement virtuel, vous devez, depuis VSCode : 
-### Si un .venv/venv se trouve dans le projet 
-> Ouvrir le projet à sa racine, lancer la commande **source venv/bin/activate**  
-> Avant le prompt, un (.venv) doit être affiché affirmant que vous avez bien activé votre environnement virtuel  
-
-### Si il n'y a pas de .venv/venv ou qu'il y a des difficultés à activer le venv
-> Sur VSCode, ouvrir le projet à sa racine  
-> Aller dans mobilist>app.py  
-> Sélectionner un interpréteur (en bas à droite à côté de "Python")  
-> Cliquer sur "créer un environnement virtuel" puis "Venv", "supprimer et recreer" et choisir l'interpréteur python  
-> Prendre requirement.txt pour les dépendances à  installer  
-
-### Ou bien installation d'un venv via l'interpreteur de commandes (CMD)
-> Ouvrez un un shell dans le repertoire racine du projet
-> Tapez la commande `python3 -m venv /path/to/new/virtual/environment` si vous avez la version 3 de python sinon `python3 -m venv /path/to/new/virtual/environment`, une fois le venv de crée, veillez l'activer (commande ci-dessus)
-
-### Si lec commandes ci-dessus ne fonctionnent pas
-> Si les commandes ci-dessus ne fonctionnent pas, cette commande peut fonctionner ` virtualenv -p python3 venv`
-
-### Installation des dépendances 
-> Dans le répertoire racine du projet il y a un fichier `requirements.txt`, toujours dans le shell et avec le venv d'activé, tapez la commande `pip install -r path/to/requirements.txt`. Une fois les dépendances d'installées, vous pouvez lancer l'application.
-
-Pour lancer l'application après avoir activé votre environnement virtuel, depuis VSCode :
+### Installation
+Pour vous aider dans l'installation du projet, vous pouvez vous référer au manuel d'installation.  
+Vous devez avoir préalablement créer un environnement virtuel, télécharger le projet et installer les dépendances.
 ### Lancer l'application
 > Vous pouvez lancer l'application avec **flask run**  
 > Ouvrir la page depuis le lien donné (Running on http://127.0...)
+
+Vous pouvez vous référer au manuel d'utilisation.
 
 ### Lancer les tests
 Pour lancer les tests, à la racine du projet ```python -m pytest``` ou  ```coverage run -m pytest```  
