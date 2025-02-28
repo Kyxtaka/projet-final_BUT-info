@@ -4,21 +4,25 @@ from flask import Flask
 from flask_sqlalchemy  import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
-from mobilist.models.classes.Categorie import Categorie
 from mobilist.models.classes.Logement import *
-from mobilist.routes.login.classes.ResetForm import ResetForm
 from mobilist.routes.uploadfile.classes.AjoutBienForm import AjoutBienForm
+from mobilist.routes.uploadfile.classes.UploadFileForm import UploadFileForm
+from mobilist.routes.uploadfile.upload import handle_form_bien, link_justification_bien, form_logs
+from mobilist.routes.admin.utilisateurs import *
+from mobilist.routes.login.login_view import *
+from mobilist.routes.login.classes.InscriptionForm import InscriptionForm
+from mobilist.routes.biens.biens import *
+from mobilist.exception import DejaPresent
 import datetime
 from flask import session
 import pytest
+import os
 from mobilist.app import mkpath, app, db
 from unittest.mock import MagicMock
 from hashlib import sha256
 from unittest.mock import patch
-from mobilist.models.classes.User import User  
 from mobilist.models.classes.Proprietaire import Proprietaire  
 
-from flask_login import login_user
 
 # racine projet (pas mobilist) python -m pytest
 @pytest.fixture
@@ -137,7 +141,6 @@ def test_protected_afficheLogements_success(mock_current_user, client):
 
 @patch("mobilist.routes.views.current_user")
 def test_protected_ajouteBien_success(mock_current_user, client,monkeypatch):
-    app.config['WTF_CSRF_ENABLED']=False
     mock_current_user.is_authenticated = True
     mock_current_user.id_user = 2
     client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
@@ -158,6 +161,27 @@ def test_protected_ajouteBien_success(mock_current_user, client,monkeypatch):
     response = client.post("/bien/ajout", data={"Logement":"logement1", "Nom du bien": "mon bien 1", "Type de bien":"Canapé", "Catégorie": "Décoration",'Nombre de pièces':"piece1", 'Prix neuf': 111, "Date de l'achat": "2020-20-12", "id_proprio": 2, "id_bien":2})
     assert response.status_code == 200
 
+@patch("mobilist.routes.views.current_user")
+def test_fonctions_upload(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 2
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+    form = MagicMock(spec=AjoutBienForm)
+    form.validate()
+
+    form.nom_bien.data = "bien1"
+    form.date_bien.data = datetime.date(2024, 11, 12)
+    form.id_proprio = 2
+    form.prix_bien.data = 111
+    form.piece_bien.data = 1
+    form.logement.data = 1
+    form.type_bien.data = 1
+    form.categorie_bien.data = 1
+
+    handle_form_bien(form)
+    link_justification_bien(form, 'document_test/inventaires_biens-1.pdf', 1)
+    form_logs(form)
+    
 
 @patch("mobilist.routes.views.current_user")
 def test_protected_mesBiens_success(mock_current_user, client):
@@ -193,8 +217,6 @@ def test_protected_modifierBien_success(mock_current_user, client,monkeypatch):
 
     response = client.post("/modifierbien/", data={"id": 3, "nom_bien":"bien1", "logement":"logement1", "prix_bien":111, "date_bien": "2020-20-12", "categorie_bien": "Décoration", "type_bien": "Canapé"})
     assert response.status_code == 200
-
-    
 
 @patch("mobilist.routes.views.current_user")
 def test_protected_simulation_success(mock_current_user, client):
@@ -245,22 +267,43 @@ def test_protected_admin_avis(mock_current_user, client):
 def test_protected_admin_user(mock_current_user, client):
     mock_current_user.is_authenticated = True
     mock_current_user.id_user = 3
-    client.post("/login/", data={"mail":"admin@mail.com","password":"123","next":4, "id":3},follow_redirects=True)
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
 
-    response = client.get("/lesUtilisateurs/")
+    response = client.post("/lesUtilisateurs/")
     assert response.status_code == 200
 
     response = client.post("/lesUtilisateurs/", data={'champ':'champ','recherche':''})
     assert response.status_code == 200
 
 @patch("mobilist.routes.views.current_user")
+def test_protected_admin_user_suppression(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    User.put_user(User('test1@mail.com','123', 'admin',4))
+    response = client.post("/supprimer_utilisateur/", data={'supprimer_submit': True, 'utilisateur_id':4})
+    assert response.status_code == 302
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_admin_user_inscription(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    response = client.get("/lesUtilisateurs/", data={'inscription_submit': True})
+
+    pwd_email('test1@mail.com', '123')
+    set_mdp()
+
+@patch("mobilist.routes.views.current_user")
 def test_protected_admin_accueil(mock_current_user, client):
     mock_current_user.is_authenticated = True
     mock_current_user.id_user = 3
-    client.post("/login/", data={"mail":"admin@mail.com","password":"123","next":4, "id":3},follow_redirects=True)
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
 
     response = client.get('/accueil-admin/')
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 @patch("mobilist.routes.views.current_user")
 def test_protected_manage_rooms(mock_current_user, client):
@@ -304,6 +347,8 @@ def test_protected_set_password(mock_current_user, client):
     assert response.status_code == 401
     response = client.post('/forgotPassword/setPassword', data={'token':'123'})
     assert response.status_code == 401
+
+    send_change_pwd_email('clemence@mail.com', '123')
 
 
 @patch("mobilist.routes.views.current_user")
@@ -386,3 +431,52 @@ def test_protected_ajout_avis(mock_current_user, client):
 
     response = client.post('/ajout_avis/', data={"avis":"mon avis"})
     assert response.status_code == 302
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_uploadfileform(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    file = UploadFileForm()
+    file.file.data = 'document_test/inventaires_biens-1.pdf'
+    file.validate()
+    file.validate_file_format("form", file.file)
+
+
+@patch("mobilist.routes.views.current_user")
+def test_protected_movebien(mock_current_user, client):
+    mock_current_user.is_authenticated = True
+    mock_current_user.id_user = 3
+    client.post("/login/", data={"mail":"trixymartin@email.com","password":"123","next":2, "id":2},follow_redirects=True)
+
+    moveBiens(1, 1, 2)
+
+@patch("mobilist.routes.views.current_user")
+def test_exception(mock_current_user, client):
+    test = DejaPresent("test")
+    assert test.message == "test"
+
+@patch("mobilist.routes.views.current_user")
+def test_inscription(mock_current_user, client):
+    with app.app_context():
+        form = InscriptionForm()
+        form.mail.data = "inconnu@email.com"
+
+        assert form.get_authenticated_user() == None
+
+@patch("mobilist.routes.views.current_user")
+def test_ajoutform(mock_current_user, client):
+    with app.app_context():
+        mock_current_user.is_authenticated = True
+        mock_current_user.id_user = 3
+        client.post("/login/", data={"mail":"trixymartin@email.com","password":"1234","next":2, "id":2},follow_redirects=True)
+
+        form = AjoutBienForm()
+        form.set_id(2)
+        assert form.get_log_choices('logement') == ""
+        assert form.get_type_bien_choices('piece') == ""
+        assert form.get_cat_bien_choices('cat') == ""
+    
+    
+

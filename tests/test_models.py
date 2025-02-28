@@ -107,6 +107,10 @@ class UserTest(unittest.TestCase):
          self.assertEqual(bien.get_id_cat(),1)
          self.assertEqual(bien.get_nom_bien(), "chaise")
 
+
+   def test_bien_set(self):
+      with app.app_context():
+         bien = Bien(1,"chaise",2,datetime.date(2024, 11, 12), 19.99, 1,1,1,1)
          bien.set_id_logement(2)
          bien.set_date_achat(datetime.date(2024,11,11))
          self.assertEqual(bien.get_date_achat(), datetime.date(2024, 11, 11))
@@ -114,7 +118,7 @@ class UserTest(unittest.TestCase):
          self.assertEqual(bien.get_nom_bien(), "chaise 1")
          bien.set_prix(19.98)
          self.assertEqual(bien.get_prix(), 19.98)
-         
+
       
    def test_logement(self):
       with app.app_context():
